@@ -1,0 +1,59 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { UserProvider } from './context/UserContext';
+
+// Import komponent
+import Header from './components/Header';
+import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Import stránek
+import HomePage from './pages/HomePage';
+import GameDetailPage from './pages/GameDetailPage';
+import TokenPage from './pages/TokenPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import UserLibraryPage from './pages/UserLibraryPage';
+import GamesPage from './pages/GamesPage'; // Správný import
+
+import './App.css';
+
+function App() {
+  return (
+    <UserProvider>
+      <Router>
+        <div className="d-flex flex-column min-vh-100">
+          <Header />
+
+          <main className="flex-grow-1 py-4">
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/games" element={<GamesPage />} />
+                <Route path="/game/:gameId" element={<GameDetailPage />} />
+                <Route path="/tokens" element={<TokenPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+
+                {/* Dříve zde byla routa pro žánry. Nyní ji obsluhuje GamesPage. */}
+
+                <Route
+                  path="/library"
+                  element={
+                    <ProtectedRoute>
+                      <UserLibraryPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
+          </main>
+
+          <Footer />
+        </div>
+      </Router>
+    </UserProvider>
+  );
+}
+
+export default App;

@@ -287,7 +287,13 @@ const HomePage = () => {
             {/* Popular Games Section */}
             {homeData?.popularGames && (
                 <section className="py-5">
-                    <div className="container">
+                    <div style={{
+                        width: '100%',
+                        maxWidth: '1200px',
+                        margin: '0 auto',
+                        paddingLeft: '15px',
+                        paddingRight: '15px'
+                    }}>
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
                                 <h2 className="text-white fw-bold mb-2">Populární hry</h2>
@@ -394,7 +400,13 @@ const HomePage = () => {
                     background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1))',
                     borderTop: '1px solid rgba(255,255,255,0.1)'
                 }}>
-                    <div className="container">
+                    <div style={{
+                        width: '100%',
+                        maxWidth: '1200px',
+                        margin: '0 auto',
+                        paddingLeft: '15px',
+                        paddingRight: '15px'
+                    }}>
                         <div className="text-center">
                             <h2 className="text-white fw-bold mb-3">Připoj se k našemu království</h2>
                             <p className="text-white-50 lead mb-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { UserProvider } from './context/UserProvider';
-import { ToastProvider } from './components/ui/Toast'; // PŘIDAT
+import { ToastProvider } from './components/ui/Toast';
 
 // Import komponent
 import Header from './components/Header';
@@ -21,14 +21,37 @@ import './App.css';
 
 function App() {
   return (
-    <ToastProvider> {/* Obalíme celou aplikaci */}
+    <ToastProvider>
       <UserProvider>
         <Router>
-          <div className="d-flex flex-column min-vh-100">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            width: '100%',
+            margin: 0,
+            padding: 0,
+            overflowX: 'hidden', // PŘIDÁNO - zabraňuje horizontálnímu scrollu
+            position: 'relative'
+          }}>
             <Header />
 
-            <main className="flex-grow-1">
-              <div className="container-fluid p-0"> {/* OPRAVENO: odstraněn padding */}
+            <main style={{
+              flexGrow: 1,
+              width: '100%',
+              margin: 0,
+              padding: 0,
+              overflowX: 'hidden', // PŘIDÁNO
+              position: 'relative'
+            }}>
+              {/* OPRAVENO - odstraněn container-fluid a jeho padding */}
+              <div style={{
+                width: '100%',
+                margin: 0,
+                padding: 0,
+                maxWidth: '100%',
+                overflowX: 'hidden'
+              }}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/games" element={<GamesPage />} />

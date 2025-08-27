@@ -83,7 +83,7 @@ const TokenPage = () => {
         setIsProcessing(true);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/purchase_tokens.php`, {
+            const response = await fetch(`${API_BASE_URL}/api/purchase_token.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

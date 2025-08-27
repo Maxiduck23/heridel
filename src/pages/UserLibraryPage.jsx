@@ -1,48 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-// Mock data pro demonstraci knihovny
-
+import { Link } from 'react-router-dom'
 
 const UserLibraryPage = () => {
-    const [games, setGames] = useState([]); // Začínáme s prázdným polem
+    const [games, setGames] = useState([]);
     const [filteredGames, setFilteredGames] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('recent');
     const [filterBy, setFilterBy] = useState('all');
     const [selectedGame, setSelectedGame] = useState(null);
     const [showKeyModal, setShowKeyModal] = useState(false);
-    const [loading, setLoading] = useState(true); // Stav pro načítání
-    const [error, setError] = useState(null); // Stav pro chyby
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const { user } = useUser(); // <-- 3. Získání skutečného uživatele
+    const { user } = useUser();
     const API_BASE_URL = 'http://heridel.wz.cz';
 
-    const totalGames = games.length;
-    const totalPlayTime = games.reduce((sum, game) => sum + game.play_time_hours, 0);
-    const favoriteGames = games.filter(game => game.is_favorite).length;
-
-    // --- KROK 4: Načtení dat z API ---
     useEffect(() => {
         const fetchLibrary = async () => {
             if (!user) {
-                setError("Pro zobrazení knihovny se musíte přihlásit.");
                 setLoading(false);
                 return;
             }
 
             try {
+                // Reset chyb a nastavení načítání pro nový fetch
+                setError(null);
+                setLoading(true);
+
                 const response = await fetch(`${API_BASE_URL}/api/library.php`, {
-                    credentials: 'include' // Důležité pro odeslání session cookie
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {
-                    throw new Error('Chyba při komunikaci se serverem.');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Chyba při komunikaci se serverem.');
                 }
 
                 const data = await response.json();
 
                 if (data.success) {
-                    setGames(data.data);
+                    setGames(data.data || []); // Zajistí, že games je vždy pole
                 } else {
                     throw new Error(data.message || 'Nepodařilo se načíst data knihovny.');
                 }
@@ -54,9 +52,8 @@ const UserLibraryPage = () => {
         };
 
         fetchLibrary();
-    }, [user]); // Spustí se, když se změní informace o uživateli
+    }, [user]);
 
-    // Filtrování a třídění her
     useEffect(() => {
         let filtered = games.filter(game => {
             const matchesSearch = game.game.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -67,7 +64,6 @@ const UserLibraryPage = () => {
             return matchesSearch && matchesFilter;
         });
 
-        // Třídění
         filtered.sort((a, b) => {
             switch (sortBy) {
                 case 'recent':
@@ -86,18 +82,62 @@ const UserLibraryPage = () => {
         setFilteredGames(filtered);
     }, [games, searchTerm, sortBy, filterBy]);
 
+
+    if (loading) {
+        return (
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                <div className="text-center">
+                    <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }}></div>
+                    <h5 style={{ color: '#64748b' }}>Načítání knihovny...</h5>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ minHeight: '100vh', background: '#f8fafc', paddingTop: '2rem' }}>
+                <div className="container">
+                    <div className="alert alert-danger">
+                        <h5>Chyba při načítání knihovny</h5>
+                        <p className="mb-0">{error}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                <div className="text-center">
+                    <h3 style={{ color: '#64748b' }}>Pro zobrazení knihovny se musíte přihlásit</h3>
+                    <Link to="/login" className="btn btn-primary mt-3">Přihlásit se</Link>
+                </div>
+            </div>
+        );
+    }
+
+
+    const totalGames = games.length;
+    const totalPlayTime = games.reduce((sum, game) => sum + parseFloat(game.play_time_hours), 0);
+    const favoriteGames = games.filter(game => game.is_favorite).length;
+
     const formatPlayTime = (hours) => {
-        if (hours < 1) return `${Math.round(hours * 60)}min`;
-        return `${Math.floor(hours)}h ${Math.round((hours % 1) * 60)}min`;
+        const h = parseFloat(hours) || 0;
+        if (h < 1) return `${Math.round(h * 60)}min`;
+        return `${Math.floor(h)}h ${Math.round((h % 1) * 60)}min`;
     };
 
     const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleDateString('cs-CZ', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
         });
     };
+
 
     const toggleFavorite = (libraryId) => {
         setGames(games.map(game =>
@@ -120,6 +160,7 @@ const UserLibraryPage = () => {
         setShowKeyModal(true);
     };
 
+    // Zbytek kódu pro renderování zůstává stejný
     return (
         <div style={{
             minHeight: '100vh',
@@ -255,7 +296,7 @@ const UserLibraryPage = () => {
 
                 {/* Seznam her */}
                 <div className="row">
-                    {filteredGames.length === 0 ? (
+                    {filteredGames.length === 0 && !loading ? (
                         <div className="col-12">
                             <div style={{
                                 background: 'white',
@@ -346,7 +387,10 @@ const UserLibraryPage = () => {
                                                     color: '#64748b',
                                                     fontSize: '0.95rem',
                                                     margin: '0 0 1rem 0',
-                                                    lineHeight: '1.5'
+                                                    lineHeight: '1.5',
+                                                    maxHeight: '3em',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
                                                 }}>
                                                     {libraryGame.game.description}
                                                 </p>

@@ -141,7 +141,12 @@ const GamesPage = () => {
     if (error) {
         return (
             <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div className="container py-5">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    padding: '3rem 15px'
+                }}>
                     <div className="alert alert-danger">
                         <i className="fas fa-exclamation-triangle me-2"></i>
                         <strong>Chyba při načítání her:</strong> {error}
@@ -194,7 +199,12 @@ const GamesPage = () => {
                 </div>
             </section>
 
-            <div className="container py-5">
+            <div style={{
+                width: '100%',
+                maxWidth: '1200px',
+                margin: '0 auto',
+                padding: '3rem 15px'
+            }}>
 
                 {/* Search & Filters */}
                 <div className="row mb-5">

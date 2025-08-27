@@ -266,7 +266,7 @@ const GamesPage = () => {
                                 </button>
                                 {genres.map(genre => (
                                     <button
-                                        key={genre.genre_id}
+                                        key={`genre-${genre.slug}`} // Add this key
                                         className={`btn ${urlCategory === genre.slug ? 'btn-primary' : 'btn-outline-light'}`}
                                         onClick={() => handleCategoryClick(genre.slug)}
                                         style={{
@@ -303,7 +303,7 @@ const GamesPage = () => {
                 ) : (
                     <div className="row g-4">
                         {currentGames.map(game => (
-                            <div key={game.game_id} className="col-xl-3 col-lg-4 col-md-6">
+                            <div key={`game-${game.game_id}`} className="col-xl-3 col-lg-4 col-md-6">
                                 <div
                                     className="card h-100 border-0 position-relative overflow-hidden"
                                     style={{
@@ -496,7 +496,7 @@ const GamesPage = () => {
                             </li>
 
                             {renderPageNumbers().map((pageNumber, index) => (
-                                <li key={index} className={`page-item ${pageNumber === currentPage ? 'active' : ''} ${pageNumber === '...' ? 'disabled' : ''}`}>
+                                <li key={`page-${pageNumber}-${index}`} className={`page-item ${pageNumber === currentPage ? 'active' : ''} ${pageNumber === '...' ? 'disabled' : ''}`}>
                                     <button
                                         className="page-link"
                                         onClick={() => pageNumber !== '...' && paginate(pageNumber)}

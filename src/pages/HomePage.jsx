@@ -250,7 +250,7 @@ const HomePage = () => {
 
                         <div className="row g-3">
                             {genres.map((genre, index) => (
-                                <div key={genre.genre_id} className="col-lg-3 col-md-4 col-sm-6">
+                                <div key={`genre-${genre.genre_id || genre.slug || index}`} className="col-lg-3 col-md-4 col-sm-6">
                                     <Link
                                         to={`/games?category=${genre.slug}`}
                                         className="text-decoration-none"
@@ -301,7 +301,7 @@ const HomePage = () => {
 
                         <div className="row g-4">
                             {homeData.popularGames.slice(0, 8).map((game, index) => (
-                                <div key={game.game_id} className="col-lg-3 col-md-4 col-sm-6">
+                                <div key={`popular-game-${game.game_id}`} className="col-lg-3 col-md-4 col-sm-6">
                                     <div
                                         className="card h-100 border-0 position-relative overflow-hidden"
                                         style={{

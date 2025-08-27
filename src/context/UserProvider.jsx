@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { UserContext } from './UserContext'; // <-- Důležitý import kontextu z prvního souboru
+import { UserContext } from './UserContext';
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -11,60 +11,120 @@ export const UserProvider = ({ children }) => {
     }, []);
 
     const checkSession = async () => {
+        setLoading(true);
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
-                credentials: 'include'
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
-            if (data.success) {
+            console.log('Session check response:', data); // Debug log
+
+            if (data.success && data.user) {
                 setUser(data.user);
+            } else {
+                setUser(null);
+                console.log('No active session:', data.message);
             }
         } catch (error) {
-            console.error('Error checking session:', error);
+            console.error('Session check error:', error);
+            setUser(null);
+
+            // Only show error to user if it's not a network/CORS issue
+            if (!error.message.includes('CORS') && !error.message.includes('Failed to fetch')) {
+                console.warn('Authentication service unavailable:', error.message);
+            }
         } finally {
             setLoading(false);
         }
     };
 
     const login = async (username, password) => {
+        if (!username || !password) {
+            return { success: false, message: 'Uživatelské jméno a heslo jsou povinné' };
+        }
+
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/login.php`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 credentials: 'include',
                 body: JSON.stringify({ username, password })
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
-            if (data.success) {
+            console.log('Login response:', data); // Debug log
+
+            if (data.success && data.user) {
                 setUser(data.user);
                 return { success: true };
             } else {
-                return { success: false, message: data.message };
+                return { success: false, message: data.message || 'Přihlášení se nezdařilo' };
             }
         } catch (error) {
             console.error('Login error:', error);
-            return { success: false, message: 'Chyba připojení k serveru' };
+            return {
+                success: false,
+                message: error.message.includes('Failed to fetch') ?
+                    'Nelze se připojit k serveru' :
+                    'Chyba při přihlašování'
+            };
         }
     };
 
     const register = async (username, email, password) => {
+        if (!username || !email || !password) {
+            return { success: false, message: 'Všechna pole jsou povinná' };
+        }
+
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/register.php`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 credentials: 'include',
                 body: JSON.stringify({ username, email, password })
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
-            if (data.success) {
+            console.log('Register response:', data); // Debug log
+
+            if (data.success && data.user) {
                 setUser(data.user);
                 return { success: true };
             } else {
-                return { success: false, message: data.message };
+                return { success: false, message: data.message || 'Registrace se nezdařila' };
             }
         } catch (error) {
             console.error('Register error:', error);
-            return { success: false, message: 'Chyba připojení k serveru' };
+            return {
+                success: false,
+                message: error.message.includes('Failed to fetch') ?
+                    'Nelze se připojit k serveru' :
+                    'Chyba při registraci'
+            };
         }
     };
 
@@ -72,7 +132,11 @@ export const UserProvider = ({ children }) => {
         try {
             await fetch(`${API_BASE_URL}/api/auth/logout.php`, {
                 method: 'POST',
-                credentials: 'include'
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             });
         } catch (error) {
             console.error('Logout error:', error);
@@ -82,22 +146,29 @@ export const UserProvider = ({ children }) => {
     };
 
     const updateUserTokens = async (newBalance) => {
-        if (user) {
-            setUser(prevUser => ({
-                ...prevUser,
+        if (user && typeof newBalance === 'number') {
+            const updatedUser = {
+                ...user,
                 tokens_balance: parseFloat(newBalance)
-            }));
+            };
+            setUser(updatedUser);
+
+            // Optional: Sync with server to ensure consistency
             try {
                 const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: { 'Accept': 'application/json' }
                 });
-                const data = await response.json();
-                if (data.success && data.user.tokens_balance !== newBalance) {
-                    console.log('Synchronizace zůstatku ze serveru');
-                    setUser(data.user);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.user && Math.abs(data.user.tokens_balance - newBalance) > 0.01) {
+                        console.log('Token balance synced from server');
+                        setUser(prevUser => ({ ...prevUser, tokens_balance: data.user.tokens_balance }));
+                    }
                 }
             } catch (error) {
-                console.warn('Nepodařilo se synchronizovat zůstatek:', error);
+                console.warn('Could not sync token balance from server:', error);
             }
         }
     };
@@ -105,12 +176,16 @@ export const UserProvider = ({ children }) => {
     const refreshUser = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
-                credentials: 'include'
+                credentials: 'include',
+                headers: { 'Accept': 'application/json' }
             });
-            const data = await response.json();
-            if (data.success) {
-                setUser(data.user);
-                return data.user;
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success && data.user) {
+                    setUser(data.user);
+                    return data.user;
+                }
             }
         } catch (error) {
             console.error('Error refreshing user:', error);
@@ -118,7 +193,6 @@ export const UserProvider = ({ children }) => {
         return null;
     };
 
-    // Hodnoty, které chceme sdílet v celé aplikaci
     const value = {
         user,
         loading,

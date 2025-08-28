@@ -21,7 +21,7 @@ const GameDetailPage = () => {
     const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
     const [isOwned, setIsOwned] = useState(false);
 
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     // VYLEPŠENÝ PŘEKLAD - lokální slovník + fallback
     const translateText = async (textToTranslate) => {
@@ -102,7 +102,7 @@ const GameDetailPage = () => {
         const fetchGame = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/api/game_detail.php?id=${gameId}`, {
+                const response = await fetch(`${API_BASE_URL}/game_detail.php?id=${gameId}`, {
                     credentials: 'include'
                 });
                 const data = await response.json();
@@ -134,7 +134,7 @@ const GameDetailPage = () => {
         }
         setIsTogglingWishlist(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/toggle_wishlist.php`, {
+            const response = await fetch(`${API_BASE_URL}/toggle_wishlist.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -178,7 +178,7 @@ const GameDetailPage = () => {
         setGameError(null);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/purchase_game.php`, {
+            const response = await fetch(`${API_BASE_URL}/purchase_game.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

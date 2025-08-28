@@ -14,7 +14,7 @@ const UserLibraryPage = () => {
     const [error, setError] = useState(null);
 
     const { user } = useUser();
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     useEffect(() => {
         const fetchLibrary = async () => {
@@ -28,7 +28,7 @@ const UserLibraryPage = () => {
                 setError(null);
                 setLoading(true);
 
-                const response = await fetch(`${API_BASE_URL}/api/library.php`, {
+                const response = await fetch(`${API_BASE_URL}/library.php`, {
                     credentials: 'include'
                 });
 

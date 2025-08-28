@@ -4,7 +4,7 @@ import { UserContext } from './UserContext';
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     useEffect(() => {
         checkSession();
@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
     const checkSession = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
+            const response = await fetch(`${API_BASE_URL}/auth/check_session.php`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -54,7 +54,7 @@ export const UserProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login.php`, {
+            const response = await fetch(`${API_BASE_URL}/auth/login.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ export const UserProvider = ({ children }) => {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/register.php`, {
+            const response = await fetch(`${API_BASE_URL}/auth/register.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export const UserProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await fetch(`${API_BASE_URL}/api/auth/logout.php`, {
+            await fetch(`${API_BASE_URL}/auth/logout.php`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -155,7 +155,7 @@ export const UserProvider = ({ children }) => {
 
             // Optional: Sync with server to ensure consistency
             try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
+                const response = await fetch(`${API_BASE_URL}/auth/check_session.php`, {
                     credentials: 'include',
                     headers: { 'Accept': 'application/json' }
                 });
@@ -175,7 +175,7 @@ export const UserProvider = ({ children }) => {
 
     const refreshUser = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/check_session.php`, {
+            const response = await fetch(`${API_BASE_URL}/auth/check_session.php`, {
                 credentials: 'include',
                 headers: { 'Accept': 'application/json' }
             });

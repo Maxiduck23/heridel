@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useUser } from '../context/UserContext';
-import { useToast } from '../components/ui/Toast'; // PŘIDÁNO
+import { useToast } from '../components/ui/Toast';
 import { Link } from 'react-router-dom';
 
 const TokenPage = () => {
-    const { user, updateUserTokens } = useUser(); // Přidáno updateUserTokens
-    const { success, error, warning } = useToast(); // PŘIDÁNO
+    const { user, updateUserTokens } = useUser();
+    const { success, error, warning } = useToast();
     const [selectedPack, setSelectedPack] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('card');
 
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     const tokenPacks = [
         {
@@ -73,7 +73,6 @@ const TokenPage = () => {
         { id: 'bank', name: 'Bankovní převod', icon: '🏦', description: 'Tradiční bankovní převod' }
     ];
 
-    // OPRAVENÁ FUNKCE - skutečný nákup přes API
     const handlePurchase = async (pack) => {
         if (!user) {
             warning('Pro nákup tokenů se musíte přihlásit');
@@ -83,12 +82,12 @@ const TokenPage = () => {
         setIsProcessing(true);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/purchase_token.php`, {
+            const response = await fetch(`${API_BASE_URL}/purchase_token.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                credentials: 'include', // Důležité pro session
+                credentials: 'include',
                 body: JSON.stringify({
                     pack_id: pack.id,
                     payment_method: paymentMethod
@@ -98,11 +97,9 @@ const TokenPage = () => {
             const data = await response.json();
 
             if (data.success) {
-                // Aktualizace zůstatku v React kontextu
                 updateUserTokens(data.new_balance);
-
-                success(`Úspěšně zakoupeno ${data.tokens_purchased} tokenů! Váš nový zůstatek: ${data.new_balance} 🪙`);
-                setSelectedPack(null); // Zavře modal
+                success(`Úspěšně zakoupeno ${data.tokens_purchased} tokenů! Váš nový zůstatek: ${data.new_balance} tokenů`);
+                setSelectedPack(null);
             } else {
                 throw new Error(data.message || 'Nákup se nezdařil');
             }
@@ -130,7 +127,13 @@ const TokenPage = () => {
                 background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%)',
                 borderBottom: '1px solid rgba(255,255,255,0.1)'
             }}>
-                <div className="container">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    paddingLeft: '15px',
+                    paddingRight: '15px'
+                }}>
                     <div className="text-center text-white">
                         <div className="mb-4" style={{ fontSize: '4rem' }}>🪙</div>
                         <h1 className="display-4 fw-bold mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
@@ -161,68 +164,12 @@ const TokenPage = () => {
                 </div>
             </section>
 
-            <div className="container py-5">
-
-                {/* Benefits Section */}
-                <div className="row mb-5">
-                    <div className="col-12">
-                        <h3 className="text-white text-center fw-bold mb-4">Proč používat tokeny?</h3>
-                        <div className="row g-4">
-                            <div className="col-md-3">
-                                <div
-                                    className="text-center p-4 rounded-3 h-100"
-                                    style={{
-                                        background: 'rgba(59, 130, 246, 0.1)',
-                                        border: '1px solid rgba(59, 130, 246, 0.2)'
-                                    }}
-                                >
-                                    <div className="mb-3" style={{ fontSize: '2.5rem' }}>⚡</div>
-                                    <h6 className="text-white fw-bold">Okamžité nákupy</h6>
-                                    <p className="text-white-50 small mb-0">Kupujte hry bez čekání</p>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div
-                                    className="text-center p-4 rounded-3 h-100"
-                                    style={{
-                                        background: 'rgba(16, 185, 129, 0.1)',
-                                        border: '1px solid rgba(16, 185, 129, 0.2)'
-                                    }}
-                                >
-                                    <div className="mb-3" style={{ fontSize: '2.5rem' }}>💰</div>
-                                    <h6 className="text-white fw-bold">Výhodné ceny</h6>
-                                    <p className="text-white-50 small mb-0">Lepší ceny než u konkurence</p>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div
-                                    className="text-center p-4 rounded-3 h-100"
-                                    style={{
-                                        background: 'rgba(168, 85, 247, 0.1)',
-                                        border: '1px solid rgba(168, 85, 247, 0.2)'
-                                    }}
-                                >
-                                    <div className="mb-3" style={{ fontSize: '2.5rem' }}>🎁</div>
-                                    <h6 className="text-white fw-bold">Bonusové tokeny</h6>
-                                    <p className="text-white-50 small mb-0">Více tokenů za větší nákupy</p>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <div
-                                    className="text-center p-4 rounded-3 h-100"
-                                    style={{
-                                        background: 'rgba(245, 158, 11, 0.1)',
-                                        border: '1px solid rgba(245, 158, 11, 0.2)'
-                                    }}
-                                >
-                                    <div className="mb-3" style={{ fontSize: '2.5rem' }}>🔒</div>
-                                    <h6 className="text-white fw-bold">Bezpečnost</h6>
-                                    <p className="text-white-50 small mb-0">Šifrované platby</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div style={{
+                width: '100%',
+                maxWidth: '1200px',
+                margin: '0 auto',
+                padding: '3rem 15px'
+            }}>
 
                 {/* Token Packages */}
                 <div className="row mb-5">
@@ -230,7 +177,7 @@ const TokenPage = () => {
                         <h3 className="text-white text-center fw-bold mb-5">Vyberte si tokenový balíček</h3>
                         <div className="row g-4">
                             {tokenPacks.map((pack, index) => (
-                                <div key={pack.id} className="col-lg-2-4 col-md-4 col-sm-6">
+                                <div key={pack.id} className="col-lg-2-4 col-md-4 col-sm-6" style={{ flex: '0 0 20%', maxWidth: '20%' }}>
                                     <div
                                         className={`card h-100 border-0 position-relative overflow-hidden ${pack.popular ? 'border-warning' : ''}`}
                                         style={{
@@ -322,14 +269,6 @@ const TokenPage = () => {
                                                     border: 'none',
                                                     transition: 'all 0.3s ease'
                                                 }}
-                                                onMouseEnter={(e) => {
-                                                    e.target.style.background = 'white';
-                                                    e.target.style.transform = 'translateY(-2px)';
-                                                }}
-                                                onMouseLeave={(e) => {
-                                                    e.target.style.background = 'rgba(255, 255, 255, 0.9)';
-                                                    e.target.style.transform = 'translateY(0)';
-                                                }}
                                             >
                                                 Koupit nyní
                                             </button>
@@ -337,49 +276,6 @@ const TokenPage = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* FAQ Section */}
-                <div className="row">
-                    <div className="col-lg-8 mx-auto">
-                        <div
-                            className="rounded-4 p-5"
-                            style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}
-                        >
-                            <h4 className="text-white fw-bold text-center mb-4">Často kladené otázky</h4>
-
-                            <div className="row g-4">
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-white fw-bold mb-2">Jak dlouho jsou tokeny platné?</h6>
-                                        <p className="text-white-50 mb-0">Tokeny nemají omezenou platnost. Zůstávají na vašem účtu, dokud je neutratíte.</p>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-white fw-bold mb-2">Mohu tokeny vrátit zpět?</h6>
-                                        <p className="text-white-50 mb-0">Tokeny nelze vrátit zpět na peníze, ale můžete je kdykoliv použít na nákup her.</p>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-white fw-bold mb-2">Jsou platby bezpečné?</h6>
-                                        <p className="text-white-50 mb-0">Ano, všechny platby jsou šifrovány SSL certifikátem a zpracovávány přes bezpečné platební brány.</p>
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <h6 className="text-white fw-bold mb-2">Jak rychlé je připsání tokenů?</h6>
-                                        <p className="text-white-50 mb-0">Tokeny jsou připsány okamžitě po úspěšném dokončení platby.</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,15 +1,14 @@
-// src/components/Footer.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
     const [genres, setGenres] = useState([]);
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     useEffect(() => {
         const fetchGenres = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/genres.php`);
+                const response = await fetch(`${API_BASE_URL}/genres.php`);
                 const data = await response.json();
                 if (data.success) {
                     setGenres(data.data);
@@ -24,8 +23,20 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-dark text-white py-5 mt-5">
-            <div className="container">
+        <footer className="bg-dark text-white py-5 mt-5" style={{
+            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            width: '100%',
+            margin: 0,
+            padding: '3rem 0 2rem 0'
+        }}>
+            <div style={{
+                width: '100%',
+                maxWidth: '1200px',
+                margin: '0 auto',
+                paddingLeft: '15px',
+                paddingRight: '15px'
+            }}>
                 <div className="row g-4">
                     {/* O Heridel sekce */}
                     <div className="col-lg-4 col-md-6">
@@ -42,6 +53,7 @@ const Footer = () => {
                             <a href="#" className="text-white-50 h5"><i className="fab fa-discord"></i></a>
                         </div>
                     </div>
+
                     {/* Žánry sekce */}
                     <div className="col-lg-4 col-md-6">
                         <div className="d-flex align-items-center mb-4">
@@ -52,7 +64,7 @@ const Footer = () => {
                             {genres.slice(0, 8).map(genre => (
                                 <Link
                                     key={genre.slug}
-                                    to={`/games?category=${genre.slug}`} // Opravený odkaz na stránku s hrami s filtrem
+                                    to={`/games?category=${genre.slug}`}
                                     className="btn btn-sm btn-outline-light rounded-pill"
                                 >
                                     {genre.name}
@@ -65,22 +77,47 @@ const Footer = () => {
                             </Link>
                         )}
                     </div>
-                    {/* Kontaktní informace */}
+
+                    {/* Kontaktní informace - AKTUALIZOVÁNO */}
                     <div className="col-lg-4 col-md-12">
                         <div className="d-flex align-items-center mb-4">
                             <span className="h1 me-3 mb-0">📞</span>
                             <h5 className="fw-bold mb-0">Kontakt</h5>
                         </div>
                         <ul className="list-unstyled text-white-50">
-                            <li className="mb-2"><i className="fas fa-envelope me-2"></i>info@heridel.cz</li>
-                            <li className="mb-2"><i className="fas fa-map-marker-alt me-2"></i>Adresa 123, Město, 123 45</li>
-                            <li><i className="fas fa-phone me-2"></i>+420 123 456 789</li>
+                            <li className="mb-2">
+                                <i className="fas fa-building me-2"></i>
+                                <strong>IČO:</strong> 23461632
+                            </li>
+                            <li className="mb-2">
+                                <i className="fas fa-map-marker-alt me-2"></i>
+                                Kaprova 42, Praha 12000
+                            </li>
+                            <li className="mb-2">
+                                <i className="fas fa-envelope me-2"></i>
+                                info@heridel.cz
+                            </li>
+                            <li>
+                                <i className="fas fa-phone me-2"></i>
+                                +420 123 456 789
+                            </li>
                         </ul>
                     </div>
                 </div>
+
                 <hr className="mt-5" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+
                 <div className="text-center text-white-50 mt-4">
-                    <p>&copy; {currentYear} Heridel Gaming Store. Všechna práva vyhrazena.</p>
+                    <div className="row">
+                        <div className="col-md-6 text-md-start mb-2 mb-md-0">
+                            <p className="mb-0">&copy; {currentYear} Heridel Gaming Store. Všechna práva vyhrazena.</p>
+                        </div>
+                        <div className="col-md-6 text-md-end">
+                            <p className="mb-0">
+                                <small>IČO: 23461632 | Kaprova 42, Praha 12000</small>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>

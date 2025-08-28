@@ -12,13 +12,13 @@ const GameListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [gamesPerPage] = useState(12);
 
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
 
     useEffect(() => {
         const fetchGames = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/api/games.php`, {
+                const response = await fetch(`${API_BASE_URL}/games.php`, {
                     credentials: 'include'
                 });
 

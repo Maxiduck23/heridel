@@ -8,24 +8,41 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [genres, setGenres] = useState([]);
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const [totalGamesCount, setTotalGamesCount] = useState(0);
+    const API_BASE_URL = '/api';
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Načíst homepage data
-                const homeResponse = await fetch(`${API_BASE_URL}/api/homepage.php`);
-                const homeData = await homeResponse.json();
+                // Načíst všechny hry pro správný počet
+                const gamesResponse = await fetch(`${API_BASE_URL}/games.php`);
+                const gamesData = await gamesResponse.json();
+
+                if (gamesData.success) {
+                    const games = gamesData.data;
+                    setTotalGamesCount(games.length);
+
+                    // Najít nejdražší hru jako featured
+                    const featuredGame = games.reduce((max, game) =>
+                        (game.price_tokens || 0) > (max.price_tokens || 0) ? game : max
+                    );
+
+                    // Top 8 her podle ceny (nejdražší první)
+                    const popularGames = games
+                        .sort((a, b) => (b.price_tokens || 0) - (a.price_tokens || 0))
+                        .slice(0, 8);
+
+                    setHomeData({
+                        featuredGame: featuredGame,
+                        popularGames: popularGames
+                    });
+                }
 
                 // Načíst žánry
-                const genresResponse = await fetch(`${API_BASE_URL}/api/genres.php`);
+                const genresResponse = await fetch(`${API_BASE_URL}/genres.php`);
                 const genresData = await genresResponse.json();
-
-                if (homeData.success) {
-                    setHomeData(homeData.data);
-                }
                 if (genresData.success) {
-                    setGenres(genresData.data.slice(0, 8)); // První 8 žánrů
+                    setGenres(genresData.data.slice(0, 8));
                 }
             } catch (error) {
                 setError(error.message);
@@ -50,7 +67,6 @@ const HomePage = () => {
     if (error) {
         return (
             <div className="alert alert-danger">
-                <i className="fas fa-exclamation-triangle me-2"></i>
                 Chyba: {error}
             </div>
         );
@@ -61,7 +77,6 @@ const HomePage = () => {
 
             {/* Hero Section */}
             <section className="position-relative overflow-hidden" style={{ minHeight: '70vh' }}>
-                {/* Background Pattern */}
                 <div
                     className="position-absolute w-100 h-100"
                     style={{
@@ -70,7 +85,13 @@ const HomePage = () => {
                     }}
                 />
 
-                <div className="container position-relative">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    paddingLeft: '15px',
+                    paddingRight: '15px'
+                }}>
                     <div className="row align-items-center" style={{ minHeight: '70vh' }}>
 
                         {/* Left Side - Content */}
@@ -99,8 +120,8 @@ const HomePage = () => {
                                 </h1>
 
                                 <p className="lead mb-5 text-white-50" style={{ fontSize: '1.2rem', lineHeight: '1.6' }}>
-                                    Tisíce kvalitních her, exkluzivní nabídky a okamžité stahování.
-                                    Vaše herní říše začína zde.
+                                    {totalGamesCount > 0 ? totalGamesCount : 'Stovky'} kvalitních her, exkluzivní nabídky a okamžité stahování.
+                                    Vaše herní říše začíná zde.
                                 </p>
 
                                 <div className="d-flex flex-wrap gap-3">
@@ -117,16 +138,7 @@ const HomePage = () => {
                                             boxShadow: '0 8px 32px rgba(79, 70, 229, 0.4)',
                                             transition: 'all 0.3s ease'
                                         }}
-                                        onMouseEnter={(e) => {
-                                            e.target.style.transform = 'translateY(-3px)';
-                                            e.target.style.boxShadow = '0 12px 40px rgba(79, 70, 229, 0.5)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.target.style.transform = 'translateY(0)';
-                                            e.target.style.boxShadow = '0 8px 32px rgba(79, 70, 229, 0.4)';
-                                        }}
                                     >
-                                        <i className="fas fa-rocket me-2"></i>
                                         Prozkoumat hry
                                     </Link>
 
@@ -138,35 +150,27 @@ const HomePage = () => {
                                                 borderRadius: '50px',
                                                 fontSize: '1.1rem',
                                                 fontWeight: '600',
-                                                borderWidth: '2px',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.target.style.background = 'rgba(255,255,255,0.1)';
-                                                e.target.style.transform = 'translateY(-2px)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.target.style.background = 'transparent';
-                                                e.target.style.transform = 'translateY(0)';
+                                                borderWidth: '2px'
                                             }}
                                         >
-                                            <i className="fas fa-user-plus me-2"></i>
                                             Připojit se zdarma
                                         </Link>
                                     )}
                                 </div>
 
-                                {/* Stats */}
+                                {/* Stats - OPRAVENÉ počty */}
                                 <div className="row mt-5">
                                     <div className="col-4">
                                         <div className="text-center">
-                                            <div className="h2 fw-bold mb-1" style={{ color: '#4f46e5' }}>1000+</div>
+                                            <div className="h2 fw-bold mb-1" style={{ color: '#4f46e5' }}>
+                                                {totalGamesCount > 0 ? totalGamesCount : '597'}+
+                                            </div>
                                             <small className="text-white-50">Her</small>
                                         </div>
                                     </div>
                                     <div className="col-4">
                                         <div className="text-center">
-                                            <div className="h2 fw-bold mb-1" style={{ color: '#10b981' }}>50K+</div>
+                                            <div className="h2 fw-bold mb-1" style={{ color: '#10b981' }}>25K+</div>
                                             <small className="text-white-50">Hráčů</small>
                                         </div>
                                     </div>
@@ -180,7 +184,7 @@ const HomePage = () => {
                             </div>
                         </div>
 
-                        {/* Right Side - Featured Game */}
+                        {/* Right Side - Featured Game (NEJDRAŽŠÍ) */}
                         <div className="col-lg-6">
                             {homeData?.featuredGame && (
                                 <div className="position-relative">
@@ -201,7 +205,7 @@ const HomePage = () => {
                                                 fontSize: '0.9rem',
                                                 fontWeight: '600'
                                             }}>
-                                                ⭐ Doporučujeme
+                                                💎 Premium
                                             </span>
                                         </div>
 
@@ -213,10 +217,11 @@ const HomePage = () => {
                                                 {homeData.featuredGame.description?.substring(0, 120)}...
                                             </p>
                                             <div className="d-flex align-items-center justify-content-between">
-                                                <div className="d-flex align-items-center">
+                                                <div>
                                                     <span className="h4 text-white fw-bold me-2 mb-0">
                                                         {homeData.featuredGame.price_tokens || 0} 🪙
                                                     </span>
+                                                    <small className="text-white-50">tokenů</small>
                                                 </div>
                                                 <Link
                                                     to={`/game/${homeData.featuredGame.game_id}`}
@@ -241,8 +246,14 @@ const HomePage = () => {
 
             {/* Genres Section */}
             {genres.length > 0 && (
-                <section className="py-5">
-                    <div className="container">
+                <section style={{ padding: '3rem 0' }}>
+                    <div style={{
+                        width: '100%',
+                        maxWidth: '1200px',
+                        margin: '0 auto',
+                        paddingLeft: '15px',
+                        paddingRight: '15px'
+                    }}>
                         <div className="text-center mb-5">
                             <h2 className="text-white fw-bold mb-3">Prozkoumej žánry</h2>
                             <p className="text-white-50 lead">Najdi své oblíbené herní styly</p>
@@ -255,12 +266,6 @@ const HomePage = () => {
                                         to={`/games?category=${genre.slug}`}
                                         className="text-decoration-none"
                                         style={{ transition: 'all 0.3s ease' }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(-8px)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                        }}
                                     >
                                         <div
                                             className="rounded-3 p-4 text-center h-100"
@@ -284,9 +289,9 @@ const HomePage = () => {
                 </section>
             )}
 
-            {/* Popular Games Section */}
+            {/* Popular Games Section - NEJDRAŽŠÍ PRVNÍ */}
             {homeData?.popularGames && (
-                <section className="py-5">
+                <section style={{ padding: '3rem 0' }}>
                     <div style={{
                         width: '100%',
                         maxWidth: '1200px',
@@ -297,11 +302,10 @@ const HomePage = () => {
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
                                 <h2 className="text-white fw-bold mb-2">Populární hry</h2>
-                                <p className="text-white-50 mb-0">Nejhranější hry tohoto měsíce</p>
+                                <p className="text-white-50 mb-0">Nejžádanější hry podle ceny</p>
                             </div>
                             <Link to="/games" className="btn btn-outline-light">
                                 Zobrazit všechny
-                                <i className="fas fa-arrow-right ms-2"></i>
                             </Link>
                         </div>
 
@@ -317,14 +321,6 @@ const HomePage = () => {
                                             borderRadius: '16px',
                                             transition: 'all 0.3s ease'
                                         }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(-10px)';
-                                            e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                            e.currentTarget.style.boxShadow = 'none';
-                                        }}
                                     >
                                         <div className="position-relative">
                                             <img
@@ -335,12 +331,9 @@ const HomePage = () => {
                                                     height: '200px',
                                                     objectFit: 'cover'
                                                 }}
-                                                onError={(e) => {
-                                                    e.target.src = 'https://placehold.co/300x200/1e293b/64748b?text=No+Image';
-                                                }}
                                             />
                                             <div className="position-absolute top-0 start-0 m-2">
-                                                <span className="badge bg-primary px-2 py-1" style={{ fontSize: '0.8rem' }}>
+                                                <span className="badge bg-primary px-2 py-1">
                                                     #{index + 1}
                                                 </span>
                                             </div>
@@ -396,7 +389,8 @@ const HomePage = () => {
 
             {/* CTA Section */}
             {!user && (
-                <section className="py-5" style={{
+                <section style={{
+                    padding: '3rem 0',
                     background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1))',
                     borderTop: '1px solid rgba(255,255,255,0.1)'
                 }}>
@@ -425,7 +419,6 @@ const HomePage = () => {
                                     boxShadow: '0 8px 32px rgba(16, 185, 129, 0.4)'
                                 }}
                             >
-                                <i className="fas fa-crown me-2"></i>
                                 Registrovat se zdarma
                             </Link>
                         </div>

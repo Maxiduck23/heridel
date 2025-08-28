@@ -14,7 +14,7 @@ const GamesPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [genres, setGenres] = useState([]);
 
-    const API_BASE_URL = 'http://heridel.wz.cz';
+    const API_BASE_URL = '/api';
     const urlCategory = searchParams.get('category');
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const GamesPage = () => {
             setLoading(true);
             try {
                 // Načíst hry
-                const url = urlCategory ? `${API_BASE_URL}/api/games.php?genre=${urlCategory}` : `${API_BASE_URL}/api/games.php`;
+                const url = urlCategory ? `${API_BASE_URL}/games.php?genre=${urlCategory}` : `${API_BASE_URL}/games.php`;
                 const response = await fetch(url, { credentials: 'include' });
 
                 if (!response.ok) {
@@ -37,7 +37,7 @@ const GamesPage = () => {
                 }
 
                 // Načíst žánry pro filtry
-                const genresResponse = await fetch(`${API_BASE_URL}/api/genres.php`);
+                const genresResponse = await fetch(`${API_BASE_URL}/genres.php`);
                 const genresData = await genresResponse.json();
                 if (genresData.success) {
                     setGenres(genresData.data);

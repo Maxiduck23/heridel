@@ -46,7 +46,6 @@ html {
   scroll-behavior: smooth;
   height: 100%;
   overflow-x: hidden;
-  /* PŘIDÁNO - zabrání horizontálnímu scrollu */
 }
 
 body {
@@ -61,11 +60,8 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  /* ZMĚNĚNO z height: 100% */
   overflow-x: hidden;
-  /* PŘIDÁNO */
   position: relative;
-  /* PŘIDÁNO */
 }
 
 /* OPRAVA - Root container */
@@ -77,9 +73,7 @@ body {
   padding: 0;
   width: 100%;
   position: relative;
-  /* PŘIDÁNO */
   overflow-x: hidden;
-  /* PŘIDÁNO */
 }
 
 /* OPRAVA - Container fixes */
@@ -89,13 +83,11 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
-  /* PŘIDÁNO */
 }
 
 .container {
   max-width: 100%;
   overflow-x: hidden;
-  /* PŘIDÁNO */
 }
 
 /* OPRAVA - Main content wrapper */
@@ -106,9 +98,7 @@ main {
   padding: 0;
   background: var(--bg-primary);
   overflow-x: hidden;
-  /* PŘIDÁNO */
   position: relative;
-  /* PŘIDÁNO */
 }
 
 /* OPRAVA - Prevent horizontal overflow on all levels */
@@ -507,7 +497,7 @@ p {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
 }
 
-/* OPRAVA - Mobile Responsive with better overflow handling */
+/* VYLEPŠENÉ - Mobile Responsive s lepším overflow handling */
 @media (max-width: 768px) {
   .btn-lg {
     padding: 0.75rem 1.5rem;
@@ -526,7 +516,7 @@ p {
     padding: 1rem;
   }
 
-  /* PŘIDÁNO - Mobile specific fixes */
+  /* Mobile specific fixes */
   .container {
     padding-left: 15px;
     padding-right: 15px;
@@ -540,6 +530,89 @@ p {
   [class*="col-"] {
     padding-left: 15px;
     padding-right: 15px;
+  }
+
+  /* Mobile navigation improvements */
+  .navbar {
+    padding: 0.5rem 0;
+  }
+
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  /* Mobile form improvements */
+  .form-control,
+  .form-select {
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+    padding: 0.75rem 1rem;
+  }
+
+  /* Mobile modal improvements */
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  /* Mobile card stack improvements */
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  /* Mobile button improvements */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575px) {
+  .display-4 {
+    font-size: 1.75rem;
+  }
+
+  .display-3 {
+    font-size: 2rem;
+  }
+
+  .lead {
+    font-size: 1rem;
+  }
+
+  /* Token pack grid improvements for small screens */
+  .col-lg {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .col-lg:nth-child(3) {
+    order: -1;
+    /* Popular pack first on mobile */
+  }
+
+  /* Smaller padding on very small screens */
+  .p-5 {
+    padding: 2rem !important;
+  }
+
+  .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .mb-5 {
+    margin-bottom: 2rem !important;
   }
 }
 
@@ -610,4 +683,35 @@ footer {
   body {
     overflow: visible !important;
   }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .btn {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Focus visible for better keyboard navigation */
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }

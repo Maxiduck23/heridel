@@ -136,7 +136,8 @@ const HomePage = () => {
                                             fontWeight: '600',
                                             color: 'white',
                                             boxShadow: '0 8px 32px rgba(79, 70, 229, 0.4)',
-                                            transition: 'all 0.3s ease'
+                                            transition: 'all 0.3s ease',
+                                            textDecoration: 'none'
                                         }}
                                     >
                                         Prozkoumat hry
@@ -150,7 +151,8 @@ const HomePage = () => {
                                                 borderRadius: '50px',
                                                 fontSize: '1.1rem',
                                                 fontWeight: '600',
-                                                borderWidth: '2px'
+                                                borderWidth: '2px',
+                                                textDecoration: 'none'
                                             }}
                                         >
                                             Připojit se zdarma
@@ -158,26 +160,14 @@ const HomePage = () => {
                                     )}
                                 </div>
 
-                                {/* Stats - OPRAVENÉ počty */}
+                                {/* Stats - ZJEDNODUŠENÉ - pouze počet her */}
                                 <div className="row mt-5">
-                                    <div className="col-4">
+                                    <div className="col-12">
                                         <div className="text-center">
                                             <div className="h2 fw-bold mb-1" style={{ color: '#4f46e5' }}>
                                                 {totalGamesCount > 0 ? totalGamesCount : '597'}+
                                             </div>
-                                            <small className="text-white-50">Her</small>
-                                        </div>
-                                    </div>
-                                    <div className="col-4">
-                                        <div className="text-center">
-                                            <div className="h2 fw-bold mb-1" style={{ color: '#10b981' }}>25K+</div>
-                                            <small className="text-white-50">Hráčů</small>
-                                        </div>
-                                    </div>
-                                    <div className="col-4">
-                                        <div className="text-center">
-                                            <div className="h2 fw-bold mb-1" style={{ color: '#f59e0b' }}>24/7</div>
-                                            <small className="text-white-50">Podpora</small>
+                                            <small className="text-white-50">Kvalitních her k dispozici</small>
                                         </div>
                                     </div>
                                 </div>
@@ -229,7 +219,8 @@ const HomePage = () => {
                                                     style={{
                                                         borderRadius: '25px',
                                                         fontWeight: '600',
-                                                        boxShadow: '0 4px 16px rgba(255,255,255,0.2)'
+                                                        boxShadow: '0 4px 16px rgba(255,255,255,0.2)',
+                                                        textDecoration: 'none'
                                                     }}
                                                 >
                                                     Zobrazit detail
@@ -304,7 +295,7 @@ const HomePage = () => {
                                 <h2 className="text-white fw-bold mb-2">Populární hry</h2>
                                 <p className="text-white-50 mb-0">Nejžádanější hry podle ceny</p>
                             </div>
-                            <Link to="/games" className="btn btn-outline-light">
+                            <Link to="/games" className="btn btn-outline-light" style={{ textDecoration: 'none' }}>
                                 Zobrazit všechny
                             </Link>
                         </div>
@@ -373,7 +364,8 @@ const HomePage = () => {
                                                     border: 'none',
                                                     color: 'white',
                                                     borderRadius: '8px',
-                                                    fontWeight: '500'
+                                                    fontWeight: '500',
+                                                    textDecoration: 'none'
                                                 }}
                                             >
                                                 Zobrazit detail
@@ -416,7 +408,8 @@ const HomePage = () => {
                                     fontSize: '1.1rem',
                                     fontWeight: '600',
                                     color: 'white',
-                                    boxShadow: '0 8px 32px rgba(16, 185, 129, 0.4)'
+                                    boxShadow: '0 8px 32px rgba(16, 185, 129, 0.4)',
+                                    textDecoration: 'none'
                                 }}
                             >
                                 Registrovat se zdarma

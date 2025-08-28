@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { useToast } from '../components/ui/Toast'; // PŘIDÁNO
+import { useToast } from '../components/ui/Toast';
 
 const GameDetailPage = () => {
     const { gameId } = useParams();
     const navigate = useNavigate();
     const { user, updateUserTokens } = useUser();
-    const { success, error, warning } = useToast(); // PŘIDÁNO
+    const { success, error, warning } = useToast();
 
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -44,16 +44,30 @@ const GameDetailPage = () => {
             'great': 'skvělé',
             'fantastic': 'fantastické',
             'epic': 'epické',
-            'awesome': 'úžasné'
+            'awesome': 'úžasné',
+            'explore': 'prozkoumej',
+            'battle': 'bitva',
+            'world': 'svět',
+            'character': 'postava',
+            'story': 'příběh',
+            'play': 'hrát',
+            'player': 'hráč',
+            'level': 'úroveň',
+            'mission': 'mise',
+            'challenge': 'výzva'
         };
 
         // Rychlý překlad základních slov
         let quickTranslation = textToTranslate.toLowerCase();
         Object.entries(simpleTranslations).forEach(([en, cs]) => {
-            quickTranslation = quickTranslation.replace(new RegExp(en, 'g'), cs);
+            const regex = new RegExp(`\\b${en}\\b`, 'gi');
+            quickTranslation = quickTranslation.replace(regex, cs);
         });
 
         if (quickTranslation !== textToTranslate.toLowerCase()) {
+            // Zachovat původní velikost písmen na začátku
+            const firstChar = textToTranslate[0];
+            quickTranslation = firstChar + quickTranslation.slice(1);
             setTranslatedDescription(quickTranslation);
             return;
         }
@@ -118,7 +132,7 @@ const GameDetailPage = () => {
                 }
             } catch (apiError) {
                 setGameError(apiError.message);
-                error('Nepodařilo se načíst detail hry'); // TOAST
+                error('Nepodařilo se načíst detail hry');
             } finally {
                 setLoading(false);
             }
@@ -128,7 +142,7 @@ const GameDetailPage = () => {
 
     const handleToggleWishlist = async () => {
         if (!user) {
-            warning('Pro přidání do seznamu přání se musíte přihlásit'); // TOAST
+            warning('Pro přidání do seznamu přání se musíte přihlásit');
             navigate('/login');
             return;
         }
@@ -144,15 +158,15 @@ const GameDetailPage = () => {
             if (data.success) {
                 setInWishlist(data.in_wishlist);
                 if (data.in_wishlist) {
-                    success('Hra byla přidána do seznamu přání'); // TOAST
+                    success('Hra byla přidána do seznamu přání');
                 } else {
-                    success('Hra byla odebrána ze seznamu přání'); // TOAST
+                    success('Hra byla odebrána ze seznamu přání');
                 }
             } else {
-                error(data.message); // TOAST
+                error(data.message);
             }
         } catch (err) {
-            error('Chyba při úpravě seznamu přání'); // TOAST
+            error('Chyba při úpravě seznamu přání');
         } finally {
             setIsTogglingWishlist(false);
         }
@@ -160,13 +174,13 @@ const GameDetailPage = () => {
 
     const handlePurchase = async () => {
         if (!user) {
-            warning('Pro nákup se musíte přihlásit'); // TOAST
+            warning('Pro nákup se musíte přihlásit');
             navigate('/login');
             return;
         }
 
         if (user.tokens_balance < game.price_tokens) {
-            error('Nemáte dostatek tokenů pro nákup této hry'); // TOAST
+            error('Nemáte dostatek tokenů pro nákup této hry');
             return;
         }
 
@@ -187,7 +201,7 @@ const GameDetailPage = () => {
             const data = await response.json();
             if (data.success) {
                 updateUserTokens(data.new_balance);
-                success('Hra byla úspěšně zakoupena! Přesměrovávám do knihovny...'); // TOAST
+                success('Hra byla úspěšně zakoupena! Přesměrovávám do knihovny...');
                 setTimeout(() => {
                     navigate('/library');
                 }, 2000);
@@ -195,7 +209,7 @@ const GameDetailPage = () => {
                 throw new Error(data.message || 'Nákup se nezdařil.');
             }
         } catch (err) {
-            error(`Chyba při nákupu: ${err.message}`); // TOAST
+            error(`Chyba při nákupu: ${err.message}`);
         } finally {
             setIsPurchasing(false);
         }
@@ -218,7 +232,14 @@ const GameDetailPage = () => {
     if (gameError) {
         return (
             <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div className="container py-5">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    paddingLeft: '15px',
+                    paddingRight: '15px',
+                    paddingTop: '3rem'
+                }}>
                     <div className="alert alert-danger">
                         <i className="fas fa-exclamation-triangle me-2"></i>
                         <strong>Chyba:</strong> {gameError}
@@ -231,7 +252,14 @@ const GameDetailPage = () => {
     if (!game) {
         return (
             <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div className="container py-5">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    paddingLeft: '15px',
+                    paddingRight: '15px',
+                    paddingTop: '3rem'
+                }}>
                     <div className="alert alert-warning">
                         <i className="fas fa-search me-2"></i>
                         Hra nenalezena.
@@ -256,7 +284,16 @@ const GameDetailPage = () => {
                     }}
                 />
 
-                <div className="container position-relative py-5">
+                <div style={{
+                    width: '100%',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    paddingLeft: '15px',
+                    paddingRight: '15px',
+                    paddingTop: '3rem',
+                    paddingBottom: '3rem',
+                    position: 'relative'
+                }}>
 
                     {/* Breadcrumb */}
                     <nav aria-label="breadcrumb" className="mb-4">
@@ -319,7 +356,15 @@ const GameDetailPage = () => {
             </section>
 
             {/* Main Content */}
-            <div className="container py-5">
+            <div style={{
+                width: '100%',
+                maxWidth: '1200px',
+                margin: '0 auto',
+                paddingLeft: '15px',
+                paddingRight: '15px',
+                paddingTop: '3rem',
+                paddingBottom: '3rem'
+            }}>
                 <div className="row g-5">
 
                     {/* Left Column */}

@@ -37,15 +37,19 @@
   --transition-slow: 0.5s ease-in-out;
 }
 
-/* OPRAVA - Base Styles s lepším overflow handling */
+/* OPRAVA - Base Styles s lepším overflow handling a odstraněním bílé mezery */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
   height: 100%;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -64,7 +68,7 @@ body {
   position: relative;
 }
 
-/* OPRAVA - Root container */
+/* OPRAVA - Root container bez mezer */
 #root {
   min-height: 100vh;
   display: flex;
@@ -76,10 +80,10 @@ body {
   overflow-x: hidden;
 }
 
-/* OPRAVA - Container fixes */
+/* OPRAVA - Container fixes pro odstranění mezer */
 .container-fluid {
   padding: 0 !important;
-  margin: 0;
+  margin: 0 !important;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
@@ -88,9 +92,11 @@ body {
 .container {
   max-width: 100%;
   overflow-x: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-/* OPRAVA - Main content wrapper */
+/* OPRAVA - Main content wrapper bez mezer */
 main {
   flex: 1;
   width: 100%;
@@ -99,12 +105,20 @@ main {
   background: var(--bg-primary);
   overflow-x: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* OPRAVA - Odstranění všech potenciálních mezer */
+main>div {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* OPRAVA - Prevent horizontal overflow on all levels */
 .row {
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   max-width: 100%;
 }
 
@@ -131,6 +145,15 @@ main {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   max-width: 100%;
+}
+
+/* OPRAVA - Footer pripojený priamo bez mezer */
+footer {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 !important;
+  padding: 3rem 0 2rem 0;
+  width: 100%;
 }
 
 /* Selection styling */
@@ -518,13 +541,13 @@ p {
 
   /* Mobile specific fixes */
   .container {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
   }
 
   .row {
-    margin-left: -15px;
-    margin-right: -15px;
+    margin-left: -15px !important;
+    margin-right: -15px !important;
   }
 
   [class*="col-"] {
@@ -657,12 +680,6 @@ p {
   }
 }
 
-/* Footer Styling */
-footer {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Performance optimizations */
 .card,
 .btn,
@@ -714,4 +731,42 @@ footer {
 .form-select:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* OPRAVA - Explicitly remove any margins and gaps that could cause white space */
+section,
+div,
+article,
+main,
+header,
+footer {
+  box-sizing: border-box;
+}
+
+/* Ensure no unexpected margins on any elements */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset any Bootstrap default margins that might cause issues */
+.container,
+.container-fluid,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Make sure sections connect seamlessly */
+section+section {
+  margin-top: 0 !important;
+}
+
+/* Remove any potential white space from flexbox gaps */
+.d-flex {
+  gap: 0;
 }

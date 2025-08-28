@@ -31,7 +31,7 @@ function App() {
             width: '100%',
             margin: 0,
             padding: 0,
-            overflowX: 'hidden', // PŘIDÁNO - zabraňuje horizontálnímu scrollu
+            overflowX: 'hidden',
             position: 'relative'
           }}>
             <Header />
@@ -41,10 +41,9 @@ function App() {
               width: '100%',
               margin: 0,
               padding: 0,
-              overflowX: 'hidden', // PŘIDÁNO
+              overflowX: 'hidden',
               position: 'relative'
             }}>
-              {/* OPRAVENO - odstraněn container-fluid a jeho padding */}
               <div style={{
                 width: '100%',
                 margin: 0,
@@ -55,7 +54,8 @@ function App() {
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/games" element={<GamesPage />} />
-                  <Route path="/game/:gameId" element={<GameDetailPage />} />
+                  {/* Podpora jak pro slug tak pro ID */}
+                  <Route path="/game/:gameSlug" element={<GameDetailPage />} />
                   <Route path="/tokens" element={<TokenPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />

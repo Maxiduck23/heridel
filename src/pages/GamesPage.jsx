@@ -17,6 +17,16 @@ const GamesPage = () => {
     const API_BASE_URL = '/api';
     const urlCategory = searchParams.get('category');
 
+    // Přidána funkce pro vytvoření slug z názvu hry
+    const createSlug = (name) => {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
+            .replace(/-+/g, '-') // Nahradit více pomlček jednou
+            .trim('-'); // Odstranit pomlčky na začátku a konci
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -193,7 +203,7 @@ const GamesPage = () => {
                             Herní katalog
                         </h1>
                         <p className="lead text-white-50 mb-4">
-                            Objevte tisíce kvalitních her ze všech žánrů. Celkem k dispozici {filteredGames.length} her.
+                            Objevte  {filteredGames.length} her ze všech žánrů.
                         </p>
                     </div>
                 </div>
@@ -276,7 +286,7 @@ const GamesPage = () => {
                                 </button>
                                 {genres.map(genre => (
                                     <button
-                                        key={`genre-${genre.slug}`} // Add this key
+                                        key={`genre-${genre.slug}`}
                                         className={`btn ${urlCategory === genre.slug ? 'btn-primary' : 'btn-outline-light'}`}
                                         onClick={() => handleCategoryClick(genre.slug)}
                                         style={{
@@ -293,7 +303,7 @@ const GamesPage = () => {
                     </div>
                 </div>
 
-                {/* Games Grid */}
+                {/* Games Grid - KOMPLETNE KLIKATEĽNÉ KARTY */}
                 {currentGames.length === 0 ? (
                     <div className="text-center py-5">
                         <div className="mb-4" style={{ fontSize: '4rem', opacity: '0.5' }}>🎮</div>
@@ -314,171 +324,177 @@ const GamesPage = () => {
                     <div className="row g-4">
                         {currentGames.map(game => (
                             <div key={`game-${game.game_id}`} className="col-xl-3 col-lg-4 col-md-6">
-                                <div
-                                    className="card h-100 border-0 position-relative overflow-hidden"
+                                {/* CELÁ KARTA JE KLIKATELNÁ */}
+                                <Link
+                                    to={`/game/${game.slug || createSlug(game.name)}`}
+                                    className="text-decoration-none"
                                     style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        backdropFilter: 'blur(10px)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '20px',
-                                        transition: 'all 0.4s ease'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(-12px)';
-                                        e.currentTarget.style.boxShadow = '0 25px 50px rgba(0,0,0,0.3)';
-                                        e.currentTarget.style.border = '1px solid rgba(79, 70, 229, 0.5)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(0)';
-                                        e.currentTarget.style.boxShadow = 'none';
-                                        e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)';
+                                        display: 'block',
+                                        height: '100%'
                                     }}
                                 >
-                                    <div className="position-relative">
-                                        <img
-                                            src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
-                                            className="card-img-top"
-                                            alt={game.name}
-                                            style={{
-                                                height: '220px',
-                                                objectFit: 'cover',
-                                                borderRadius: '20px 20px 0 0',
-                                                transition: 'transform 0.4s ease'
-                                            }}
-                                            onError={(e) => {
-                                                e.target.src = 'https://placehold.co/300x200/1e293b/64748b?text=No+Image';
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.target.style.transform = 'scale(1.05)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.target.style.transform = 'scale(1)';
-                                            }}
-                                        />
-
-                                        {/* Status badges */}
-                                        <div className="position-absolute top-0 end-0 p-3">
-                                            {game.is_owned && (
-                                                <span className="badge bg-success mb-1 d-block px-2 py-1">
-                                                    <i className="fas fa-check me-1"></i>Vlastněno
-                                                </span>
-                                            )}
-                                            {game.in_wishlist && !game.is_owned && (
-                                                <span className="badge bg-danger d-block px-2 py-1">
-                                                    <i className="fas fa-heart me-1"></i>V přání
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* Price tag */}
-                                        <div className="position-absolute bottom-0 start-0 p-3">
-                                            <span
-                                                className="badge px-3 py-2"
+                                    <div
+                                        className="card h-100 border-0 position-relative overflow-hidden"
+                                        style={{
+                                            background: 'rgba(255,255,255,0.05)',
+                                            backdropFilter: 'blur(10px)',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '20px',
+                                            transition: 'all 0.4s ease',
+                                            cursor: 'pointer'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(-12px)';
+                                            e.currentTarget.style.boxShadow = '0 25px 50px rgba(0,0,0,0.3)';
+                                            e.currentTarget.style.border = '1px solid rgba(79, 70, 229, 0.5)';
+                                            // Hover efekt na obrázku
+                                            const img = e.currentTarget.querySelector('img');
+                                            if (img) img.style.transform = 'scale(1.05)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = 'translateY(0)';
+                                            e.currentTarget.style.boxShadow = 'none';
+                                            e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)';
+                                            // Návrat obrázku do pôvodného stavu
+                                            const img = e.currentTarget.querySelector('img');
+                                            if (img) img.style.transform = 'scale(1)';
+                                        }}
+                                    >
+                                        <div className="position-relative">
+                                            <img
+                                                src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
+                                                className="card-img-top"
+                                                alt={game.name}
                                                 style={{
-                                                    background: 'linear-gradient(135deg, #10b981, #059669)',
-                                                    fontSize: '1rem',
-                                                    fontWeight: '700',
-                                                    borderRadius: '20px',
-                                                    boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4)'
+                                                    height: '220px',
+                                                    objectFit: 'cover',
+                                                    borderRadius: '20px 20px 0 0',
+                                                    transition: 'transform 0.4s ease'
                                                 }}
-                                            >
-                                                {game.price_tokens || '0'} 🪙
-                                            </span>
-                                        </div>
-                                    </div>
+                                                onError={(e) => {
+                                                    e.target.src = 'https://placehold.co/300x200/1e293b/64748b?text=No+Image';
+                                                }}
+                                            />
 
-                                    <div className="card-body d-flex flex-column p-4">
-                                        <h5 className="card-title text-white fw-bold mb-2" style={{
-                                            fontSize: '1.2rem',
-                                            lineHeight: '1.3',
-                                            height: '3rem',
-                                            overflow: 'hidden',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical'
-                                        }}>
-                                            {game.name}
-                                        </h5>
-
-                                        <p className="card-text text-white-50 small mb-2">
-                                            <i className="fas fa-calendar me-2"></i>
-                                            {game.release_date || 'Datum vydání neuvedeno'}
-                                        </p>
-
-                                        <p className="card-text text-white-50 small mb-3">
-                                            <i className="fas fa-building me-2"></i>
-                                            {game.publisher_name || 'Neznámý vydavatel'}
-                                        </p>
-
-                                        <p className="card-text text-white-50 flex-grow-1 mb-3" style={{
-                                            fontSize: '0.9rem',
-                                            lineHeight: '1.4',
-                                            height: '4.2rem',
-                                            overflow: 'hidden',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 3,
-                                            WebkitBoxOrient: 'vertical'
-                                        }}>
-                                            {game.description || 'Popis hry není k dispozici.'}
-                                        </p>
-
-                                        {/* Genres */}
-                                        {game.genres && (
-                                            <div className="mb-3">
-                                                {game.genres.slice(0, 2).map(genre => (
-                                                    <span
-                                                        key={genre}
-                                                        className="badge me-1 mb-1"
-                                                        style={{
-                                                            fontSize: '0.7rem',
-                                                            background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                            borderRadius: '12px',
-                                                            padding: '0.3rem 0.7rem'
-                                                        }}
-                                                    >
-                                                        {genre}
+                                            {/* Status badges */}
+                                            <div className="position-absolute top-0 end-0 p-3">
+                                                {game.is_owned && (
+                                                    <span className="badge bg-success mb-1 d-block px-2 py-1">
+                                                        <i className="fas fa-check me-1"></i>Vlastněno
                                                     </span>
-                                                ))}
-                                                {game.genres.length > 2 && (
-                                                    <span
-                                                        className="badge"
-                                                        style={{
-                                                            fontSize: '0.7rem',
-                                                            background: 'rgba(255,255,255,0.2)',
-                                                            borderRadius: '12px',
-                                                            padding: '0.3rem 0.7rem'
-                                                        }}
-                                                    >
-                                                        +{game.genres.length - 2}
+                                                )}
+                                                {game.in_wishlist && !game.is_owned && (
+                                                    <span className="badge bg-danger d-block px-2 py-1">
+                                                        <i className="fas fa-heart me-1"></i>V přání
                                                     </span>
                                                 )}
                                             </div>
-                                        )}
 
-                                        <Link
-                                            to={`/game/${game.game_id}`}
-                                            className="btn btn-lg fw-medium text-white"
-                                            style={{
-                                                background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-                                                border: 'none',
-                                                borderRadius: '50px',
-                                                transition: 'all 0.3s ease',
-                                                boxShadow: '0 4px 16px rgba(79, 70, 229, 0.4)'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.target.style.transform = 'translateY(-2px)';
-                                                e.target.style.boxShadow = '0 8px 24px rgba(79, 70, 229, 0.6)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.target.style.transform = 'translateY(0)';
-                                                e.target.style.boxShadow = '0 4px 16px rgba(79, 70, 229, 0.4)';
-                                            }}
-                                        >
-                                            <i className="fas fa-eye me-2"></i>
-                                            Zobrazit detail
-                                        </Link>
+                                            {/* Price tag */}
+                                            <div className="position-absolute bottom-0 start-0 p-3">
+                                                <span
+                                                    className="badge px-3 py-2"
+                                                    style={{
+                                                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                                                        fontSize: '1rem',
+                                                        fontWeight: '700',
+                                                        borderRadius: '20px',
+                                                        boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4)'
+                                                    }}
+                                                >
+                                                    {game.price_tokens || '0'} 🪙
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="card-body d-flex flex-column p-4">
+                                            <h5 className="card-title text-white fw-bold mb-2" style={{
+                                                fontSize: '1.2rem',
+                                                lineHeight: '1.3',
+                                                height: '3rem',
+                                                overflow: 'hidden',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical'
+                                            }}>
+                                                {game.name}
+                                            </h5>
+
+                                            <p className="card-text text-white-50 small mb-2">
+                                                <i className="fas fa-calendar me-2"></i>
+                                                {game.release_date || 'Datum vydání neuvedeno'}
+                                            </p>
+
+                                            <p className="card-text text-white-50 small mb-3">
+                                                <i className="fas fa-building me-2"></i>
+                                                {game.publisher_name || 'Neznámý vydavatel'}
+                                            </p>
+
+                                            <p className="card-text text-white-50 flex-grow-1 mb-3" style={{
+                                                fontSize: '0.9rem',
+                                                lineHeight: '1.4',
+                                                height: '4.2rem',
+                                                overflow: 'hidden',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 3,
+                                                WebkitBoxOrient: 'vertical'
+                                            }}>
+                                                {game.description || 'Popis hry není k dispozici.'}
+                                            </p>
+
+                                            {/* Genres */}
+                                            {game.genres && (
+                                                <div className="mb-3">
+                                                    {game.genres.slice(0, 2).map(genre => (
+                                                        <span
+                                                            key={genre}
+                                                            className="badge me-1 mb-1"
+                                                            style={{
+                                                                fontSize: '0.7rem',
+                                                                background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
+                                                                borderRadius: '12px',
+                                                                padding: '0.3rem 0.7rem'
+                                                            }}
+                                                        >
+                                                            {genre}
+                                                        </span>
+                                                    ))}
+                                                    {game.genres.length > 2 && (
+                                                        <span
+                                                            className="badge"
+                                                            style={{
+                                                                fontSize: '0.7rem',
+                                                                background: 'rgba(255,255,255,0.2)',
+                                                                borderRadius: '12px',
+                                                                padding: '0.3rem 0.7rem'
+                                                            }}
+                                                        >
+                                                            +{game.genres.length - 2}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* HOVER INDIKÁTOR namiesto tlačidla */}
+                                            <div
+                                                className="text-center mt-auto"
+                                                style={{
+                                                    color: '#4f46e5',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600',
+                                                    opacity: 0,
+                                                    transition: 'opacity 0.3s ease'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.opacity = '1';
+                                                }}
+                                            >
+                                                <i className="fas fa-eye me-2"></i>
+                                                Kliknite pre detail
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         ))}
                     </div>

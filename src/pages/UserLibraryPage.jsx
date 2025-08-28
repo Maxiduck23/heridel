@@ -116,34 +116,70 @@ const UserLibraryPage = () => {
         setFilteredGames(filtered);
     }, [games, wishlistGames, searchTerm, sortBy, filterBy]);
 
+    // OPRAVENÉ KOPÍROVANIE KĽÚČA
     const copyGameKey = async (keyCode) => {
         try {
-            await navigator.clipboard.writeText(keyCode);
-            setCopiedKey(true);
-            success('Herní klíč byl zkopírován do schránky!');
-            setTimeout(() => setCopiedKey(false), 2000);
-        } catch (err) {
-            console.error('Chyba při kopírování:', err);
-            showError('Nepodařilo se zkopírovat klíč do schránky');
+            // Skúsime moderné Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(keyCode);
+                setCopiedKey(true);
+                success('Herní klíč byl zkopírován do schránky!');
+                setTimeout(() => setCopiedKey(false), 2000);
+                return;
+            }
 
-            // Fallback - zobrazit klíč pro ruční kopírování
+            // Fallback pre staršie prehliadače alebo nesecure context
             const textArea = document.createElement('textarea');
             textArea.value = keyCode;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.width = '2em';
+            textArea.style.height = '2em';
+            textArea.style.padding = '0';
+            textArea.style.border = 'none';
+            textArea.style.outline = 'none';
+            textArea.style.boxShadow = 'none';
+            textArea.style.background = 'transparent';
+            textArea.style.opacity = '0';
+
             document.body.appendChild(textArea);
+            textArea.focus();
             textArea.select();
-            try {
-                document.execCommand('copy');
-                success('Herní klíč byl zkopírován!');
-            } catch (fallbackErr) {
-                showError('Zkopírujte klíč ručně: ' + keyCode);
-            }
+
+            const successful = document.execCommand('copy');
             document.body.removeChild(textArea);
+
+            if (successful) {
+                setCopiedKey(true);
+                success('Herní klíč byl zkopírován!');
+                setTimeout(() => setCopiedKey(false), 2000);
+            } else {
+                throw new Error('Kopírování selhalo');
+            }
+
+        } catch (err) {
+            console.error('Chyba při kopírování:', err);
+
+            // Posledný fallback - prompt s klíčom
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes('mobile') || userAgent.includes('android') || userAgent.includes('iphone')) {
+                // Na mobile zobrazíme klíč v alert
+                alert(`Herní klíč (zkopírujte manuálně): ${keyCode}`);
+            } else {
+                // Na desktop použijeme prompt
+                const textToCopy = prompt('Zkopírujte tento herní klíč:', keyCode);
+                if (textToCopy !== null) {
+                    success('Klíč byl zobrazen pro kopírování');
+                }
+            }
         }
     };
 
     const showGameKey = (game) => {
         setSelectedGame(game);
         setShowKeyModal(true);
+        setCopiedKey(false); // Reset copied state
     };
 
     const formatDate = (dateString) => {
@@ -264,7 +300,7 @@ const UserLibraryPage = () => {
                     </div>
                 </div>
 
-                {/* Filtry a vyhledávání */}
+                {/* OPRAVENÉ FILTRY - lepšie responzívne rozloženie */}
                 <div className="row mb-4">
                     <div className="col-12">
                         <div style={{
@@ -274,8 +310,9 @@ const UserLibraryPage = () => {
                             padding: '1.5rem',
                             border: '1px solid rgba(255,255,255,0.1)'
                         }}>
-                            <div className="row align-items-center">
-                                <div className="col-md-3">
+                            {/* Mobile first approach - stacked na malom obrazovni */}
+                            <div className="row g-3 align-items-center">
+                                <div className="col-12 col-md-4">
                                     <input
                                         type="text"
                                         className="form-control"
@@ -291,7 +328,7 @@ const UserLibraryPage = () => {
                                         }}
                                     />
                                 </div>
-                                <div className="col-md-3">
+                                <div className="col-12 col-sm-6 col-md-3">
                                     <select
                                         className="form-select"
                                         value={filterBy}
@@ -308,7 +345,7 @@ const UserLibraryPage = () => {
                                         <option value="wishlist">❤️ Seznam přání ({totalWishlistGames})</option>
                                     </select>
                                 </div>
-                                <div className="col-md-3">
+                                <div className="col-12 col-sm-6 col-md-3">
                                     <select
                                         className="form-select"
                                         value={sortBy}
@@ -326,10 +363,13 @@ const UserLibraryPage = () => {
                                         <option value="price">💰 Podle ceny</option>
                                     </select>
                                 </div>
-                                <div className="col-md-3">
+                                <div className="col-12 col-md-2">
                                     <div style={{ fontSize: '0.9rem', color: '#94a3b8', textAlign: 'center' }}>
                                         <strong style={{ color: 'white' }}>{filteredGames.length}</strong>
-                                        {filterBy === 'owned' ? ' vlastněných her' : ' her v seznamu přání'}
+                                        <br />
+                                        <small>
+                                            {filterBy === 'owned' ? 'vlastněných' : 'v přáních'}
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -504,9 +544,9 @@ const UserLibraryPage = () => {
 
                                                 {!libraryGame.is_wishlist ? (
                                                     // Vlastněná hra
-                                                    <>
+                                                    <div className="d-grid gap-2">
                                                         <button
-                                                            className="btn w-100 mb-2"
+                                                            className="btn"
                                                             style={{
                                                                 background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
                                                                 color: 'white',
@@ -522,7 +562,7 @@ const UserLibraryPage = () => {
 
                                                         <Link
                                                             to={`/game/${libraryGame.game.game_id}`}
-                                                            className="btn w-100"
+                                                            className="btn"
                                                             style={{
                                                                 background: 'rgba(255,255,255,0.1)',
                                                                 color: 'white',
@@ -535,7 +575,7 @@ const UserLibraryPage = () => {
                                                         >
                                                             👁️ Detail hry
                                                         </Link>
-                                                    </>
+                                                    </div>
                                                 ) : (
                                                     // Hra v seznamu přání
                                                     <Link
@@ -563,7 +603,7 @@ const UserLibraryPage = () => {
                     )}
                 </div>
 
-                {/* Modal pro zobrazení klíče */}
+                {/* VYLEPŠENÝ MODAL pre zobrazenie kľúča */}
                 {showKeyModal && selectedGame && (
                     <>
                         <div
@@ -619,7 +659,8 @@ const UserLibraryPage = () => {
                                         color: '#4f46e5',
                                         textAlign: 'center',
                                         letterSpacing: '1px',
-                                        userSelect: 'all'
+                                        userSelect: 'all',
+                                        wordBreak: 'break-all'
                                     }}>
                                         {selectedGame.key_code}
                                     </div>
@@ -639,7 +680,9 @@ const UserLibraryPage = () => {
                                     <button
                                         className="btn flex-fill"
                                         style={{
-                                            background: copiedKey ? 'linear-gradient(45deg, #10b981, #059669)' : 'linear-gradient(45deg, #4f46e5, #7c3aed)',
+                                            background: copiedKey ?
+                                                'linear-gradient(45deg, #10b981, #059669)' :
+                                                'linear-gradient(45deg, #4f46e5, #7c3aed)',
                                             color: 'white',
                                             border: 'none',
                                             borderRadius: '8px',

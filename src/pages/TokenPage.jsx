@@ -66,13 +66,14 @@ const TokenPage = () => {
     ];
 
     const paymentMethods = [
-        { id: 'card', name: 'Platební karta', icon: '💳', description: 'Visa, MasterCard, Maestro' },
-        { id: 'paypal', name: 'PayPal', icon: '🅿️', description: 'Rychlé a bezpečné platby' },
-        { id: 'googlepay', name: 'Google Pay', icon: '📱', description: 'Platba telefonem' },
-        { id: 'applepay', name: 'Apple Pay', icon: '🍎', description: 'Platba pro iOS zařízení' },
-        { id: 'bank', name: 'Bankovní převod', icon: '🏦', description: 'Tradiční bankovní převod' }
+        { id: 'card', name: 'Testovací karta', icon: '💳', description: 'Simulace platební karty' },
+        { id: 'paypal', name: 'Demo PayPal', icon: '🅿️', description: 'Simulace PayPal platby' },
+        { id: 'googlepay', name: 'Test Google Pay', icon: '📱', description: 'Simulace mobilní platby' },
+        { id: 'applepay', name: 'Test Apple Pay', icon: '🍎', description: 'Simulace Apple platby' },
+        { id: 'bank', name: 'Demo převod', icon: '🏦', description: 'Simulace bankovního převodu' }
     ];
 
+    // ZJEDNODUŠENÝ NÁKUP - automatické zpracování
     const handlePurchase = async (pack) => {
         if (!user) {
             warning('Pro nákup tokenů se musíte přihlásit');
@@ -81,34 +82,37 @@ const TokenPage = () => {
 
         setIsProcessing(true);
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/purchase_token.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    pack_id: pack.id,
-                    payment_method: paymentMethod
-                })
-            });
+        // Simulace zpracování platby s realistickým zpožděním
+        setTimeout(async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/purchase_token.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        pack_id: pack.id,
+                        payment_method: paymentMethod
+                    })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (data.success) {
-                updateUserTokens(data.new_balance);
-                success(`Úspěšně zakoupeno ${data.tokens_purchased} tokenů! Váš nový zůstatek: ${data.new_balance} tokenů`);
-                setSelectedPack(null);
-            } else {
-                throw new Error(data.message || 'Nákup se nezdařil');
+                if (data.success) {
+                    updateUserTokens(data.new_balance);
+                    success(`Úspěšně zakoupeno ${data.tokens_purchased} tokenů! Váš nový zůstatek: ${data.new_balance} tokenů`);
+                    setSelectedPack(null);
+                } else {
+                    throw new Error(data.message || 'Nákup se nezdařil');
+                }
+            } catch (apiError) {
+                console.error('Chyba při nákupu tokenů:', apiError);
+                error(`Chyba při nákupu: ${apiError.message}`);
+            } finally {
+                setIsProcessing(false);
             }
-        } catch (apiError) {
-            console.error('Chyba při nákupu tokenů:', apiError);
-            error(`Chyba při nákupu: ${apiError.message}`);
-        } finally {
-            setIsProcessing(false);
-        }
+        }, 2000); // 2 sekundové zpoždění pro realističnost
     };
 
     const calculateSavings = (pack) => {
@@ -139,13 +143,23 @@ const TokenPage = () => {
                         <h1 className="display-4 fw-bold mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
                             Tokenová ekonomika
                         </h1>
-                        <p className="lead text-white-50 mb-4">
+                        <p className="lead text-white-50 mb-2">
                             Doplňte si tokeny a získejte přístup k nejlepším hrám v našem katalogu
                         </p>
+                        <div className="alert alert-info d-inline-block" style={{
+                            background: 'rgba(59, 130, 246, 0.2)',
+                            border: '1px solid rgba(59, 130, 246, 0.3)',
+                            color: '#93c5fd',
+                            fontSize: '0.9rem',
+                            marginTop: '1rem'
+                        }}>
+                            <i className="fas fa-info-circle me-2"></i>
+                            <strong>Demo režim:</strong> Platby jsou simulovány pro testovací účely
+                        </div>
 
                         {user && (
                             <div
-                                className="d-inline-flex align-items-center px-4 py-3 rounded-pill"
+                                className="d-inline-flex align-items-center px-4 py-3 rounded-pill mt-3"
                                 style={{
                                     background: 'rgba(16, 185, 129, 0.2)',
                                     border: '2px solid rgba(16, 185, 129, 0.3)'
@@ -286,7 +300,7 @@ const TokenPage = () => {
                 </div>
             </div>
 
-            {/* Payment Modal */}
+            {/* ZJEDNODUŠENÝ PAYMENT MODAL */}
             {selectedPack && (
                 <>
                     <div
@@ -310,7 +324,7 @@ const TokenPage = () => {
                             >
                                 <div className="modal-header border-0 pb-0">
                                     <h5 className="modal-title text-white fw-bold">
-                                        Dokončení nákupu
+                                        {isProcessing ? 'Zpracování platby...' : 'Dokončení nákupu'}
                                     </h5>
                                     <button
                                         type="button"
@@ -347,6 +361,32 @@ const TokenPage = () => {
                                                 </Link>
                                             </div>
                                         </div>
+                                    ) : isProcessing ? (
+                                        // Zpracování platby
+                                        <div className="text-center py-4">
+                                            <div className="mb-4">
+                                                <div className="spinner-border text-success mb-3" style={{ width: '3rem', height: '3rem' }} />
+                                            </div>
+                                            <h5 className="text-white mb-3">Zpracovávám platbu...</h5>
+                                            <p className="text-white-50 mb-3">
+                                                Simulujeme bezpečné zpracování vaší {paymentMethod === 'card' ? 'kartové' :
+                                                    paymentMethod === 'paypal' ? 'PayPal' :
+                                                        paymentMethod === 'googlepay' ? 'Google Pay' :
+                                                            paymentMethod === 'applepay' ? 'Apple Pay' : 'bankovní'} platby
+                                            </p>
+                                            <div
+                                                className="p-3 rounded-3"
+                                                style={{
+                                                    background: selectedPack.color,
+                                                    border: '1px solid rgba(255,255,255,0.2)'
+                                                }}
+                                            >
+                                                <div className="text-white">
+                                                    <div className="fw-bold">{selectedPack.amount + selectedPack.bonus} tokenů</div>
+                                                    <div>{selectedPack.price} {selectedPack.currency}</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     ) : (
                                         <div className="row g-4">
                                             {/* Order Summary */}
@@ -379,7 +419,7 @@ const TokenPage = () => {
 
                                             {/* Payment Methods */}
                                             <div className="col-md-6 col-12">
-                                                <h6 className="text-white fw-bold mb-3">Způsob platby</h6>
+                                                <h6 className="text-white fw-bold mb-3">Testovací platební metody</h6>
                                                 <div className="d-grid gap-2">
                                                     {paymentMethods.map(method => (
                                                         <label key={method.id} className="d-flex align-items-center">
@@ -425,7 +465,7 @@ const TokenPage = () => {
                                     )}
                                 </div>
 
-                                {user && (
+                                {user && !isProcessing && (
                                     <div className="modal-footer border-0 pt-0 px-3 px-md-4">
                                         <div className="w-100 d-flex flex-column flex-sm-row gap-2">
                                             <button
@@ -444,17 +484,8 @@ const TokenPage = () => {
                                                     border: 'none'
                                                 }}
                                             >
-                                                {isProcessing ? (
-                                                    <>
-                                                        <div className="spinner-border spinner-border-sm me-2" />
-                                                        Zpracovávám...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <i className="fas fa-credit-card me-2"></i>
-                                                        Zaplatit {selectedPack.price} {selectedPack.currency}
-                                                    </>
-                                                )}
+                                                <i className="fas fa-credit-card me-2"></i>
+                                                Simulovat platbu {selectedPack.price} {selectedPack.currency}
                                             </button>
                                         </div>
                                     </div>

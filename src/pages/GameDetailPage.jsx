@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { useToast } from '../components/ui/Toast';
 
 const GameDetailPage = () => {
-    const { gameId } = useParams();
+    const { gameSlug } = useParams(); // Změněno z gameId na gameSlug
     const navigate = useNavigate();
     const { user, updateUserTokens } = useUser();
     const { success, error, warning } = useToast();
@@ -23,11 +23,11 @@ const GameDetailPage = () => {
 
     const API_BASE_URL = '/api';
 
-    // VYLEPŠENÝ PŘEKLAD - lokální slovník + fallback
+    // OPRAVENÝ PŘEKLAD - robustnější řešení
     const translateText = async (textToTranslate) => {
         if (!textToTranslate) return;
 
-        // Jednoduchý lokální překlad pro časté fráze
+        // Rozšířený lokální slovník
         const simpleTranslations = {
             'action': 'akce',
             'adventure': 'dobrodružství',
@@ -54,59 +54,121 @@ const GameDetailPage = () => {
             'player': 'hráč',
             'level': 'úroveň',
             'mission': 'mise',
-            'challenge': 'výzva'
+            'challenge': 'výzva',
+            'fight': 'bojuj',
+            'defeat': 'poraz',
+            'enemy': 'nepřítel',
+            'boss': 'boss',
+            'quest': 'úkol',
+            'journey': 'cesta',
+            'magical': 'magický',
+            'powerful': 'mocný',
+            'collect': 'sbírej',
+            'upgrade': 'vylepši',
+            'customize': 'přizpůsob',
+            'multiplayer': 'více hráčů',
+            'single player': 'pro jednoho hráče',
+            'online': 'online',
+            'offline': 'offline',
+            'weapon': 'zbraň',
+            'armor': 'zbroj',
+            'skill': 'dovednost',
+            'experience': 'zkušenost'
         };
-
-        // Rychlý překlad základních slov
-        let quickTranslation = textToTranslate.toLowerCase();
-        Object.entries(simpleTranslations).forEach(([en, cs]) => {
-            const regex = new RegExp(`\\b${en}\\b`, 'gi');
-            quickTranslation = quickTranslation.replace(regex, cs);
-        });
-
-        if (quickTranslation !== textToTranslate.toLowerCase()) {
-            // Zachovat původní velikost písmen na začátku
-            const firstChar = textToTranslate[0];
-            quickTranslation = firstChar + quickTranslation.slice(1);
-            setTranslatedDescription(quickTranslation);
-            return;
-        }
 
         setIsTranslating(true);
         try {
-            // Zkusíme API překlad, ale s timeoutem
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            // Pokusí se přeložit pomocí základních náhrad
+            let translation = textToTranslate.toLowerCase();
+            let hasTranslation = false;
 
-            const response = await fetch(
-                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate.substring(0, 500))}&langpair=en|cs`,
-                { signal: controller.signal }
-            );
+            Object.entries(simpleTranslations).forEach(([en, cs]) => {
+                const regex = new RegExp(`\\b${en}\\b`, 'gi');
+                if (regex.test(translation)) {
+                    translation = translation.replace(regex, cs);
+                    hasTranslation = true;
+                }
+            });
 
-            clearTimeout(timeoutId);
-            const data = await response.json();
+            // Zachovat původní velikost písmen na začátku
+            if (hasTranslation && textToTranslate.length > 0) {
+                const firstChar = textToTranslate[0];
+                translation = firstChar + translation.slice(1);
+            }
 
-            if (data.responseData && data.responseData.translatedText) {
-                setTranslatedDescription(data.responseData.translatedText);
+            // Pokud máme nějaký překlad z lokálního slovníku, použijeme ho
+            if (hasTranslation) {
+                setTranslatedDescription(translation);
+                return;
+            }
+
+            // Zkusit více překladových API současně
+            const translationPromises = [
+                // MyMemory API
+                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate.substring(0, 500))}&langpair=en|cs`)
+                    .then(res => res.json())
+                    .then(data => data.responseData?.translatedText)
+                    .catch(() => null),
+
+                // LibreTranslate (free API)
+                fetch('https://libretranslate.de/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        q: textToTranslate.substring(0, 500),
+                        source: 'en',
+                        target: 'cs'
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => data.translatedText)
+                    .catch(() => null)
+            ];
+
+            const results = await Promise.allSettled(translationPromises);
+            const validTranslation = results
+                .filter(result => result.status === 'fulfilled' && result.value)
+                .map(result => result.value)[0];
+
+            if (validTranslation && validTranslation !== textToTranslate) {
+                setTranslatedDescription(validTranslation);
             } else {
-                throw new Error('API neposkytlo překlad');
+                // Fallback překlad
+                const fallbackTranslation = textToTranslate
+                    .replace(/game/gi, 'hra')
+                    .replace(/games/gi, 'hry')
+                    .replace(/play/gi, 'hrát')
+                    .replace(/player/gi, 'hráč')
+                    .replace(/players/gi, 'hráči')
+                    .replace(/world/gi, 'svět')
+                    .replace(/story/gi, 'příběh')
+                    .replace(/character/gi, 'postava')
+                    .replace(/characters/gi, 'postavy')
+                    .replace(/level/gi, 'úroveň')
+                    .replace(/levels/gi, 'úrovně')
+                    .replace(/mission/gi, 'mise')
+                    .replace(/missions/gi, 'mise')
+                    .replace(/challenge/gi, 'výzva')
+                    .replace(/challenges/gi, 'výzvy')
+                    .replace(/battle/gi, 'bitva')
+                    .replace(/battles/gi, 'bitvy')
+                    .replace(/fight/gi, 'bojuj')
+                    .replace(/fighting/gi, 'boj')
+                    .replace(/adventure/gi, 'dobrodružství')
+                    .replace(/explore/gi, 'prozkoumej')
+                    .replace(/exploring/gi, 'prozkoumávání');
+
+                setTranslatedDescription(fallbackTranslation || 'Překlad není k dispozici.');
             }
         } catch (apiError) {
-            console.log('API překlad selhal, použiji fallback');
-            // Fallback - základní čeština
-            const fallbackTranslation = textToTranslate
-                .replace(/game/gi, 'hra')
-                .replace(/play/gi, 'hrát')
-                .replace(/player/gi, 'hráč')
-                .replace(/world/gi, 'svět')
-                .replace(/story/gi, 'příběh')
-                .replace(/character/gi, 'postava')
-                .replace(/level/gi, 'úroveň')
-                .replace(/mission/gi, 'mise')
-                .replace(/challenge/gi, 'výzva')
-                .replace(/battle/gi, 'bitva');
+            console.log('Všechny překladové API selhaly, použiji základní fallback');
+            const basicTranslation = textToTranslate
+                .replace(/\bgame\b/gi, 'hra')
+                .replace(/\bplay\b/gi, 'hrát')
+                .replace(/\bworld\b/gi, 'svět')
+                .replace(/\bstory\b/gi, 'příběh');
 
-            setTranslatedDescription(fallbackTranslation || 'Překlad není k dispozici.');
+            setTranslatedDescription(basicTranslation || 'Automatický překlad není dostupný.');
         } finally {
             setIsTranslating(false);
         }
@@ -116,7 +178,8 @@ const GameDetailPage = () => {
         const fetchGame = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`${API_BASE_URL}/game_detail.php?id=${gameId}`, {
+                // Použít gameSlug místo gameId
+                const response = await fetch(`${API_BASE_URL}/game_detail.php?id=${gameSlug}`, {
                     credentials: 'include'
                 });
                 const data = await response.json();
@@ -138,7 +201,7 @@ const GameDetailPage = () => {
             }
         };
         fetchGame();
-    }, [gameId, user]);
+    }, [gameSlug, user]); // Změněno z gameId na gameSlug
 
     const handleToggleWishlist = async () => {
         if (!user) {

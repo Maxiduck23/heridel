@@ -11,6 +11,17 @@ const HomePage = () => {
     const [totalGamesCount, setTotalGamesCount] = useState(0);
     const API_BASE_URL = '/api';
 
+    // Funkce pro vytvoření slug
+    const createSlug = (name) => {
+        if (!name) return '';
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
+            .replace(/-+/g, '-') // Nahradit více pomlček jednou
+            .trim('-'); // Odstranit pomlčky na začátku a konci
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -73,7 +84,12 @@ const HomePage = () => {
     }
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)', minHeight: '100vh' }}>
+        <div style={{
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
+            minHeight: '100vh',
+            paddingBottom: 0, // OPRAVA - odebrání padding-bottom
+            marginBottom: 0 // OPRAVA - odebrání margin-bottom
+        }}>
 
             {/* Hero Section */}
             <section className="position-relative overflow-hidden" style={{ minHeight: '70vh' }}>
@@ -160,7 +176,7 @@ const HomePage = () => {
                                     )}
                                 </div>
 
-                                {/* Stats - ZJEDNODUŠENÉ - pouze počet her */}
+                                {/* Stats - pouze počet her */}
                                 <div className="row mt-5">
                                     <div className="col-12">
                                         <div className="text-center">
@@ -174,60 +190,73 @@ const HomePage = () => {
                             </div>
                         </div>
 
-                        {/* Right Side - Featured Game (NEJDRAŽŠÍ) */}
+                        {/* Right Side - Featured Game s SLUG LINKEM */}
                         <div className="col-lg-6">
                             {homeData?.featuredGame && (
                                 <div className="position-relative">
-                                    <div
-                                        className="rounded-4 overflow-hidden position-relative"
-                                        style={{
-                                            background: `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${homeData.featuredGame.image_url})`,
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center',
-                                            height: '500px',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
-                                        }}
+                                    <Link
+                                        to={`/game/${homeData.featuredGame.slug || createSlug(homeData.featuredGame.name)}`}
+                                        className="text-decoration-none"
                                     >
-                                        <div className="position-absolute top-0 start-0 m-3">
-                                            <span className="badge px-3 py-2" style={{
-                                                background: 'linear-gradient(45deg, #ef4444, #dc2626)',
-                                                fontSize: '0.9rem',
-                                                fontWeight: '600'
-                                            }}>
-                                                💎 Premium
-                                            </span>
-                                        </div>
+                                        <div
+                                            className="rounded-4 overflow-hidden position-relative"
+                                            style={{
+                                                background: `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${homeData.featuredGame.image_url})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                height: '500px',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                                                transition: 'all 0.3s ease',
+                                                cursor: 'pointer'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(-5px)';
+                                                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.4)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
+                                            }}
+                                        >
+                                            <div className="position-absolute top-0 start-0 m-3">
+                                                <span className="badge px-3 py-2" style={{
+                                                    background: 'linear-gradient(45deg, #ef4444, #dc2626)',
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    💎 Premium
+                                                </span>
+                                            </div>
 
-                                        <div className="position-absolute bottom-0 start-0 end-0 p-4">
-                                            <h3 className="text-white fw-bold mb-3" style={{ fontSize: '1.8rem' }}>
-                                                {homeData.featuredGame.name}
-                                            </h3>
-                                            <p className="text-white-50 mb-4" style={{ fontSize: '1rem' }}>
-                                                {homeData.featuredGame.description?.substring(0, 120)}...
-                                            </p>
-                                            <div className="d-flex align-items-center justify-content-between">
-                                                <div>
-                                                    <span className="h4 text-white fw-bold me-2 mb-0">
-                                                        {homeData.featuredGame.price_tokens || 0} 🪙
-                                                    </span>
-                                                    <small className="text-white-50">tokenů</small>
+                                            <div className="position-absolute bottom-0 start-0 end-0 p-4">
+                                                <h3 className="text-white fw-bold mb-3" style={{ fontSize: '1.8rem' }}>
+                                                    {homeData.featuredGame.name}
+                                                </h3>
+                                                <p className="text-white-50 mb-4" style={{ fontSize: '1rem' }}>
+                                                    {homeData.featuredGame.description?.substring(0, 120)}...
+                                                </p>
+                                                <div className="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <span className="h4 text-white fw-bold me-2 mb-0">
+                                                            {homeData.featuredGame.price_tokens || 0} 🪙
+                                                        </span>
+                                                        <small className="text-white-50">tokenů</small>
+                                                    </div>
+                                                    <div
+                                                        className="btn btn-light btn-lg px-4"
+                                                        style={{
+                                                            borderRadius: '25px',
+                                                            fontWeight: '600',
+                                                            boxShadow: '0 4px 16px rgba(255,255,255,0.2)'
+                                                        }}
+                                                    >
+                                                        Zobrazit detail
+                                                    </div>
                                                 </div>
-                                                <Link
-                                                    to={`/game/${homeData.featuredGame.game_id}`}
-                                                    className="btn btn-light btn-lg px-4"
-                                                    style={{
-                                                        borderRadius: '25px',
-                                                        fontWeight: '600',
-                                                        boxShadow: '0 4px 16px rgba(255,255,255,0.2)',
-                                                        textDecoration: 'none'
-                                                    }}
-                                                >
-                                                    Zobrazit detail
-                                                </Link>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             )}
                         </div>
@@ -266,6 +295,14 @@ const HomePage = () => {
                                                 backdropFilter: 'blur(10px)',
                                                 transition: 'all 0.3s ease'
                                             }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(-5px)';
+                                                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                e.currentTarget.style.boxShadow = 'none';
+                                            }}
                                         >
                                             <div className="mb-3" style={{ fontSize: '2.5rem' }}>
                                                 {getGenreIcon(genre.name)}
@@ -280,9 +317,9 @@ const HomePage = () => {
                 </section>
             )}
 
-            {/* Popular Games Section - NEJDRAŽŠÍ PRVNÍ */}
+            {/* Popular Games Section s SLUG LINKY */}
             {homeData?.popularGames && (
-                <section style={{ padding: '3rem 0' }}>
+                <section style={{ padding: '3rem 0 3rem 0' }}> {/* OPRAVA - pouze horní padding */}
                     <div style={{
                         width: '100%',
                         maxWidth: '1200px',
@@ -303,75 +340,91 @@ const HomePage = () => {
                         <div className="row g-4">
                             {homeData.popularGames.slice(0, 8).map((game, index) => (
                                 <div key={`popular-game-${game.game_id}`} className="col-lg-3 col-md-4 col-sm-6">
-                                    <div
-                                        className="card h-100 border-0 position-relative overflow-hidden"
-                                        style={{
-                                            background: 'rgba(255,255,255,0.05)',
-                                            backdropFilter: 'blur(10px)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            borderRadius: '16px',
-                                            transition: 'all 0.3s ease'
-                                        }}
+                                    <Link
+                                        to={`/game/${game.slug || createSlug(game.name)}`}
+                                        className="text-decoration-none"
+                                        style={{ display: 'block', height: '100%' }}
                                     >
-                                        <div className="position-relative">
-                                            <img
-                                                src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
-                                                className="card-img-top"
-                                                alt={game.name}
-                                                style={{
-                                                    height: '200px',
-                                                    objectFit: 'cover'
-                                                }}
-                                            />
-                                            <div className="position-absolute top-0 start-0 m-2">
-                                                <span className="badge bg-primary px-2 py-1">
-                                                    #{index + 1}
-                                                </span>
-                                            </div>
-                                            <div className="position-absolute bottom-0 end-0 m-2">
-                                                <span
-                                                    className="badge px-2 py-1"
+                                        <div
+                                            className="card h-100 border-0 position-relative overflow-hidden"
+                                            style={{
+                                                background: 'rgba(255,255,255,0.05)',
+                                                backdropFilter: 'blur(10px)',
+                                                border: '1px solid rgba(255,255,255,0.1)',
+                                                borderRadius: '16px',
+                                                transition: 'all 0.3s ease',
+                                                cursor: 'pointer'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(-8px)';
+                                                e.currentTarget.style.boxShadow = '0 15px 30px rgba(0,0,0,0.25)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'translateY(0)';
+                                                e.currentTarget.style.boxShadow = 'none';
+                                            }}
+                                        >
+                                            <div className="position-relative">
+                                                <img
+                                                    src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
+                                                    className="card-img-top"
+                                                    alt={game.name}
                                                     style={{
-                                                        background: 'rgba(0,0,0,0.8)',
-                                                        color: '#10b981',
-                                                        fontSize: '0.9rem',
-                                                        fontWeight: '600'
+                                                        height: '200px',
+                                                        objectFit: 'cover'
+                                                    }}
+                                                />
+                                                <div className="position-absolute top-0 start-0 m-2">
+                                                    <span className="badge bg-primary px-2 py-1">
+                                                        #{index + 1}
+                                                    </span>
+                                                </div>
+                                                <div className="position-absolute bottom-0 end-0 m-2">
+                                                    <span
+                                                        className="badge px-2 py-1"
+                                                        style={{
+                                                            background: 'rgba(0,0,0,0.8)',
+                                                            color: '#10b981',
+                                                            fontSize: '0.9rem',
+                                                            fontWeight: '600'
+                                                        }}
+                                                    >
+                                                        {game.price_tokens || 0} 🪙
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="card-body d-flex flex-column">
+                                                <h6 className="card-title text-white fw-bold mb-2" style={{
+                                                    fontSize: '1rem',
+                                                    lineHeight: '1.3',
+                                                    height: '2.6rem',
+                                                    overflow: 'hidden',
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical'
+                                                }}>
+                                                    {game.name}
+                                                </h6>
+
+                                                <div
+                                                    className="text-center mt-auto"
+                                                    style={{
+                                                        color: '#4f46e5',
+                                                        fontSize: '0.85rem',
+                                                        fontWeight: '600',
+                                                        opacity: 0,
+                                                        transition: 'opacity 0.3s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.opacity = '1';
                                                     }}
                                                 >
-                                                    {game.price_tokens || 0} 🪙
-                                                </span>
+                                                    👁️ Zobrazit detail
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <div className="card-body d-flex flex-column">
-                                            <h6 className="card-title text-white fw-bold mb-2" style={{
-                                                fontSize: '1rem',
-                                                lineHeight: '1.3',
-                                                height: '2.6rem',
-                                                overflow: 'hidden',
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: 'vertical'
-                                            }}>
-                                                {game.name}
-                                            </h6>
-
-                                            <Link
-                                                to={`/game/${game.game_id}`}
-                                                className="btn btn-sm mt-auto"
-                                                style={{
-                                                    background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                    border: 'none',
-                                                    color: 'white',
-                                                    borderRadius: '8px',
-                                                    fontWeight: '500',
-                                                    textDecoration: 'none'
-                                                }}
-                                            >
-                                                Zobrazit detail
-                                            </Link>
-                                        </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             ))}
                         </div>
@@ -379,19 +432,21 @@ const HomePage = () => {
                 </section>
             )}
 
-            {/* CTA Section */}
+            {/* CTA Section - OPRAVA padding */}
             {!user && (
                 <section style={{
-                    padding: '3rem 0',
+                    padding: '3rem 0 0 0', // OPRAVA - pouze horní padding
                     background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1))',
-                    borderTop: '1px solid rgba(255,255,255,0.1)'
+                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                    marginBottom: 0 // OPRAVA - odebrání margin
                 }}>
                     <div style={{
                         width: '100%',
                         maxWidth: '1200px',
                         margin: '0 auto',
                         paddingLeft: '15px',
-                        paddingRight: '15px'
+                        paddingRight: '15px',
+                        paddingBottom: '3rem' // OPRAVA - padding jen dovnitř
                     }}>
                         <div className="text-center">
                             <h2 className="text-white fw-bold mb-3">Připoj se k našemu království</h2>

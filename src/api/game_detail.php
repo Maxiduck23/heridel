@@ -1,32 +1,46 @@
 <?php
 require_once './headers.php';
 
-$game_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-if ($game_id <= 0) {
+// Získat parametr z URL - může být ID nebo slug
+$game_param = isset($_GET['id']) ? trim($_GET['id']) : '';
+if (empty($game_param)) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
-        'message' => 'Nebylo zadáno platné ID hry.'
+        'message' => 'Nebylo zadáno platné ID nebo název hry.'
     ]);
     exit;
 }
 
 try {
-    // Hlavní dotaz na hru s publisherem
-    $stmt = $pdo->prepare("
-        SELECT g.*, p.name AS publisher_name 
-        FROM games g 
-        LEFT JOIN publishers p ON g.publisher_id = p.publisher_id 
-        WHERE g.game_id = ? AND g.is_active = TRUE
-    ");
-    $stmt->execute([$game_id]);
+    // Zkusit najít hru podle slug nebo podle ID
+    if (is_numeric($game_param)) {
+        // Je to číslo, hledat podle game_id
+        $stmt = $pdo->prepare("
+            SELECT g.*, p.name AS publisher_name 
+            FROM games g 
+            LEFT JOIN publishers p ON g.publisher_id = p.publisher_id 
+            WHERE g.game_id = ? AND g.is_active = TRUE
+        ");
+        $stmt->execute([$game_param]);
+    } else {
+        // Není to číslo, hledat podle slug
+        $stmt = $pdo->prepare("
+            SELECT g.*, p.name AS publisher_name 
+            FROM games g 
+            LEFT JOIN publishers p ON g.publisher_id = p.publisher_id 
+            WHERE g.slug = ? AND g.is_active = TRUE
+        ");
+        $stmt->execute([$game_param]);
+    }
+    
     $game = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$game) {
         http_response_code(404);
         echo json_encode([
             'success' => false,
-            'message' => 'Hra s tímto ID nebyla nalezena.'
+            'message' => 'Hra s tímto identifikátorem nebyla nalezena.'
         ]);
         exit;
     }
@@ -38,7 +52,7 @@ try {
         JOIN game_genres gg ON gn.genre_id = gg.genre_id 
         WHERE gg.game_id = ?
     ");
-    $stmt_genres->execute([$game_id]);
+    $stmt_genres->execute([$game['game_id']]);
     $game['genres'] = $stmt_genres->fetchAll(PDO::FETCH_COLUMN);
 
     // Kontrola stavu pro přihlášeného uživatele
@@ -50,14 +64,14 @@ try {
 
         // Kontrola vlastnictví
         $stmt_owned = $pdo->prepare("SELECT COUNT(*) FROM user_library WHERE user_id = ? AND game_id = ?");
-        $stmt_owned->execute([$user_id, $game_id]);
+        $stmt_owned->execute([$user_id, $game['game_id']]);
         if ($stmt_owned->fetchColumn() > 0) {
             $game['is_owned'] = true;
         }
 
         // Kontrola wishlistu
         $stmt_wishlist = $pdo->prepare("SELECT COUNT(*) FROM user_wishlist WHERE user_id = ? AND game_id = ?");
-        $stmt_wishlist->execute([$user_id, $game_id]);
+        $stmt_wishlist->execute([$user_id, $game['game_id']]);
         if ($stmt_wishlist->fetchColumn() > 0) {
             $game['in_wishlist'] = true;
         }

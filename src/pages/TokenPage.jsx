@@ -124,50 +124,29 @@ const TokenPage = () => {
     };
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)', minHeight: '100vh' }}>
+        <div className="token-page-bg min-vh-100">
 
             {/* Hero Section */}
-            <section className="position-relative py-5" style={{
-                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)'
-            }}>
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px'
-                }}>
+            <section className="position-relative py-5 token-page-hero">
+                <div className="container-custom">
                     <div className="text-center text-white">
-                        <div className="mb-4" style={{ fontSize: '4rem' }}>🪙</div>
-                        <h1 className="display-4 fw-bold mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                        <div className="mb-4 token-page-hero-icon">🪙</div>
+                        <h1 className="display-4 fw-bold mb-3 token-page-hero-title">
                             Tokenová ekonomika
                         </h1>
                         <p className="lead text-white-50 mb-2">
                             Doplňte si tokeny a získejte přístup k nejlepším hrám v našem katalogu
                         </p>
-                        <div className="alert alert-info d-inline-block" style={{
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            border: '1px solid rgba(59, 130, 246, 0.3)',
-                            color: '#93c5fd',
-                            fontSize: '0.9rem',
-                            marginTop: '1rem'
-                        }}>
+                        <div className="alert alert-info d-inline-block token-page-demo-alert">
                             <i className="fas fa-info-circle me-2"></i>
                             <strong>Demo režim:</strong> Platby jsou simulovány pro testovací účely
                         </div>
 
                         {user && (
-                            <div
-                                className="d-inline-flex align-items-center px-4 py-3 rounded-pill mt-3"
-                                style={{
-                                    background: 'rgba(16, 185, 129, 0.2)',
-                                    border: '2px solid rgba(16, 185, 129, 0.3)'
-                                }}
-                            >
-                                <span className="me-2" style={{ fontSize: '1.5rem' }}>🪙</span>
+                            <div className="token-page-balance-display d-inline-flex align-items-center px-4 py-3 rounded-pill mt-3">
+                                <span className="me-2 token-page-balance-icon">🪙</span>
                                 <div>
-                                    <div className="fw-bold" style={{ color: '#10b981', fontSize: '1.2rem' }}>
+                                    <div className="fw-bold token-page-balance-amount">
                                         {Math.round(user.tokens_balance)} tokenů
                                     </div>
                                     <small className="text-white-50">Váš aktuální zůstatek</small>
@@ -178,12 +157,7 @@ const TokenPage = () => {
                 </div>
             </section>
 
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '0 auto',
-                padding: '3rem 15px'
-            }}>
+            <div className="container-custom token-page-content">
 
                 {/* Token Packages */}
                 <div className="row mb-5">
@@ -193,35 +167,16 @@ const TokenPage = () => {
                             {tokenPacks.map((pack, index) => (
                                 <div key={pack.id} className="col-lg col-md-6 col-sm-6">
                                     <div
-                                        className={`card h-100 border-0 position-relative overflow-hidden ${pack.popular ? 'border-warning' : ''}`}
+                                        className={`card h-100 border-0 position-relative overflow-hidden token-pack-card ${pack.popular ? 'token-pack-popular' : ''}`}
                                         style={{
                                             background: pack.color,
-                                            borderRadius: '20px',
-                                            transition: 'all 0.4s ease',
                                             transform: pack.popular ? 'scale(1.02)' : 'scale(1)',
-                                            boxShadow: pack.popular ? '0 15px 30px rgba(245, 158, 11, 0.3)' : '0 5px 15px rgba(0,0,0,0.1)',
-                                            cursor: 'pointer',
                                             minHeight: '400px'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = pack.popular ? 'scale(1.05)' : 'scale(1.02)';
-                                            e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = pack.popular ? 'scale(1.02)' : 'scale(1)';
-                                            e.currentTarget.style.boxShadow = pack.popular ? '0 15px 30px rgba(245, 158, 11, 0.3)' : '0 5px 15px rgba(0,0,0,0.1)';
                                         }}
                                     >
                                         {pack.popular && (
                                             <div className="position-absolute top-0 start-50 translate-middle">
-                                                <span
-                                                    className="badge px-3 py-1"
-                                                    style={{
-                                                        background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                                                        fontSize: '0.8rem',
-                                                        borderRadius: '20px'
-                                                    }}
-                                                >
+                                                <span className="badge token-pack-popular-badge px-3 py-1">
                                                     ⭐ Nejpopulárnější
                                                 </span>
                                             </div>
@@ -229,14 +184,7 @@ const TokenPage = () => {
 
                                         {pack.bonus > 0 && (
                                             <div className="position-absolute top-0 end-0 p-3">
-                                                <span
-                                                    className="badge"
-                                                    style={{
-                                                        background: 'rgba(239, 68, 68, 0.9)',
-                                                        fontSize: '0.7rem',
-                                                        borderRadius: '15px'
-                                                    }}
-                                                >
+                                                <span className="badge token-pack-bonus-badge">
                                                     +{pack.bonus} BONUS
                                                 </span>
                                             </div>
@@ -244,7 +192,7 @@ const TokenPage = () => {
 
                                         <div className="card-body text-center p-3 p-md-4 d-flex flex-column justify-content-between">
                                             <div>
-                                                <div className="mb-3" style={{ fontSize: '2.5rem' }}>🪙</div>
+                                                <div className="mb-3 token-pack-icon">🪙</div>
 
                                                 <div className="mb-3">
                                                     <div className="h3 h2-md fw-bold text-white mb-1">
@@ -277,17 +225,8 @@ const TokenPage = () => {
                                             </div>
 
                                             <button
-                                                className="btn btn-light btn-lg w-100 fw-bold"
+                                                className="btn btn-light btn-lg w-100 fw-bold token-pack-buy-btn"
                                                 onClick={() => setSelectedPack(pack)}
-                                                style={{
-                                                    borderRadius: '50px',
-                                                    background: 'rgba(255, 255, 255, 0.9)',
-                                                    color: '#1e293b',
-                                                    border: 'none',
-                                                    transition: 'all 0.3s ease',
-                                                    fontSize: '0.9rem',
-                                                    padding: '0.75rem 1rem'
-                                                }}
                                             >
                                                 Koupit nyní
                                             </button>
@@ -304,24 +243,15 @@ const TokenPage = () => {
             {selectedPack && (
                 <>
                     <div
-                        className="modal-backdrop fade show"
-                        style={{ zIndex: 1040 }}
+                        className="modal-backdrop fade show token-modal-backdrop"
                         onClick={() => !isProcessing && setSelectedPack(null)}
                     />
                     <div
-                        className="modal fade show d-block"
-                        style={{ zIndex: 1050 }}
+                        className="modal fade show d-block token-modal"
                         onClick={() => !isProcessing && setSelectedPack(null)}
                     >
-                        <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: '600px', margin: '1rem' }} onClick={(e) => e.stopPropagation()}>
-                            <div
-                                className="modal-content border-0"
-                                style={{
-                                    background: 'rgba(30, 41, 59, 0.95)',
-                                    backdropFilter: 'blur(20px)',
-                                    borderRadius: '20px'
-                                }}
-                            >
+                        <div className="modal-dialog modal-dialog-centered token-modal-dialog" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-content border-0 token-modal-content">
                                 <div className="modal-header border-0 pb-0">
                                     <h5 className="modal-title text-white fw-bold">
                                         {isProcessing ? 'Zpracování platby...' : 'Dokončení nákupu'}
@@ -337,7 +267,7 @@ const TokenPage = () => {
                                 <div className="modal-body p-3 p-md-4">
                                     {!user ? (
                                         <div className="text-center">
-                                            <div className="mb-4" style={{ fontSize: '3rem' }}>🔐</div>
+                                            <div className="mb-4 token-modal-auth-icon">🔐</div>
                                             <h5 className="text-white mb-3">Přihlášení vyžadováno</h5>
                                             <p className="text-white-50 mb-4">
                                                 Pro nákup tokenů se musíte přihlásit do svého účtu
@@ -345,17 +275,15 @@ const TokenPage = () => {
                                             <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
                                                 <Link
                                                     to="/login"
-                                                    className="btn btn-primary px-4"
+                                                    className="btn btn-primary px-4 text-decoration-none"
                                                     onClick={() => setSelectedPack(null)}
-                                                    style={{ textDecoration: 'none' }}
                                                 >
                                                     Přihlásit se
                                                 </Link>
                                                 <Link
                                                     to="/register"
-                                                    className="btn btn-outline-light px-4"
+                                                    className="btn btn-outline-light px-4 text-decoration-none"
                                                     onClick={() => setSelectedPack(null)}
-                                                    style={{ textDecoration: 'none' }}
                                                 >
                                                     Registrovat
                                                 </Link>
@@ -365,7 +293,7 @@ const TokenPage = () => {
                                         // Zpracování platby
                                         <div className="text-center py-4">
                                             <div className="mb-4">
-                                                <div className="spinner-border text-success mb-3" style={{ width: '3rem', height: '3rem' }} />
+                                                <div className="spinner-border text-success mb-3 token-modal-spinner" />
                                             </div>
                                             <h5 className="text-white mb-3">Zpracovávám platbu...</h5>
                                             <p className="text-white-50 mb-3">
@@ -375,10 +303,9 @@ const TokenPage = () => {
                                                             paymentMethod === 'applepay' ? 'Apple Pay' : 'bankovní'} platby
                                             </p>
                                             <div
-                                                className="p-3 rounded-3"
+                                                className="p-3 rounded-3 token-modal-processing-card"
                                                 style={{
                                                     background: selectedPack.color,
-                                                    border: '1px solid rgba(255,255,255,0.2)'
                                                 }}
                                             >
                                                 <div className="text-white">
@@ -393,14 +320,13 @@ const TokenPage = () => {
                                             <div className="col-md-6 col-12">
                                                 <h6 className="text-white fw-bold mb-3">Shrnutí objednávky</h6>
                                                 <div
-                                                    className="p-3 p-md-4 rounded-3"
+                                                    className="p-3 p-md-4 rounded-3 token-modal-summary-card"
                                                     style={{
                                                         background: selectedPack.color,
-                                                        border: '1px solid rgba(255,255,255,0.2)'
                                                     }}
                                                 >
                                                     <div className="text-center text-white">
-                                                        <div className="mb-2" style={{ fontSize: '2rem' }}>🪙</div>
+                                                        <div className="mb-2 token-modal-summary-icon">🪙</div>
                                                         <div className="h5 h4-md fw-bold">{selectedPack.amount.toLocaleString()} tokenů</div>
                                                         {selectedPack.bonus > 0 && (
                                                             <div className="small text-warning fw-bold mb-2">
@@ -433,22 +359,15 @@ const TokenPage = () => {
                                                                 disabled={isProcessing}
                                                             />
                                                             <div
-                                                                className="flex-grow-1 p-2 p-md-3 rounded-2 cursor-pointer"
-                                                                style={{
-                                                                    background: paymentMethod === method.id
-                                                                        ? 'rgba(79, 70, 229, 0.2)'
-                                                                        : 'rgba(255,255,255,0.05)',
-                                                                    border: paymentMethod === method.id
-                                                                        ? '2px solid #4f46e5'
-                                                                        : '1px solid rgba(255,255,255,0.1)'
-                                                                }}
+                                                                className={`flex-grow-1 p-2 p-md-3 rounded-2 cursor-pointer token-payment-method ${paymentMethod === method.id ? 'token-payment-method-active' : ''
+                                                                    }`}
                                                             >
                                                                 <div className="d-flex align-items-center">
-                                                                    <span className="me-2" style={{ fontSize: '1.2rem' }}>
+                                                                    <span className="me-2 token-payment-icon">
                                                                         {method.icon}
                                                                     </span>
                                                                     <div className="flex-grow-1">
-                                                                        <div className="text-white fw-medium" style={{ fontSize: '0.9rem' }}>
+                                                                        <div className="text-white fw-medium token-payment-name">
                                                                             {method.name}
                                                                         </div>
                                                                         <small className="text-white-50 d-none d-md-block">
@@ -476,13 +395,9 @@ const TokenPage = () => {
                                                 Zrušit
                                             </button>
                                             <button
-                                                className="btn btn-success flex-sm-fill"
+                                                className="btn btn-success flex-sm-fill token-modal-pay-btn"
                                                 onClick={() => handlePurchase(selectedPack)}
                                                 disabled={isProcessing}
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #10b981, #059669)',
-                                                    border: 'none'
-                                                }}
                                             >
                                                 <i className="fas fa-credit-card me-2"></i>
                                                 Simulovat platbu {selectedPack.price} {selectedPack.currency}

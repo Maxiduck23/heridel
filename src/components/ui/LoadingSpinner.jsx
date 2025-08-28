@@ -20,25 +20,10 @@ const LoadingSpinner = ({
         white: '#ffffff'
     };
 
-    const containerStyles = {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '1rem',
-        ...(fullScreen && {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(15, 23, 42, 0.8)',
-            backdropFilter: 'blur(10px)',
-            zIndex: 9999
-        })
-    };
+    const containerClassName = `d-flex flex-column align-items-center justify-content-center gap-3 ${fullScreen ? 'loading-spinner-fullscreen' : ''
+        }`;
 
-    const spinnerStyles = {
+    const spinnerStyle = {
         width: sizeClasses[size].spinner,
         height: sizeClasses[size].spinner,
         border: `3px solid rgba(255, 255, 255, 0.1)`,
@@ -47,11 +32,10 @@ const LoadingSpinner = ({
         animation: 'spin 1s linear infinite'
     };
 
-    const textStyles = {
-        color: fullScreen ? 'white' : colorClasses[color],
+    const textClassName = fullScreen ? 'text-white' : `text-${color}`;
+    const textStyle = {
         fontSize: sizeClasses[size].text,
-        fontWeight: '600',
-        textAlign: 'center'
+        fontWeight: '600'
     };
 
     return (
@@ -66,10 +50,10 @@ const LoadingSpinner = ({
                 `}
             </style>
 
-            <div style={containerStyles}>
-                <div style={spinnerStyles}></div>
+            <div className={containerClassName}>
+                <div style={spinnerStyle}></div>
                 {message && (
-                    <div style={textStyles}>
+                    <div className={`${textClassName} text-center`} style={textStyle}>
                         {message}
                     </div>
                 )}
@@ -97,14 +81,7 @@ export const ButtonLoader = ({ message = "Zpracovávám..." }) => (
 );
 
 export const CardLoader = ({ message = "Načítání..." }) => (
-    <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: '16px',
-        padding: '3rem',
-        textAlign: 'center'
-    }}>
+    <div className="card-loader">
         <LoadingSpinner
             size="medium"
             message={message}

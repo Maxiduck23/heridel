@@ -24,33 +24,11 @@ function App() {
     <ToastProvider>
       <UserProvider>
         <Router>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            width: '100%',
-            margin: 0,
-            padding: 0,
-            overflowX: 'hidden',
-            position: 'relative'
-          }}>
+          <div className="d-flex flex-column min-vh-100 w-100 m-0 p-0 overflow-x-hidden position-relative">
             <Header />
 
-            <main style={{
-              flexGrow: 1,
-              width: '100%',
-              margin: 0,
-              padding: 0,
-              overflowX: 'hidden',
-              position: 'relative'
-            }}>
-              <div style={{
-                width: '100%',
-                margin: 0,
-                padding: 0,
-                maxWidth: '100%',
-                overflowX: 'hidden'
-              }}>
+            <main className="flex-grow-1 w-100 m-0 p-0 overflow-x-hidden position-relative">
+              <div className="w-100 m-0 p-0 mw-100 overflow-x-hidden">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/games" element={<GamesPage />} />

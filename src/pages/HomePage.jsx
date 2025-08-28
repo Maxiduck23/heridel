@@ -66,9 +66,9 @@ const HomePage = () => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+            <div className="d-flex justify-content-center align-items-center homepage-loading">
                 <div className="text-center">
-                    <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} />
+                    <div className="spinner-border text-primary mb-3 homepage-spinner" />
                     <div className="h5 text-white-50">Načítání herního světa...</div>
                 </div>
             </div>
@@ -84,58 +84,32 @@ const HomePage = () => {
     }
 
     return (
-        <div style={{
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
-            minHeight: '100vh',
-            paddingBottom: 0, // OPRAVA - odebrání padding-bottom
-            marginBottom: 0 // OPRAVA - odebrání margin-bottom
-        }}>
+        <div className="homepage-gradient min-vh-100 pb-0 mb-0">
 
             {/* Hero Section */}
-            <section className="position-relative overflow-hidden" style={{ minHeight: '70vh' }}>
-                <div
-                    className="position-absolute w-100 h-100"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Cpath d='m0 0 40 40L0 80V0zm40 0 40 40-40 40V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                        opacity: 0.1
-                    }}
-                />
+            <section className="position-relative overflow-hidden hero-section">
+                <div className="position-absolute w-100 h-100 hero-pattern" />
 
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px'
-                }}>
-                    <div className="row align-items-center" style={{ minHeight: '70vh' }}>
+                <div className="container-custom">
+                    <div className="row align-items-center hero-content">
 
                         {/* Left Side - Content */}
                         <div className="col-lg-6 text-white">
                             <div className="mb-4">
-                                <div className="d-inline-flex align-items-center px-4 py-2 rounded-pill mb-4"
-                                    style={{ background: 'rgba(79, 70, 229, 0.2)', border: '1px solid rgba(79, 70, 229, 0.3)' }}>
+                                <div className="hero-badge d-inline-flex align-items-center px-4 py-2 rounded-pill mb-4">
                                     <span className="me-2">🎮</span>
-                                    <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>Nejlepší herní obchod</span>
+                                    <span className="hero-badge-text">Nejlepší herní obchod</span>
                                 </div>
 
-                                <h1 className="display-3 fw-bold mb-4" style={{
-                                    lineHeight: '1.1',
-                                    textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
-                                }}>
+                                <h1 className="display-3 fw-bold mb-4 hero-title">
                                     Objevte svět
-                                    <span className="d-block" style={{
-                                        background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text'
-                                    }}>
+                                    <span className="d-block hero-gradient-text">
                                         nekonečných
                                     </span>
                                     dobrodružství
                                 </h1>
 
-                                <p className="lead mb-5 text-white-50" style={{ fontSize: '1.2rem', lineHeight: '1.6' }}>
+                                <p className="lead mb-5 text-white-50 hero-lead">
                                     {totalGamesCount > 0 ? totalGamesCount : 'Stovky'} kvalitních her, exkluzivní nabídky a okamžité stahování.
                                     Vaše herní říše začíná zde.
                                 </p>
@@ -143,18 +117,7 @@ const HomePage = () => {
                                 <div className="d-flex flex-wrap gap-3">
                                     <Link
                                         to="/games"
-                                        className="btn btn-lg px-5 py-3"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-                                            border: 'none',
-                                            borderRadius: '50px',
-                                            fontSize: '1.1rem',
-                                            fontWeight: '600',
-                                            color: 'white',
-                                            boxShadow: '0 8px 32px rgba(79, 70, 229, 0.4)',
-                                            transition: 'all 0.3s ease',
-                                            textDecoration: 'none'
-                                        }}
+                                        className="btn btn-lg px-5 py-3 hero-btn-primary text-decoration-none"
                                     >
                                         Prozkoumat hry
                                     </Link>
@@ -162,14 +125,7 @@ const HomePage = () => {
                                     {!user && (
                                         <Link
                                             to="/register"
-                                            className="btn btn-outline-light btn-lg px-5 py-3"
-                                            style={{
-                                                borderRadius: '50px',
-                                                fontSize: '1.1rem',
-                                                fontWeight: '600',
-                                                borderWidth: '2px',
-                                                textDecoration: 'none'
-                                            }}
+                                            className="btn btn-outline-light btn-lg px-5 py-3 hero-btn-secondary text-decoration-none"
                                         >
                                             Připojit se zdarma
                                         </Link>
@@ -180,7 +136,7 @@ const HomePage = () => {
                                 <div className="row mt-5">
                                     <div className="col-12">
                                         <div className="text-center">
-                                            <div className="h2 fw-bold mb-1" style={{ color: '#4f46e5' }}>
+                                            <div className="h2 fw-bold mb-1 hero-stats-number">
                                                 {totalGamesCount > 0 ? totalGamesCount : '597'}+
                                             </div>
                                             <small className="text-white-50">Kvalitních her k dispozici</small>
@@ -198,42 +154,18 @@ const HomePage = () => {
                                         to={`/game/${homeData.featuredGame.slug || createSlug(homeData.featuredGame.name)}`}
                                         className="text-decoration-none"
                                     >
-                                        <div
-                                            className="rounded-4 overflow-hidden position-relative"
-                                            style={{
-                                                background: `linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${homeData.featuredGame.image_url})`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center',
-                                                height: '500px',
-                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                                                transition: 'all 0.3s ease',
-                                                cursor: 'pointer'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(-5px)';
-                                                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0,0,0,0.4)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
-                                            }}
-                                        >
+                                        <div className="featured-game-card rounded-4 overflow-hidden position-relative">
                                             <div className="position-absolute top-0 start-0 m-3">
-                                                <span className="badge px-3 py-2" style={{
-                                                    background: 'linear-gradient(45deg, #ef4444, #dc2626)',
-                                                    fontSize: '0.9rem',
-                                                    fontWeight: '600'
-                                                }}>
+                                                <span className="badge featured-game-badge px-3 py-2">
                                                     💎 Premium
                                                 </span>
                                             </div>
 
                                             <div className="position-absolute bottom-0 start-0 end-0 p-4">
-                                                <h3 className="text-white fw-bold mb-3" style={{ fontSize: '1.8rem' }}>
+                                                <h3 className="text-white fw-bold mb-3 featured-game-title">
                                                     {homeData.featuredGame.name}
                                                 </h3>
-                                                <p className="text-white-50 mb-4" style={{ fontSize: '1rem' }}>
+                                                <p className="text-white-50 mb-4 featured-game-desc">
                                                     {homeData.featuredGame.description?.substring(0, 120)}...
                                                 </p>
                                                 <div className="d-flex align-items-center justify-content-between">
@@ -243,14 +175,7 @@ const HomePage = () => {
                                                         </span>
                                                         <small className="text-white-50">tokenů</small>
                                                     </div>
-                                                    <div
-                                                        className="btn btn-light btn-lg px-4"
-                                                        style={{
-                                                            borderRadius: '25px',
-                                                            fontWeight: '600',
-                                                            boxShadow: '0 4px 16px rgba(255,255,255,0.2)'
-                                                        }}
-                                                    >
+                                                    <div className="btn btn-light btn-lg px-4 featured-game-btn">
                                                         Zobrazit detail
                                                     </div>
                                                 </div>
@@ -266,14 +191,8 @@ const HomePage = () => {
 
             {/* Genres Section */}
             {genres.length > 0 && (
-                <section style={{ padding: '3rem 0' }}>
-                    <div style={{
-                        width: '100%',
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        paddingLeft: '15px',
-                        paddingRight: '15px'
-                    }}>
+                <section className="genres-section">
+                    <div className="container-custom">
                         <div className="text-center mb-5">
                             <h2 className="text-white fw-bold mb-3">Prozkoumej žánry</h2>
                             <p className="text-white-50 lead">Najdi své oblíbené herní styly</p>
@@ -284,27 +203,15 @@ const HomePage = () => {
                                 <div key={`genre-${genre.genre_id || genre.slug || index}`} className="col-lg-3 col-md-4 col-sm-6">
                                     <Link
                                         to={`/games?category=${genre.slug}`}
-                                        className="text-decoration-none"
-                                        style={{ transition: 'all 0.3s ease' }}
+                                        className="text-decoration-none genre-card-link"
                                     >
                                         <div
-                                            className="rounded-3 p-4 text-center h-100"
+                                            className="genre-card rounded-3 p-4 text-center h-100"
                                             style={{
                                                 background: `linear-gradient(135deg, ${getGenreGradient(index)})`,
-                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                backdropFilter: 'blur(10px)',
-                                                transition: 'all 0.3s ease'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(-5px)';
-                                                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = 'none';
                                             }}
                                         >
-                                            <div className="mb-3" style={{ fontSize: '2.5rem' }}>
+                                            <div className="mb-3 genre-icon">
                                                 {getGenreIcon(genre.name)}
                                             </div>
                                             <h6 className="text-white fw-bold mb-0">{genre.name}</h6>
@@ -319,20 +226,14 @@ const HomePage = () => {
 
             {/* Popular Games Section s SLUG LINKY */}
             {homeData?.popularGames && (
-                <section style={{ padding: '3rem 0 3rem 0' }}> {/* OPRAVA - pouze horní padding */}
-                    <div style={{
-                        width: '100%',
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        paddingLeft: '15px',
-                        paddingRight: '15px'
-                    }}>
+                <section className="popular-games-section">
+                    <div className="container-custom">
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
                                 <h2 className="text-white fw-bold mb-2">Populární hry</h2>
                                 <p className="text-white-50 mb-0">Nejžádanější hry podle ceny</p>
                             </div>
-                            <Link to="/games" className="btn btn-outline-light" style={{ textDecoration: 'none' }}>
+                            <Link to="/games" className="btn btn-outline-light text-decoration-none">
                                 Zobrazit všechny
                             </Link>
                         </div>
@@ -342,37 +243,14 @@ const HomePage = () => {
                                 <div key={`popular-game-${game.game_id}`} className="col-lg-3 col-md-4 col-sm-6">
                                     <Link
                                         to={`/game/${game.slug || createSlug(game.name)}`}
-                                        className="text-decoration-none"
-                                        style={{ display: 'block', height: '100%' }}
+                                        className="text-decoration-none d-block h-100"
                                     >
-                                        <div
-                                            className="card h-100 border-0 position-relative overflow-hidden"
-                                            style={{
-                                                background: 'rgba(255,255,255,0.05)',
-                                                backdropFilter: 'blur(10px)',
-                                                border: '1px solid rgba(255,255,255,0.1)',
-                                                borderRadius: '16px',
-                                                transition: 'all 0.3s ease',
-                                                cursor: 'pointer'
-                                            }}
-                                            onMouseEnter={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(-8px)';
-                                                e.currentTarget.style.boxShadow = '0 15px 30px rgba(0,0,0,0.25)';
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = 'none';
-                                            }}
-                                        >
+                                        <div className="popular-game-card card h-100 border-0 position-relative overflow-hidden">
                                             <div className="position-relative">
                                                 <img
                                                     src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
-                                                    className="card-img-top"
+                                                    className="card-img-top popular-game-img"
                                                     alt={game.name}
-                                                    style={{
-                                                        height: '200px',
-                                                        objectFit: 'cover'
-                                                    }}
                                                 />
                                                 <div className="position-absolute top-0 start-0 m-2">
                                                     <span className="badge bg-primary px-2 py-1">
@@ -380,46 +258,18 @@ const HomePage = () => {
                                                     </span>
                                                 </div>
                                                 <div className="position-absolute bottom-0 end-0 m-2">
-                                                    <span
-                                                        className="badge px-2 py-1"
-                                                        style={{
-                                                            background: 'rgba(0,0,0,0.8)',
-                                                            color: '#10b981',
-                                                            fontSize: '0.9rem',
-                                                            fontWeight: '600'
-                                                        }}
-                                                    >
+                                                    <span className="badge popular-game-price px-2 py-1">
                                                         {game.price_tokens || 0} 🪙
                                                     </span>
                                                 </div>
                                             </div>
 
                                             <div className="card-body d-flex flex-column">
-                                                <h6 className="card-title text-white fw-bold mb-2" style={{
-                                                    fontSize: '1rem',
-                                                    lineHeight: '1.3',
-                                                    height: '2.6rem',
-                                                    overflow: 'hidden',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical'
-                                                }}>
+                                                <h6 className="card-title text-white fw-bold mb-2 popular-game-title">
                                                     {game.name}
                                                 </h6>
 
-                                                <div
-                                                    className="text-center mt-auto"
-                                                    style={{
-                                                        color: '#4f46e5',
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: '600',
-                                                        opacity: 0,
-                                                        transition: 'opacity 0.3s ease'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        e.target.style.opacity = '1';
-                                                    }}
-                                                >
+                                                <div className="text-center mt-auto popular-game-hover">
                                                     👁️ Zobrazit detail
                                                 </div>
                                             </div>
@@ -434,20 +284,8 @@ const HomePage = () => {
 
             {/* CTA Section - OPRAVA padding */}
             {!user && (
-                <section style={{
-                    padding: '3rem 0 0 0', // OPRAVA - pouze horní padding
-                    background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1))',
-                    borderTop: '1px solid rgba(255,255,255,0.1)',
-                    marginBottom: 0 // OPRAVA - odebrání margin
-                }}>
-                    <div style={{
-                        width: '100%',
-                        maxWidth: '1200px',
-                        margin: '0 auto',
-                        paddingLeft: '15px',
-                        paddingRight: '15px',
-                        paddingBottom: '3rem' // OPRAVA - padding jen dovnitř
-                    }}>
+                <section className="cta-section">
+                    <div className="container-custom cta-container">
                         <div className="text-center">
                             <h2 className="text-white fw-bold mb-3">Připoj se k našemu království</h2>
                             <p className="text-white-50 lead mb-4">
@@ -455,17 +293,7 @@ const HomePage = () => {
                             </p>
                             <Link
                                 to="/register"
-                                className="btn btn-lg px-5 py-3"
-                                style={{
-                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                                    border: 'none',
-                                    borderRadius: '50px',
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    color: 'white',
-                                    boxShadow: '0 8px 32px rgba(16, 185, 129, 0.4)',
-                                    textDecoration: 'none'
-                                }}
+                                className="btn btn-lg px-5 py-3 cta-btn text-decoration-none"
                             >
                                 Registrovat se zdarma
                             </Link>

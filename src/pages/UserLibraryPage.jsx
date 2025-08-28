@@ -193,10 +193,10 @@ const UserLibraryPage = () => {
 
     if (loading) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+            <div className="min-vh-100 d-flex align-items-center justify-content-center library-loading-bg">
                 <div className="text-center">
-                    <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }}></div>
-                    <h5 style={{ color: '#cbd5e1' }}>Načítání knihovny...</h5>
+                    <div className="spinner-border text-primary mb-3 library-spinner"></div>
+                    <h5 className="library-loading-text">Načítání knihovny...</h5>
                 </div>
             </div>
         );
@@ -204,14 +204,8 @@ const UserLibraryPage = () => {
 
     if (error) {
         return (
-            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', paddingTop: '2rem' }}>
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px'
-                }}>
+            <div className="min-vh-100 library-bg pt-4">
+                <div className="container-custom">
                     <div className="alert alert-danger">
                         <h5>Chyba při načítání knihovny</h5>
                         <p className="mb-0">{error}</p>
@@ -223,9 +217,9 @@ const UserLibraryPage = () => {
 
     if (!user) {
         return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
+            <div className="min-vh-100 d-flex align-items-center justify-content-center library-bg">
                 <div className="text-center">
-                    <h3 style={{ color: '#cbd5e1' }}>Pro zobrazení knihovny se musíte přihlásit</h3>
+                    <h3 className="library-no-user-text">Pro zobrazení knihovny se musíte přihlásit</h3>
                     <Link to="/login" className="btn btn-primary mt-3">Přihlásit se</Link>
                 </div>
             </div>
@@ -236,44 +230,22 @@ const UserLibraryPage = () => {
     const totalWishlistGames = wishlistGames.length;
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
-            paddingTop: '2rem',
-            paddingBottom: '2rem'
-        }}>
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '0 auto',
-                paddingLeft: '15px',
-                paddingRight: '15px'
-            }}>
+        <div className="min-vh-100 library-bg library-page-padding">
+            <div className="container-custom">
 
                 {/* Header */}
                 <div className="row mb-4">
                     <div className="col-12">
-                        <div style={{
-                            background: 'rgba(255,255,255,0.05)',
-                            backdropFilter: 'blur(10px)',
-                            borderRadius: '16px',
-                            padding: '2rem',
-                            border: '1px solid rgba(255,255,255,0.1)'
-                        }}>
+                        <div className="library-header-card rounded-4 p-4">
                             <div className="row align-items-center">
                                 <div className="col-md-8">
                                     <div className="d-flex align-items-center mb-2">
-                                        <span style={{ fontSize: '2.5rem', marginRight: '1rem' }}>📚</span>
+                                        <span className="library-header-icon me-3">📚</span>
                                         <div>
-                                            <h1 style={{
-                                                fontSize: '2rem',
-                                                fontWeight: '800',
-                                                color: 'white',
-                                                marginBottom: '0.25rem'
-                                            }}>
+                                            <h1 className="library-title mb-1">
                                                 Moje knihovna
                                             </h1>
-                                            <p style={{ color: '#cbd5e1', margin: '0', fontSize: '1.1rem' }}>
+                                            <p className="library-subtitle mb-0">
                                                 Správa vaší herní kolekce
                                             </p>
                                         </div>
@@ -282,16 +254,16 @@ const UserLibraryPage = () => {
                                 <div className="col-md-4">
                                     <div className="row text-center">
                                         <div className="col-6">
-                                            <div style={{ color: '#10b981', fontSize: '1.5rem', fontWeight: '700' }}>
+                                            <div className="library-stat-owned">
                                                 {totalOwnedGames}
                                             </div>
-                                            <small style={{ color: '#94a3b8' }}>Vlastněných her</small>
+                                            <small className="library-stat-label">Vlastněných her</small>
                                         </div>
                                         <div className="col-6">
-                                            <div style={{ color: '#ef4444', fontSize: '1.5rem', fontWeight: '700' }}>
+                                            <div className="library-stat-wishlist">
                                                 {totalWishlistGames}
                                             </div>
-                                            <small style={{ color: '#94a3b8' }}>V seznamu přání</small>
+                                            <small className="library-stat-label">V seznamu přání</small>
                                         </div>
                                     </div>
                                 </div>
@@ -303,43 +275,23 @@ const UserLibraryPage = () => {
                 {/* OPRAVENÉ FILTRY - lepšie responzívne rozloženie */}
                 <div className="row mb-4">
                     <div className="col-12">
-                        <div style={{
-                            background: 'rgba(255,255,255,0.05)',
-                            backdropFilter: 'blur(10px)',
-                            borderRadius: '12px',
-                            padding: '1.5rem',
-                            border: '1px solid rgba(255,255,255,0.1)'
-                        }}>
+                        <div className="library-filters-card rounded-3 p-4">
                             {/* Mobile first approach - stacked na malom obrazovni */}
                             <div className="row g-3 align-items-center">
                                 <div className="col-12 col-md-4">
                                     <input
                                         type="text"
-                                        className="form-control"
+                                        className="form-control library-search-input"
                                         placeholder="🔍 Hledat hry..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        style={{
-                                            borderRadius: '8px',
-                                            border: '2px solid rgba(255,255,255,0.2)',
-                                            padding: '0.75rem 1rem',
-                                            background: 'rgba(255,255,255,0.1)',
-                                            color: 'white'
-                                        }}
                                     />
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3">
                                     <select
-                                        className="form-select"
+                                        className="form-select library-filter-select"
                                         value={filterBy}
                                         onChange={(e) => setFilterBy(e.target.value)}
-                                        style={{
-                                            borderRadius: '8px',
-                                            border: '2px solid rgba(255,255,255,0.2)',
-                                            padding: '0.75rem 1rem',
-                                            background: 'rgba(255,255,255,0.1)',
-                                            color: 'white'
-                                        }}
                                     >
                                         <option value="owned">📚 Vlastněné hry ({totalOwnedGames})</option>
                                         <option value="wishlist">❤️ Seznam přání ({totalWishlistGames})</option>
@@ -347,16 +299,9 @@ const UserLibraryPage = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3">
                                     <select
-                                        className="form-select"
+                                        className="form-select library-sort-select"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        style={{
-                                            borderRadius: '8px',
-                                            border: '2px solid rgba(255,255,255,0.2)',
-                                            padding: '0.75rem 1rem',
-                                            background: 'rgba(255,255,255,0.1)',
-                                            color: 'white'
-                                        }}
                                     >
                                         <option value="recent">📅 Podle data</option>
                                         <option value="name">🔤 Podle názvu</option>
@@ -364,8 +309,8 @@ const UserLibraryPage = () => {
                                     </select>
                                 </div>
                                 <div className="col-12 col-md-2">
-                                    <div style={{ fontSize: '0.9rem', color: '#94a3b8', textAlign: 'center' }}>
-                                        <strong style={{ color: 'white' }}>{filteredGames.length}</strong>
+                                    <div className="text-center library-count-display">
+                                        <strong className="text-white">{filteredGames.length}</strong>
                                         <br />
                                         <small>
                                             {filterBy === 'owned' ? 'vlastněných' : 'v přáních'}
@@ -381,33 +326,20 @@ const UserLibraryPage = () => {
                 <div className="row">
                     {filteredGames.length === 0 && !loading ? (
                         <div className="col-12">
-                            <div style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(10px)',
-                                borderRadius: '12px',
-                                padding: '3rem',
-                                textAlign: 'center',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}>
-                                <div style={{ fontSize: '4rem', marginBottom: '1rem', opacity: '0.5' }}>
+                            <div className="library-empty-state rounded-3 p-5 text-center">
+                                <div className="library-empty-icon mb-3">
                                     {filterBy === 'owned' ? '📚' : '❤️'}
                                 </div>
-                                <h3 style={{ color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                                <h3 className="library-empty-title mb-2">
                                     {filterBy === 'owned' ? 'Žádné vlastněné hry' : 'Prázdný seznam přání'}
                                 </h3>
-                                <p style={{ color: '#94a3b8', marginBottom: '1.5rem' }}>
+                                <p className="library-empty-text mb-4">
                                     {searchTerm ? 'Zkuste změnit vyhledávací kritéria' :
                                         filterBy === 'owned' ? 'Zatím jste si nezakoupili žádné hry' : 'Zatím jste si nepřidali žádné hry do seznamu přání'}
                                 </p>
                                 <Link
                                     to="/games"
-                                    className="btn btn-primary px-4 py-2"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                                        border: 'none',
-                                        borderRadius: '25px',
-                                        textDecoration: 'none'
-                                    }}
+                                    className="btn btn-primary px-4 py-2 library-browse-btn text-decoration-none"
                                 >
                                     Prohlédnout hry
                                 </Link>
@@ -416,44 +348,18 @@ const UserLibraryPage = () => {
                     ) : (
                         filteredGames.map((libraryGame, index) => (
                             <div key={libraryGame.is_wishlist ? `wish-${libraryGame.game.game_id}` : libraryGame.library_id} className="col-12 mb-3">
-                                <div style={{
-                                    background: 'rgba(255,255,255,0.05)',
-                                    backdropFilter: 'blur(10px)',
-                                    borderRadius: '12px',
-                                    overflow: 'hidden',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    transition: 'all 0.2s ease'
-                                }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(-2px)';
-                                        e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.3)';
-                                        e.currentTarget.style.border = '1px solid rgba(79, 70, 229, 0.5)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(0)';
-                                        e.currentTarget.style.boxShadow = 'none';
-                                        e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)';
-                                    }}
-                                >
+                                <div className="library-game-card rounded-3 overflow-hidden">
                                     <div className="row g-0">
                                         {/* Obrázek hry */}
                                         <div className="col-md-3">
-                                            <div style={{
-                                                backgroundImage: `url(${libraryGame.game.image_url})`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center',
-                                                height: '200px',
-                                                position: 'relative'
-                                            }}>
-                                                <div style={{
-                                                    position: 'absolute',
-                                                    top: '0.75rem',
-                                                    left: '0.75rem'
-                                                }}>
-                                                    <span className="badge px-2 py-1" style={{
-                                                        background: libraryGame.is_wishlist ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)',
-                                                        fontSize: '0.8rem'
-                                                    }}>
+                                            <div
+                                                className="library-game-image position-relative"
+                                                style={{
+                                                    backgroundImage: `url(${libraryGame.game.image_url})`,
+                                                }}
+                                            >
+                                                <div className="position-absolute top-0 start-0 p-3">
+                                                    <span className={`badge px-2 py-1 ${libraryGame.is_wishlist ? 'library-wishlist-badge' : 'library-owned-badge'}`}>
                                                         {libraryGame.is_wishlist ? '❤️ V přáních' : '📚 Vlastněno'}
                                                     </span>
                                                 </div>
@@ -462,28 +368,12 @@ const UserLibraryPage = () => {
 
                                         {/* Informace o hře */}
                                         <div className="col-md-6">
-                                            <div style={{ padding: '1.5rem' }}>
-                                                <h5 style={{
-                                                    fontSize: '1.3rem',
-                                                    fontWeight: '700',
-                                                    color: 'white',
-                                                    margin: '0 0 1rem 0'
-                                                }}>
+                                            <div className="p-4">
+                                                <h5 className="library-game-title mb-3">
                                                     {libraryGame.game.name}
                                                 </h5>
 
-                                                <p style={{
-                                                    color: '#cbd5e1',
-                                                    fontSize: '0.95rem',
-                                                    margin: '0 0 1rem 0',
-                                                    lineHeight: '1.5',
-                                                    maxHeight: '4.5em',
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 3,
-                                                    WebkitBoxOrient: 'vertical'
-                                                }}>
+                                                <p className="library-game-description mb-3">
                                                     {libraryGame.game.description}
                                                 </p>
 
@@ -492,26 +382,13 @@ const UserLibraryPage = () => {
                                                         {libraryGame.game.genres.slice(0, 3).map((genre, gIndex) => (
                                                             <span
                                                                 key={gIndex}
-                                                                style={{
-                                                                    background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                                    color: 'white',
-                                                                    padding: '0.25rem 0.75rem',
-                                                                    borderRadius: '15px',
-                                                                    fontSize: '0.75rem',
-                                                                    fontWeight: '500'
-                                                                }}
+                                                                className="library-genre-badge"
                                                             >
                                                                 {genre.name || genre}
                                                             </span>
                                                         ))}
                                                         {libraryGame.game.genres.length > 3 && (
-                                                            <span style={{
-                                                                background: 'rgba(255,255,255,0.2)',
-                                                                color: 'white',
-                                                                padding: '0.25rem 0.75rem',
-                                                                borderRadius: '15px',
-                                                                fontSize: '0.75rem'
-                                                            }}>
+                                                            <span className="library-genre-more-badge">
                                                                 +{libraryGame.game.genres.length - 3}
                                                             </span>
                                                         )}
@@ -520,7 +397,7 @@ const UserLibraryPage = () => {
 
                                                 {!libraryGame.is_wishlist && (
                                                     <div className="mb-3">
-                                                        <div style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                                                        <div className="library-purchase-info">
                                                             🛒 Zakoupeno: {formatDate(libraryGame.purchase_date)}
                                                         </div>
                                                     </div>
@@ -530,31 +407,19 @@ const UserLibraryPage = () => {
 
                                         {/* Akce */}
                                         <div className="col-md-3">
-                                            <div style={{ padding: '1.5rem' }}>
+                                            <div className="p-4">
                                                 <div className="mb-3 text-center">
-                                                    <div style={{
-                                                        color: '#10b981',
-                                                        fontSize: '1.4rem',
-                                                        fontWeight: '700'
-                                                    }}>
+                                                    <div className="library-price-display">
                                                         {libraryGame.game.price_tokens || 0} 🪙
                                                     </div>
-                                                    <small style={{ color: '#94a3b8' }}>Hodnota</small>
+                                                    <small className="library-price-label">Hodnota</small>
                                                 </div>
 
                                                 {!libraryGame.is_wishlist ? (
                                                     // Vlastněná hra
                                                     <div className="d-grid gap-2">
                                                         <button
-                                                            className="btn"
-                                                            style={{
-                                                                background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '8px',
-                                                                padding: '0.75rem',
-                                                                fontWeight: '600'
-                                                            }}
+                                                            className="btn library-show-key-btn"
                                                             onClick={() => showGameKey(libraryGame)}
                                                         >
                                                             🗝️ Zobrazit klíč
@@ -562,16 +427,7 @@ const UserLibraryPage = () => {
 
                                                         <Link
                                                             to={`/game/${libraryGame.game.game_id}`}
-                                                            className="btn"
-                                                            style={{
-                                                                background: 'rgba(255,255,255,0.1)',
-                                                                color: 'white',
-                                                                border: '1px solid rgba(255,255,255,0.2)',
-                                                                borderRadius: '8px',
-                                                                padding: '0.75rem',
-                                                                fontWeight: '600',
-                                                                textDecoration: 'none'
-                                                            }}
+                                                            className="btn library-detail-btn text-decoration-none"
                                                         >
                                                             👁️ Detail hry
                                                         </Link>
@@ -580,16 +436,7 @@ const UserLibraryPage = () => {
                                                     // Hra v seznamu přání
                                                     <Link
                                                         to={`/game/${libraryGame.game.game_id}`}
-                                                        className="btn w-100"
-                                                        style={{
-                                                            background: 'linear-gradient(45deg, #10b981, #059669)',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '8px',
-                                                            padding: '0.75rem',
-                                                            fontWeight: '600',
-                                                            textDecoration: 'none'
-                                                        }}
+                                                        className="btn w-100 library-buy-btn text-decoration-none"
                                                     >
                                                         🛒 Koupit hru
                                                     </Link>
@@ -607,102 +454,43 @@ const UserLibraryPage = () => {
                 {showKeyModal && selectedGame && (
                     <>
                         <div
-                            style={{
-                                position: 'fixed',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: 'rgba(0, 0, 0, 0.7)',
-                                zIndex: 1050,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backdropFilter: 'blur(5px)'
-                            }}
+                            className="library-modal-backdrop"
                             onClick={() => setShowKeyModal(false)}
                         >
                             <div
-                                style={{
-                                    background: 'rgba(30, 41, 59, 0.95)',
-                                    backdropFilter: 'blur(20px)',
-                                    borderRadius: '16px',
-                                    padding: '2rem',
-                                    maxWidth: '500px',
-                                    width: '90%',
-                                    border: '1px solid rgba(255,255,255,0.2)',
-                                    margin: '1rem'
-                                }}
+                                className="library-key-modal"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="text-center mb-4">
-                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🗝️</div>
-                                    <h3 style={{ color: 'white', marginBottom: '0.5rem' }}>
+                                    <div className="library-key-modal-icon mb-3">🗝️</div>
+                                    <h3 className="text-white mb-2">
                                         Herní klíč
                                     </h3>
-                                    <p style={{ color: '#cbd5e1', margin: '0' }}>
+                                    <p className="library-key-modal-subtitle mb-0">
                                         {selectedGame.game.name}
                                     </p>
                                 </div>
 
-                                <div style={{
-                                    background: 'rgba(15, 23, 42, 0.8)',
-                                    padding: '1.5rem',
-                                    borderRadius: '12px',
-                                    border: '2px dashed rgba(79, 70, 229, 0.5)',
-                                    marginBottom: '1.5rem'
-                                }}>
-                                    <div style={{
-                                        fontSize: '1.1rem',
-                                        fontFamily: 'monospace',
-                                        fontWeight: '700',
-                                        color: '#4f46e5',
-                                        textAlign: 'center',
-                                        letterSpacing: '1px',
-                                        userSelect: 'all',
-                                        wordBreak: 'break-all'
-                                    }}>
+                                <div className="library-key-container mb-4">
+                                    <div className="library-key-code">
                                         {selectedGame.key_code}
                                     </div>
                                 </div>
 
-                                <div className="alert alert-warning mb-3" style={{
-                                    fontSize: '0.9rem',
-                                    background: 'rgba(245, 158, 11, 0.2)',
-                                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                                    color: '#fbbf24'
-                                }}>
+                                <div className="alert alert-warning mb-3 library-key-warning">
                                     ⚠️ <strong>Pozor:</strong> Klíč si uložte na bezpečné místo.
                                     Tento klíč je určen pouze pro vás.
                                 </div>
 
                                 <div className="d-flex gap-2">
                                     <button
-                                        className="btn flex-fill"
-                                        style={{
-                                            background: copiedKey ?
-                                                'linear-gradient(45deg, #10b981, #059669)' :
-                                                'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '8px',
-                                            padding: '0.75rem',
-                                            fontWeight: '600'
-                                        }}
+                                        className={`btn flex-fill ${copiedKey ? 'library-key-copied-btn' : 'library-key-copy-btn'}`}
                                         onClick={() => copyGameKey(selectedGame.key_code)}
                                     >
                                         {copiedKey ? '✅ Zkopírováno!' : '📋 Kopírovat klíč'}
                                     </button>
                                     <button
-                                        className="btn flex-fill"
-                                        style={{
-                                            background: 'rgba(100, 116, 139, 0.3)',
-                                            color: 'white',
-                                            border: '1px solid rgba(100, 116, 139, 0.5)',
-                                            borderRadius: '8px',
-                                            padding: '0.75rem',
-                                            fontWeight: '600'
-                                        }}
+                                        className="btn flex-fill library-key-close-btn"
                                         onClick={() => setShowKeyModal(false)}
                                     >
                                         Zavřít

@@ -23,20 +23,8 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-dark text-white py-5 mt-5" style={{
-            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            width: '100%',
-            margin: 0,
-            padding: '3rem 0 2rem 0'
-        }}>
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '0 auto',
-                paddingLeft: '15px',
-                paddingRight: '15px'
-            }}>
+        <footer className="footer-gradient text-white w-100 m-0 footer-padding">
+            <div className="container-custom">
                 <div className="row g-4">
                     {/* O Heridel sekce */}
                     <div className="col-lg-4 col-md-6">
@@ -105,7 +93,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <hr className="mt-5" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+                <hr className="mt-5 footer-divider" />
 
                 <div className="text-center text-white-50 mt-4">
                     <div className="row">

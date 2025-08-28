@@ -136,12 +136,9 @@ const GamesPage = () => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{
-                height: '60vh',
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
-            }}>
+            <div className="d-flex justify-content-center align-items-center games-page-loading">
                 <div className="text-center">
-                    <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} />
+                    <div className="spinner-border text-primary mb-3 games-page-spinner" />
                     <div className="h5 text-white">Načítání her...</div>
                 </div>
             </div>
@@ -150,13 +147,8 @@ const GamesPage = () => {
 
     if (error) {
         return (
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    padding: '3rem 15px'
-                }}>
+            <div className="games-page-bg min-vh-100">
+                <div className="container-custom pt-5">
                     <div className="alert alert-danger">
                         <i className="fas fa-exclamation-triangle me-2"></i>
                         <strong>Chyba při načítání her:</strong> {error}
@@ -167,21 +159,12 @@ const GamesPage = () => {
     }
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)', minHeight: '100vh' }}>
+        <div className="games-page-bg min-vh-100">
 
             {/* Hero Header */}
-            <section className="position-relative py-5" style={{
-                background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)'
-            }}>
+            <section className="position-relative py-5 games-page-hero">
                 {/* Background Pattern */}
-                <div
-                    className="position-absolute w-100 h-100 top-0 start-0"
-                    style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.08'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                        opacity: 0.5
-                    }}
-                />
+                <div className="position-absolute w-100 h-100 top-0 start-0 games-page-pattern" />
 
                 <div className="container position-relative">
                     <div className="text-center text-white">
@@ -198,70 +181,42 @@ const GamesPage = () => {
                             </ol>
                         </nav>
 
-                        <div className="mb-3" style={{ fontSize: '3rem' }}>🎮</div>
-                        <h1 className="display-4 fw-bold mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                        <div className="mb-3 games-page-hero-icon">🎮</div>
+                        <h1 className="display-4 fw-bold mb-3 games-page-hero-title">
                             Herní katalog
                         </h1>
                         <p className="lead text-white-50 mb-4">
-                            Objevte  {filteredGames.length} her ze všech žánrů.
+                            Objevte {filteredGames.length} her ze všech žánrů.
                         </p>
                     </div>
                 </div>
             </section>
 
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '0 auto',
-                padding: '3rem 15px'
-            }}>
+            <div className="container-custom games-page-content">
 
                 {/* Search & Filters */}
                 <div className="row mb-5">
                     <div className="col-12">
-                        <div
-                            className="rounded-4 p-4"
-                            style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}
-                        >
+                        <div className="games-page-filters-card rounded-4 p-4">
                             {/* Search Bar */}
                             <div className="row mb-4">
                                 <div className="col-md-8">
                                     <div className="position-relative">
                                         <input
                                             type="text"
-                                            className="form-control form-control-lg"
+                                            className="form-control form-control-lg games-page-search-input"
                                             placeholder="🔍 Hledat hry podle názvu..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            style={{
-                                                background: 'rgba(255,255,255,0.1)',
-                                                border: '2px solid rgba(255,255,255,0.2)',
-                                                borderRadius: '50px',
-                                                color: 'white',
-                                                paddingLeft: '3rem',
-                                                fontSize: '1.1rem'
-                                            }}
                                         />
-                                        <i className="fas fa-search position-absolute text-white-50"
-                                            style={{ left: '1.25rem', top: '50%', transform: 'translateY(-50%)' }}></i>
+                                        <i className="fas fa-search position-absolute text-white-50 games-page-search-icon"></i>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <select
-                                        className="form-select form-select-lg"
+                                        className="form-select form-select-lg games-page-sort-select"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        style={{
-                                            background: 'rgba(255,255,255,0.1)',
-                                            border: '2px solid rgba(255,255,255,0.2)',
-                                            borderRadius: '50px',
-                                            color: 'white',
-                                            fontSize: '1.1rem'
-                                        }}
                                     >
                                         <option value="name">📝 Podle názvu (A-Z)</option>
                                         <option value="price-low">💰 Nejlevnější</option>
@@ -274,26 +229,16 @@ const GamesPage = () => {
                             {/* Genre Filters */}
                             <div className="d-flex flex-wrap gap-2">
                                 <button
-                                    className={`btn ${!urlCategory ? 'btn-primary' : 'btn-outline-light'}`}
+                                    className={`btn ${!urlCategory ? 'btn-primary' : 'btn-outline-light'} games-page-genre-btn`}
                                     onClick={() => handleCategoryClick('all')}
-                                    style={{
-                                        borderRadius: '25px',
-                                        fontWeight: '500',
-                                        border: !urlCategory ? 'none' : '2px solid rgba(255,255,255,0.3)'
-                                    }}
                                 >
                                     Všechny hry
                                 </button>
                                 {genres.map(genre => (
                                     <button
                                         key={`genre-${genre.slug}`}
-                                        className={`btn ${urlCategory === genre.slug ? 'btn-primary' : 'btn-outline-light'}`}
+                                        className={`btn ${urlCategory === genre.slug ? 'btn-primary' : 'btn-outline-light'} games-page-genre-btn`}
                                         onClick={() => handleCategoryClick(genre.slug)}
-                                        style={{
-                                            borderRadius: '25px',
-                                            fontWeight: '500',
-                                            border: urlCategory === genre.slug ? 'none' : '2px solid rgba(255,255,255,0.3)'
-                                        }}
                                     >
                                         {genre.name}
                                     </button>
@@ -306,7 +251,7 @@ const GamesPage = () => {
                 {/* Games Grid - KOMPLETNE KLIKATEĽNÉ KARTY */}
                 {currentGames.length === 0 ? (
                     <div className="text-center py-5">
-                        <div className="mb-4" style={{ fontSize: '4rem', opacity: '0.5' }}>🎮</div>
+                        <div className="mb-4 games-page-no-games-icon">🎮</div>
                         <h3 className="text-white mb-3">Žádné hry nenalezeny</h3>
                         <p className="text-white-50 mb-4">
                             {searchTerm ? 'Zkuste změnit vyhledávací kritéria nebo filtry' : 'Momentálně nejsou k dispozici žádné hry'}
@@ -327,50 +272,14 @@ const GamesPage = () => {
                                 {/* CELÁ KARTA JE KLIKATELNÁ */}
                                 <Link
                                     to={`/game/${game.slug || createSlug(game.name)}`}
-                                    className="text-decoration-none"
-                                    style={{
-                                        display: 'block',
-                                        height: '100%'
-                                    }}
+                                    className="text-decoration-none d-block h-100"
                                 >
-                                    <div
-                                        className="card h-100 border-0 position-relative overflow-hidden"
-                                        style={{
-                                            background: 'rgba(255,255,255,0.05)',
-                                            backdropFilter: 'blur(10px)',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            borderRadius: '20px',
-                                            transition: 'all 0.4s ease',
-                                            cursor: 'pointer'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(-12px)';
-                                            e.currentTarget.style.boxShadow = '0 25px 50px rgba(0,0,0,0.3)';
-                                            e.currentTarget.style.border = '1px solid rgba(79, 70, 229, 0.5)';
-                                            // Hover efekt na obrázku
-                                            const img = e.currentTarget.querySelector('img');
-                                            if (img) img.style.transform = 'scale(1.05)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                            e.currentTarget.style.boxShadow = 'none';
-                                            e.currentTarget.style.border = '1px solid rgba(255,255,255,0.1)';
-                                            // Návrat obrázku do pôvodného stavu
-                                            const img = e.currentTarget.querySelector('img');
-                                            if (img) img.style.transform = 'scale(1)';
-                                        }}
-                                    >
+                                    <div className="games-page-card card h-100 border-0 position-relative overflow-hidden">
                                         <div className="position-relative">
                                             <img
                                                 src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
-                                                className="card-img-top"
+                                                className="card-img-top games-page-card-img"
                                                 alt={game.name}
-                                                style={{
-                                                    height: '220px',
-                                                    objectFit: 'cover',
-                                                    borderRadius: '20px 20px 0 0',
-                                                    transition: 'transform 0.4s ease'
-                                                }}
                                                 onError={(e) => {
                                                     e.target.src = 'https://placehold.co/300x200/1e293b/64748b?text=No+Image';
                                                 }}
@@ -392,31 +301,14 @@ const GamesPage = () => {
 
                                             {/* Price tag */}
                                             <div className="position-absolute bottom-0 start-0 p-3">
-                                                <span
-                                                    className="badge px-3 py-2"
-                                                    style={{
-                                                        background: 'linear-gradient(135deg, #10b981, #059669)',
-                                                        fontSize: '1rem',
-                                                        fontWeight: '700',
-                                                        borderRadius: '20px',
-                                                        boxShadow: '0 4px 16px rgba(16, 185, 129, 0.4)'
-                                                    }}
-                                                >
+                                                <span className="badge games-page-price-badge px-3 py-2">
                                                     {game.price_tokens || '0'} 🪙
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div className="card-body d-flex flex-column p-4">
-                                            <h5 className="card-title text-white fw-bold mb-2" style={{
-                                                fontSize: '1.2rem',
-                                                lineHeight: '1.3',
-                                                height: '3rem',
-                                                overflow: 'hidden',
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 2,
-                                                WebkitBoxOrient: 'vertical'
-                                            }}>
+                                            <h5 className="card-title text-white fw-bold mb-2 games-page-card-title">
                                                 {game.name}
                                             </h5>
 
@@ -430,15 +322,7 @@ const GamesPage = () => {
                                                 {game.publisher_name || 'Neznámý vydavatel'}
                                             </p>
 
-                                            <p className="card-text text-white-50 flex-grow-1 mb-3" style={{
-                                                fontSize: '0.9rem',
-                                                lineHeight: '1.4',
-                                                height: '4.2rem',
-                                                overflow: 'hidden',
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 3,
-                                                WebkitBoxOrient: 'vertical'
-                                            }}>
+                                            <p className="card-text text-white-50 flex-grow-1 mb-3 games-page-card-desc">
                                                 {game.description || 'Popis hry není k dispozici.'}
                                             </p>
 
@@ -448,27 +332,13 @@ const GamesPage = () => {
                                                     {game.genres.slice(0, 2).map(genre => (
                                                         <span
                                                             key={genre}
-                                                            className="badge me-1 mb-1"
-                                                            style={{
-                                                                fontSize: '0.7rem',
-                                                                background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                                borderRadius: '12px',
-                                                                padding: '0.3rem 0.7rem'
-                                                            }}
+                                                            className="badge me-1 mb-1 games-page-genre-tag"
                                                         >
                                                             {genre}
                                                         </span>
                                                     ))}
                                                     {game.genres.length > 2 && (
-                                                        <span
-                                                            className="badge"
-                                                            style={{
-                                                                fontSize: '0.7rem',
-                                                                background: 'rgba(255,255,255,0.2)',
-                                                                borderRadius: '12px',
-                                                                padding: '0.3rem 0.7rem'
-                                                            }}
-                                                        >
+                                                        <span className="badge games-page-genre-more">
                                                             +{game.genres.length - 2}
                                                         </span>
                                                     )}
@@ -476,19 +346,7 @@ const GamesPage = () => {
                                             )}
 
                                             {/* HOVER INDIKÁTOR namiesto tlačidla */}
-                                            <div
-                                                className="text-center mt-auto"
-                                                style={{
-                                                    color: '#4f46e5',
-                                                    fontSize: '0.9rem',
-                                                    fontWeight: '600',
-                                                    opacity: 0,
-                                                    transition: 'opacity 0.3s ease'
-                                                }}
-                                                onMouseEnter={(e) => {
-                                                    e.target.style.opacity = '1';
-                                                }}
-                                            >
+                                            <div className="text-center mt-auto games-page-card-hover">
                                                 <i className="fas fa-eye me-2"></i>
                                                 Kliknite pre detail
                                             </div>
@@ -506,15 +364,9 @@ const GamesPage = () => {
                         <ul className="pagination justify-content-center">
                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                                 <button
-                                    className="page-link"
+                                    className="page-link games-page-pagination-btn"
                                     onClick={() => paginate(currentPage - 1)}
                                     disabled={currentPage === 1}
-                                    style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.2)',
-                                        color: 'white',
-                                        borderRadius: '12px 0 0 12px'
-                                    }}
                                 >
                                     <i className="fas fa-chevron-left me-1"></i>
                                     Předchozí
@@ -524,15 +376,8 @@ const GamesPage = () => {
                             {renderPageNumbers().map((pageNumber, index) => (
                                 <li key={`page-${pageNumber}-${index}`} className={`page-item ${pageNumber === currentPage ? 'active' : ''} ${pageNumber === '...' ? 'disabled' : ''}`}>
                                     <button
-                                        className="page-link"
+                                        className={`page-link ${pageNumber === currentPage ? 'games-page-pagination-active' : 'games-page-pagination-btn'}`}
                                         onClick={() => pageNumber !== '...' && paginate(pageNumber)}
-                                        style={{
-                                            background: pageNumber === currentPage
-                                                ? 'linear-gradient(135deg, #4f46e5, #7c3aed)'
-                                                : 'rgba(255,255,255,0.05)',
-                                            border: '1px solid rgba(255,255,255,0.2)',
-                                            color: 'white'
-                                        }}
                                     >
                                         {pageNumber}
                                     </button>
@@ -541,15 +386,9 @@ const GamesPage = () => {
 
                             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
                                 <button
-                                    className="page-link"
+                                    className="page-link games-page-pagination-btn"
                                     onClick={() => paginate(currentPage + 1)}
                                     disabled={currentPage === totalPages}
-                                    style={{
-                                        background: 'rgba(255,255,255,0.05)',
-                                        border: '1px solid rgba(255,255,255,0.2)',
-                                        color: 'white',
-                                        borderRadius: '0 12px 12px 0'
-                                    }}
                                 >
                                     Další
                                     <i className="fas fa-chevron-right ms-1"></i>

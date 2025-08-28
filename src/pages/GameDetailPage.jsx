@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { useToast } from '../components/ui/Toast';
 
 const GameDetailPage = () => {
-    const { gameSlug } = useParams(); // Změněno z gameId na gameSlug
+    const { gameSlug } = useParams();
     const navigate = useNavigate();
     const { user, updateUserTokens } = useUser();
     const { success, error, warning } = useToast();
@@ -201,7 +201,7 @@ const GameDetailPage = () => {
             }
         };
         fetchGame();
-    }, [gameSlug, user]); // Změněno z gameId na gameSlug
+    }, [gameSlug, user]);
 
     const handleToggleWishlist = async () => {
         if (!user) {
@@ -280,12 +280,9 @@ const GameDetailPage = () => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{
-                height: '60vh',
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)'
-            }}>
+            <div className="d-flex justify-content-center align-items-center game-detail-loading">
                 <div className="text-center">
-                    <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} />
+                    <div className="spinner-border text-primary mb-3 game-detail-spinner" />
                     <div className="h5 text-white">Načítání detailu hry...</div>
                 </div>
             </div>
@@ -294,15 +291,8 @@ const GameDetailPage = () => {
 
     if (gameError) {
         return (
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px',
-                    paddingTop: '3rem'
-                }}>
+            <div className="game-detail-bg min-vh-100">
+                <div className="container-custom pt-5">
                     <div className="alert alert-danger">
                         <i className="fas fa-exclamation-triangle me-2"></i>
                         <strong>Chyba:</strong> {gameError}
@@ -314,15 +304,8 @@ const GameDetailPage = () => {
 
     if (!game) {
         return (
-            <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', minHeight: '100vh' }}>
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px',
-                    paddingTop: '3rem'
-                }}>
+            <div className="game-detail-bg min-vh-100">
+                <div className="container-custom pt-5">
                     <div className="alert alert-warning">
                         <i className="fas fa-search me-2"></i>
                         Hra nenalezena.
@@ -333,30 +316,18 @@ const GameDetailPage = () => {
     }
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)', minHeight: '100vh' }}>
+        <div className="game-detail-bg min-vh-100">
 
             {/* Hero Section */}
             <section className="position-relative overflow-hidden">
                 <div
-                    className="position-absolute w-100 h-100 top-0 start-0"
+                    className="position-absolute w-100 h-100 top-0 start-0 game-detail-hero-bg"
                     style={{
                         backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.9)), url(${game.image_url})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        filter: 'blur(1px)'
                     }}
                 />
 
-                <div style={{
-                    width: '100%',
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    paddingLeft: '15px',
-                    paddingRight: '15px',
-                    paddingTop: '3rem',
-                    paddingBottom: '3rem',
-                    position: 'relative'
-                }}>
+                <div className="container-custom game-detail-hero-content position-relative">
 
                     {/* Breadcrumb */}
                     <nav aria-label="breadcrumb" className="mb-4">
@@ -382,21 +353,21 @@ const GameDetailPage = () => {
                         <div className="col-lg-8">
                             <div className="mb-3">
                                 {isOwned && (
-                                    <span className="badge bg-success px-3 py-2 me-3" style={{ fontSize: '1rem' }}>
+                                    <span className="badge game-detail-badge-owned px-3 py-2 me-3">
                                         <i className="fas fa-check me-2"></i>Vlastněno
                                     </span>
                                 )}
                                 {inWishlist && !isOwned && (
-                                    <span className="badge bg-danger px-3 py-2 me-3" style={{ fontSize: '1rem' }}>
+                                    <span className="badge game-detail-badge-wishlist px-3 py-2 me-3">
                                         <i className="fas fa-heart me-2"></i>V seznamu přání
                                     </span>
                                 )}
-                                <span className="badge bg-primary px-3 py-2" style={{ fontSize: '1rem' }}>
+                                <span className="badge bg-primary px-3 py-2 game-detail-badge-publisher">
                                     {game.publisher_name || 'Neznámý vydavatel'}
                                 </span>
                             </div>
 
-                            <h1 className="display-4 fw-bold text-white mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                            <h1 className="display-4 fw-bold text-white mb-3 game-detail-title">
                                 {game.name}
                             </h1>
 
@@ -408,7 +379,7 @@ const GameDetailPage = () => {
 
                         <div className="col-lg-4 text-end">
                             <div className="text-white mb-3">
-                                <div className="h2 fw-bold mb-1" style={{ color: '#10b981' }}>
+                                <div className="h2 fw-bold mb-1 game-detail-price">
                                     {game.price_tokens || 0} 🪙
                                 </div>
                                 <small className="text-white-50">Cena ve tokenech</small>
@@ -419,29 +390,17 @@ const GameDetailPage = () => {
             </section>
 
             {/* Main Content */}
-            <div style={{
-                width: '100%',
-                maxWidth: '1200px',
-                margin: '0 auto',
-                paddingLeft: '15px',
-                paddingRight: '15px',
-                paddingTop: '3rem',
-                paddingBottom: '3rem'
-            }}>
+            <div className="container-custom game-detail-main-content">
                 <div className="row g-5">
 
                     {/* Left Column */}
                     <div className="col-lg-5">
-                        <div className="sticky-top" style={{ top: '2rem' }}>
-                            <div
-                                className="rounded-4 overflow-hidden mb-4 shadow-strong position-relative"
-                                style={{ border: '1px solid rgba(255,255,255,0.1)' }}
-                            >
+                        <div className="sticky-top game-detail-left-sticky">
+                            <div className="game-detail-image-container rounded-4 overflow-hidden mb-4 shadow-strong position-relative">
                                 <img
                                     src={game.image_url}
-                                    className="w-100"
+                                    className="w-100 game-detail-image"
                                     alt={game.name}
-                                    style={{ height: '400px', objectFit: 'cover' }}
                                     onError={(e) => {
                                         e.target.src = 'https://placehold.co/600x400/1e293b/64748b?text=No+Image';
                                     }}
@@ -457,12 +416,7 @@ const GameDetailPage = () => {
                                             <Link
                                                 key={index}
                                                 to={`/games?category=${genre.toLowerCase()}`}
-                                                className="badge text-decoration-none px-3 py-2"
-                                                style={{
-                                                    background: 'linear-gradient(45deg, #4f46e5, #7c3aed)',
-                                                    fontSize: '0.9rem',
-                                                    borderRadius: '20px'
-                                                }}
+                                                className="badge text-decoration-none px-3 py-2 game-detail-genre-badge"
                                             >
                                                 {genre}
                                             </Link>
@@ -477,29 +431,20 @@ const GameDetailPage = () => {
                     <div className="col-lg-7">
 
                         {/* Game Description */}
-                        <div
-                            className="rounded-3 p-4 mb-4"
-                            style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}
-                        >
+                        <div className="game-detail-description-card rounded-3 p-4 mb-4">
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h5 className="text-white fw-bold mb-0">Popis hry</h5>
                                 <div className="d-flex gap-2">
                                     <button
-                                        className={`btn btn-sm ${!showTranslated ? 'btn-primary' : 'btn-outline-light'}`}
+                                        className={`btn btn-sm ${!showTranslated ? 'btn-primary' : 'btn-outline-light'} game-detail-lang-btn`}
                                         onClick={() => setShowTranslated(false)}
-                                        style={{ borderRadius: '20px' }}
                                     >
                                         Originál
                                     </button>
                                     <button
-                                        className={`btn btn-sm ${showTranslated ? 'btn-primary' : 'btn-outline-light'}`}
+                                        className={`btn btn-sm ${showTranslated ? 'btn-primary' : 'btn-outline-light'} game-detail-lang-btn`}
                                         onClick={() => setShowTranslated(true)}
                                         disabled={!translatedDescription || isTranslating}
-                                        style={{ borderRadius: '20px' }}
                                     >
                                         {isTranslating ? (
                                             <>
@@ -513,7 +458,7 @@ const GameDetailPage = () => {
                                 </div>
                             </div>
 
-                            <p className="text-white-50 mb-0" style={{ lineHeight: '1.7', fontSize: '1.05rem' }}>
+                            <p className="text-white-50 mb-0 game-detail-description-text">
                                 {showTranslated && translatedDescription ?
                                     translatedDescription :
                                     (game.description || 'Popis hry není k dispozici.')
@@ -522,30 +467,21 @@ const GameDetailPage = () => {
                         </div>
 
                         {/* Action Buttons */}
-                        <div
-                            className="rounded-3 p-4"
-                            style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}
-                        >
+                        <div className="game-detail-actions-card rounded-3 p-4">
                             {!user ? (
                                 <div className="text-center">
                                     <p className="text-white-50 mb-3">Pro nákup nebo přidání do seznamu přání se musíte přihlásit</p>
                                     <div className="d-flex gap-3 justify-content-center">
                                         <Link
                                             to="/login"
-                                            className="btn btn-primary btn-lg px-4"
-                                            style={{ borderRadius: '50px' }}
+                                            className="btn btn-primary btn-lg px-4 game-detail-auth-btn text-decoration-none"
                                         >
                                             <i className="fas fa-sign-in-alt me-2"></i>
                                             Přihlásit se
                                         </Link>
                                         <Link
                                             to="/register"
-                                            className="btn btn-outline-light btn-lg px-4"
-                                            style={{ borderRadius: '50px' }}
+                                            className="btn btn-outline-light btn-lg px-4 game-detail-auth-btn text-decoration-none"
                                         >
                                             <i className="fas fa-user-plus me-2"></i>
                                             Registrovat
@@ -560,8 +496,7 @@ const GameDetailPage = () => {
                                     </div>
                                     <Link
                                         to="/library"
-                                        className="btn btn-success btn-lg px-5"
-                                        style={{ borderRadius: '50px' }}
+                                        className="btn btn-success btn-lg px-5 game-detail-library-btn text-decoration-none"
                                     >
                                         <i className="fas fa-book me-2"></i>
                                         Přejít do knihovny
@@ -571,17 +506,9 @@ const GameDetailPage = () => {
                                 <div>
                                     <div className="d-flex gap-3 mb-3">
                                         <button
-                                            className="btn btn-success btn-lg flex-fill"
+                                            className="btn btn-success btn-lg flex-fill game-detail-purchase-btn"
                                             onClick={handlePurchase}
                                             disabled={isPurchasing || user.tokens_balance < game.price_tokens}
-                                            style={{
-                                                background: user.tokens_balance < game.price_tokens ?
-                                                    '#6b7280' : 'linear-gradient(135deg, #10b981, #059669)',
-                                                border: 'none',
-                                                borderRadius: '50px',
-                                                fontSize: '1.1rem',
-                                                fontWeight: '600'
-                                            }}
                                         >
                                             {isPurchasing ? (
                                                 <>
@@ -603,10 +530,9 @@ const GameDetailPage = () => {
                                     </div>
 
                                     <button
-                                        className={`btn btn-lg w-100 ${inWishlist ? 'btn-danger' : 'btn-outline-light'}`}
+                                        className={`btn btn-lg w-100 fw-semibold ${inWishlist ? 'btn-danger' : 'btn-outline-light'} game-detail-wishlist-btn`}
                                         onClick={handleToggleWishlist}
                                         disabled={isTogglingWishlist}
-                                        style={{ borderRadius: '50px', fontWeight: '600' }}
                                     >
                                         {isTogglingWishlist ? (
                                             <>
@@ -635,8 +561,7 @@ const GameDetailPage = () => {
                                                 <div className="mt-2">
                                                     <Link
                                                         to="/tokens"
-                                                        className="btn btn-warning btn-sm"
-                                                        style={{ borderRadius: '20px' }}
+                                                        className="btn btn-warning btn-sm game-detail-tokens-btn text-decoration-none"
                                                     >
                                                         <i className="fas fa-coins me-1"></i>
                                                         Doplnit tokeny

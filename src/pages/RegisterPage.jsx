@@ -40,51 +40,40 @@ const RegisterPage = () => {
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
-            paddingTop: '2rem',
-            paddingBottom: '2rem'
-        }}>
+        <div className="register-page-bg min-vh-100 py-4">
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-md-6 col-lg-5">
 
                         {/* Logo Section */}
                         <div className="text-center mb-4">
-                            <div style={{ fontSize: '4rem', marginBottom: '1rem', filter: 'drop-shadow(4px 4px 8px rgba(30, 64, 175, 0.3))' }}>
+                            <div className="register-logo-icon mb-3">
                                 🏰
                             </div>
-                            <h1 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#1e40af', marginBottom: '0.5rem', letterSpacing: '1px', textShadow: '2px 2px 4px rgba(0,0,0,0.1)', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                            <h1 className="register-logo-title mb-2">
                                 HERIDEL
                             </h1>
-                            <p style={{ color: '#6b7280', fontSize: '1.1rem', fontWeight: '500', letterSpacing: '1px' }}>
+                            <p className="register-logo-subtitle">
                                 GAMING STORE
                             </p>
-                            <div style={{ width: '60px', height: '3px', background: 'linear-gradient(90deg, #1e40af, #3b82f6)', margin: '1rem auto', borderRadius: '2px' }}></div>
+                            <div className="register-logo-divider mx-auto" />
                         </div>
 
                         {/* Register Card */}
-                        <div style={{
-                            background: 'white',
-                            borderRadius: '16px',
-                            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                            border: '1px solid rgba(30, 64, 175, 0.1)',
-                            overflow: 'hidden'
-                        }}>
+                        <div className="register-card">
 
                             {/* Card Header */}
-                            <div style={{ background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)', color: 'white', padding: '2rem', textAlign: 'center' }}>
-                                <h2 style={{ margin: '0', fontSize: '1.5rem', fontWeight: '700', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
+                            <div className="register-card-header text-center">
+                                <h2 className="register-card-title mb-0">
                                     Vytvořit nový účet
                                 </h2>
-                                <p style={{ margin: '0.5rem 0 0', opacity: '0.9', fontSize: '0.95rem' }}>
+                                <p className="register-card-subtitle mb-0 mt-2">
                                     Staňte se součástí našeho království
                                 </p>
                             </div>
 
                             {/* Card Body */}
-                            <div style={{ padding: '2rem' }}>
+                            <div className="register-card-body">
                                 <form onSubmit={handleSubmit}>
 
                                     {/* Zobrazení chybové hlášky */}
@@ -96,7 +85,7 @@ const RegisterPage = () => {
 
                                     {/* Input pro username */}
                                     <div className="mb-3">
-                                        <label htmlFor="username" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.95rem' }}>
+                                        <label htmlFor="username" className="register-form-label">
                                             Uživatelské jméno
                                         </label>
                                         <input
@@ -113,7 +102,7 @@ const RegisterPage = () => {
 
                                     {/* Input pro email */}
                                     <div className="mb-3">
-                                        <label htmlFor="email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.95rem' }}>
+                                        <label htmlFor="email" className="register-form-label">
                                             E-mail
                                         </label>
                                         <input
@@ -130,7 +119,7 @@ const RegisterPage = () => {
 
                                     {/* Input pro password */}
                                     <div className="mb-3">
-                                        <label htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.95rem' }}>
+                                        <label htmlFor="password" className="register-form-label">
                                             Heslo
                                         </label>
                                         <input
@@ -147,7 +136,7 @@ const RegisterPage = () => {
 
                                     {/* Input pro confirm password */}
                                     <div className="mb-4">
-                                        <label htmlFor="confirmPassword" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.95rem' }}>
+                                        <label htmlFor="confirmPassword" className="register-form-label">
                                             Potvrzení hesla
                                         </label>
                                         <input
@@ -166,28 +155,16 @@ const RegisterPage = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="btn w-100"
-                                        style={{
-                                            padding: '0.875rem 1rem',
-                                            background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '8px',
-                                            fontSize: '1rem',
-                                            fontWeight: '600',
-                                            cursor: loading ? 'not-allowed' : 'pointer',
-                                            opacity: loading ? 0.7 : 1,
-                                            marginBottom: '1.5rem'
-                                        }}
+                                        className="btn w-100 register-submit-btn mb-4"
                                     >
                                         {loading ? 'Registruji...' : 'Zaregistrovat se'}
                                     </button>
 
                                     {/* Link na přihlášení */}
                                     <div className="text-center">
-                                        <p style={{ margin: '0', color: '#6b7280', fontSize: '0.9rem' }}>
+                                        <p className="register-login-text mb-0">
                                             Už máte účet?{' '}
-                                            <Link to="/login" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: '600' }}>
+                                            <Link to="/login" className="register-login-link">
                                                 Přihlaste se zde
                                             </Link>
                                         </p>

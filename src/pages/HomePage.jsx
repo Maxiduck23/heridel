@@ -69,7 +69,7 @@ const HomePage = () => {
             <div className="d-flex justify-content-center align-items-center homepage-loading">
                 <div className="text-center">
                     <div className="spinner-border text-primary mb-3 homepage-spinner" />
-                    <div className="h5 text-white-50">Načítání herního světa...</div>
+                    <div className="h5 text-light">Načítání herního světa...</div>
                 </div>
             </div>
         );
@@ -109,7 +109,7 @@ const HomePage = () => {
                                     dobrodružství
                                 </h1>
 
-                                <p className="lead mb-5 text-white-50 hero-lead">
+                                <p className="lead mb-5 text-light hero-lead">
                                     {totalGamesCount > 0 ? totalGamesCount : 'Stovky'} kvalitních her, exkluzivní nabídky a okamžité stahování.
                                     Vaše herní říše začíná zde.
                                 </p>
@@ -139,7 +139,7 @@ const HomePage = () => {
                                             <div className="h2 fw-bold mb-1 hero-stats-number">
                                                 {totalGamesCount > 0 ? totalGamesCount : '597'}+
                                             </div>
-                                            <small className="text-white-50">Kvalitních her k dispozici</small>
+                                            <small className="text-light">Kvalitních her k dispozici</small>
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@ const HomePage = () => {
                                                 <h3 className="text-white fw-bold mb-3 featured-game-title">
                                                     {homeData.featuredGame.name}
                                                 </h3>
-                                                <p className="text-white-50 mb-4 featured-game-desc">
+                                                <p className="text-light mb-4 featured-game-desc">
                                                     {homeData.featuredGame.description?.substring(0, 120)}...
                                                 </p>
                                                 <div className="d-flex align-items-center justify-content-between">
@@ -173,9 +173,9 @@ const HomePage = () => {
                                                         <span className="h4 text-white fw-bold me-2 mb-0">
                                                             {homeData.featuredGame.price_tokens || 0} 🪙
                                                         </span>
-                                                        <small className="text-white-50">tokenů</small>
+                                                        <small className="text-light">tokenů</small>
                                                     </div>
-                                                    <div className="btn btn-light btn-lg px-4 featured-game-btn">
+                                                    <div className="btn btn-dark btn-lg px-4 featured-game-btn">
                                                         Zobrazit detail
                                                     </div>
                                                 </div>
@@ -195,7 +195,7 @@ const HomePage = () => {
                     <div className="container-custom">
                         <div className="text-center mb-5">
                             <h2 className="text-white fw-bold mb-3">Prozkoumej žánry</h2>
-                            <p className="text-white-50 lead">Najdi své oblíbené herní styly</p>
+                            <p className="text-light lead">Najdi své oblíbené herní styly</p>
                         </div>
 
                         <div className="row g-3">
@@ -231,7 +231,7 @@ const HomePage = () => {
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
                                 <h2 className="text-white fw-bold mb-2">Populární hry</h2>
-                                <p className="text-white-50 mb-0">Nejžádanější hry podle ceny</p>
+                                <p className="text-light mb-0">Nejžádanější hry podle ceny</p>
                             </div>
                             <Link to="/games" className="btn btn-outline-light text-decoration-none">
                                 Zobrazit všechny
@@ -245,7 +245,7 @@ const HomePage = () => {
                                         to={`/game/${game.slug || createSlug(game.name)}`}
                                         className="text-decoration-none d-block h-100"
                                     >
-                                        <div className="popular-game-card card h-100 border-0 position-relative overflow-hidden">
+                                        <div className="popular-game-card card h-100 border-0 position-relative overflow-hidden bg-dark">
                                             <div className="position-relative">
                                                 <img
                                                     src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
@@ -264,7 +264,7 @@ const HomePage = () => {
                                                 </div>
                                             </div>
 
-                                            <div className="card-body d-flex flex-column">
+                                            <div className="card-body d-flex flex-column bg-dark">
                                                 <h6 className="card-title text-white fw-bold mb-2 popular-game-title">
                                                     {game.name}
                                                 </h6>
@@ -288,7 +288,7 @@ const HomePage = () => {
                     <div className="container-custom cta-container">
                         <div className="text-center">
                             <h2 className="text-white fw-bold mb-3">Připoj se k našemu království</h2>
-                            <p className="text-white-50 lead mb-4">
+                            <p className="text-light lead mb-4">
                                 Získej přístup k exkluzivním nabídkám a stávej se součástí největší herní komunity
                             </p>
                             <Link

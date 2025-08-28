@@ -47,23 +47,23 @@ const RegisterPage = () => {
 
                         {/* Logo Section */}
                         <div className="text-center mb-4">
-                            <div className="register-logo-icon mb-3">
+                            <div className="register-logo-icon mb-3 text-primary">
                                 🏰
                             </div>
-                            <h1 className="register-logo-title mb-2">
+                            <h1 className="register-logo-title mb-2 text-white">
                                 HERIDEL
                             </h1>
-                            <p className="register-logo-subtitle">
+                            <p className="register-logo-subtitle text-light">
                                 GAMING STORE
                             </p>
-                            <div className="register-logo-divider mx-auto" />
+                            <div className="register-logo-divider mx-auto bg-primary" />
                         </div>
 
                         {/* Register Card */}
-                        <div className="register-card">
+                        <div className="register-card bg-dark border border-secondary">
 
                             {/* Card Header */}
-                            <div className="register-card-header text-center">
+                            <div className="register-card-header text-center bg-primary">
                                 <h2 className="register-card-title mb-0">
                                     Vytvořit nový účet
                                 </h2>
@@ -73,7 +73,7 @@ const RegisterPage = () => {
                             </div>
 
                             {/* Card Body */}
-                            <div className="register-card-body">
+                            <div className="register-card-body bg-dark">
                                 <form onSubmit={handleSubmit}>
 
                                     {/* Zobrazení chybové hlášky */}
@@ -85,7 +85,7 @@ const RegisterPage = () => {
 
                                     {/* Input pro username */}
                                     <div className="mb-3">
-                                        <label htmlFor="username" className="register-form-label">
+                                        <label htmlFor="username" className="register-form-label text-light">
                                             Uživatelské jméno
                                         </label>
                                         <input
@@ -95,14 +95,14 @@ const RegisterPage = () => {
                                             value={formData.username}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Zvolte si jméno"
                                         />
                                     </div>
 
                                     {/* Input pro email */}
                                     <div className="mb-3">
-                                        <label htmlFor="email" className="register-form-label">
+                                        <label htmlFor="email" className="register-form-label text-light">
                                             E-mail
                                         </label>
                                         <input
@@ -112,14 +112,14 @@ const RegisterPage = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Váš e-mail"
                                         />
                                     </div>
 
                                     {/* Input pro password */}
                                     <div className="mb-3">
-                                        <label htmlFor="password" className="register-form-label">
+                                        <label htmlFor="password" className="register-form-label text-light">
                                             Heslo
                                         </label>
                                         <input
@@ -129,14 +129,14 @@ const RegisterPage = () => {
                                             value={formData.password}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Zadejte heslo"
                                         />
                                     </div>
 
                                     {/* Input pro confirm password */}
                                     <div className="mb-4">
-                                        <label htmlFor="confirmPassword" className="register-form-label">
+                                        <label htmlFor="confirmPassword" className="register-form-label text-light">
                                             Potvrzení hesla
                                         </label>
                                         <input
@@ -146,7 +146,7 @@ const RegisterPage = () => {
                                             value={formData.confirmPassword}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Zadejte heslo znovu"
                                         />
                                     </div>
@@ -162,9 +162,9 @@ const RegisterPage = () => {
 
                                     {/* Link na přihlášení */}
                                     <div className="text-center">
-                                        <p className="register-login-text mb-0">
+                                        <p className="register-login-text mb-0 text-light">
                                             Už máte účet?{' '}
-                                            <Link to="/login" className="register-login-link">
+                                            <Link to="/login" className="register-login-link text-primary">
                                                 Přihlaste se zde
                                             </Link>
                                         </p>

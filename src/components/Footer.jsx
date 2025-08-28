@@ -32,13 +32,13 @@ const Footer = () => {
                             <span className="h1 me-3 mb-0">🏰</span>
                             <h5 className="fw-bold mb-0">O Heridel</h5>
                         </div>
-                        <p className="text-white-50">
+                        <p className="text-light">
                             Váš královský portál do světa digitálních her. Objevte, nakupte a spravujte svou herní knihovnu s elegancí hradního majestátu.
                         </p>
                         <div className="d-flex gap-3">
-                            <a href="#" className="text-white-50 h5"><i className="fab fa-facebook"></i></a>
-                            <a href="#" className="text-white-50 h5"><i className="fab fa-twitter"></i></a>
-                            <a href="#" className="text-white-50 h5"><i className="fab fa-discord"></i></a>
+                            <a href="#" className="text-light h5"><i className="fab fa-facebook"></i></a>
+                            <a href="#" className="text-light h5"><i className="fab fa-twitter"></i></a>
+                            <a href="#" className="text-light h5"><i className="fab fa-discord"></i></a>
                         </div>
                     </div>
 
@@ -72,7 +72,7 @@ const Footer = () => {
                             <span className="h1 me-3 mb-0">📞</span>
                             <h5 className="fw-bold mb-0">Kontakt</h5>
                         </div>
-                        <ul className="list-unstyled text-white-50">
+                        <ul className="list-unstyled text-light">
                             <li className="mb-2">
                                 <i className="fas fa-building me-2"></i>
                                 <strong>IČO:</strong> 23461632
@@ -95,7 +95,7 @@ const Footer = () => {
 
                 <hr className="mt-5 footer-divider" />
 
-                <div className="text-center text-white-50 mt-4">
+                <div className="text-center text-light mt-4">
                     <div className="row">
                         <div className="col-md-6 text-md-start mb-2 mb-md-0">
                             <p className="mb-0">&copy; {currentYear} Heridel Gaming Store. Všechna práva vyhrazena.</p>

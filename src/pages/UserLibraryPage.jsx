@@ -20,6 +20,17 @@ const UserLibraryPage = () => {
     const { success, error: showError } = useToast();
     const API_BASE_URL = '/api';
 
+    // Funkce pro vytvoření slug z názvu hry
+    const createSlug = (name) => {
+        if (!name) return '';
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
+            .replace(/-+/g, '-') // Nahradit více pomlček jednou
+            .trim('-'); // Odstranit pomlčky na začátku a konci
+    };
+
     useEffect(() => {
         const fetchLibrary = async () => {
             if (!user) {
@@ -116,10 +127,10 @@ const UserLibraryPage = () => {
         setFilteredGames(filtered);
     }, [games, wishlistGames, searchTerm, sortBy, filterBy]);
 
-    // OPRAVENÉ KOPÍROVANIE KĽÚČA
+    // OPRAVENÉ KOPÍROVÁNÍ KLÍČE
     const copyGameKey = async (keyCode) => {
         try {
-            // Skúsime moderné Clipboard API
+            // Zkusíme moderní Clipboard API
             if (navigator.clipboard && window.isSecureContext) {
                 await navigator.clipboard.writeText(keyCode);
                 setCopiedKey(true);
@@ -128,7 +139,7 @@ const UserLibraryPage = () => {
                 return;
             }
 
-            // Fallback pre staršie prehliadače alebo nesecure context
+            // Fallback pre starší prohlížeče nebo nesecure context
             const textArea = document.createElement('textarea');
             textArea.value = keyCode;
             textArea.style.position = 'fixed';
@@ -161,7 +172,7 @@ const UserLibraryPage = () => {
         } catch (err) {
             console.error('Chyba při kopírování:', err);
 
-            // Posledný fallback - prompt s klíčom
+            // Poslední fallback - prompt s klíčem
             const userAgent = navigator.userAgent.toLowerCase();
             if (userAgent.includes('mobile') || userAgent.includes('android') || userAgent.includes('iphone')) {
                 // Na mobile zobrazíme klíč v alert
@@ -236,7 +247,7 @@ const UserLibraryPage = () => {
                 {/* Header */}
                 <div className="row mb-4">
                     <div className="col-12">
-                        <div className="library-header-card rounded-4 p-4">
+                        <div className="library-header-card rounded-4 p-4 bg-dark border border-secondary">
                             <div className="row align-items-center">
                                 <div className="col-md-8">
                                     <div className="d-flex align-items-center mb-2">
@@ -272,11 +283,10 @@ const UserLibraryPage = () => {
                     </div>
                 </div>
 
-                {/* OPRAVENÉ FILTRY - lepšie responzívne rozloženie */}
+                {/* FILTRY */}
                 <div className="row mb-4">
                     <div className="col-12">
-                        <div className="library-filters-card rounded-3 p-4">
-                            {/* Mobile first approach - stacked na malom obrazovni */}
+                        <div className="library-filters-card rounded-3 p-4 bg-dark border border-secondary">
                             <div className="row g-3 align-items-center">
                                 <div className="col-12 col-md-4">
                                     <input
@@ -326,7 +336,7 @@ const UserLibraryPage = () => {
                 <div className="row">
                     {filteredGames.length === 0 && !loading ? (
                         <div className="col-12">
-                            <div className="library-empty-state rounded-3 p-5 text-center">
+                            <div className="library-empty-state rounded-3 p-5 text-center bg-dark border border-secondary">
                                 <div className="library-empty-icon mb-3">
                                     {filterBy === 'owned' ? '📚' : '❤️'}
                                 </div>
@@ -348,7 +358,7 @@ const UserLibraryPage = () => {
                     ) : (
                         filteredGames.map((libraryGame, index) => (
                             <div key={libraryGame.is_wishlist ? `wish-${libraryGame.game.game_id}` : libraryGame.library_id} className="col-12 mb-3">
-                                <div className="library-game-card rounded-3 overflow-hidden">
+                                <div className="library-game-card rounded-3 overflow-hidden bg-dark border border-secondary">
                                     <div className="row g-0">
                                         {/* Obrázek hry */}
                                         <div className="col-md-3">
@@ -426,16 +436,16 @@ const UserLibraryPage = () => {
                                                         </button>
 
                                                         <Link
-                                                            to={`/game/${libraryGame.game.game_id}`}
+                                                            to={`/game/${libraryGame.game.slug || createSlug(libraryGame.game.name)}`}
                                                             className="btn library-detail-btn text-decoration-none"
                                                         >
                                                             👁️ Detail hry
                                                         </Link>
                                                     </div>
                                                 ) : (
-                                                    // Hra v seznamu přání
+                                                    // Hra v seznamu přání - POUŽÍT SLUG ODKAZ
                                                     <Link
-                                                        to={`/game/${libraryGame.game.game_id}`}
+                                                        to={`/game/${libraryGame.game.slug || createSlug(libraryGame.game.name)}`}
                                                         className="btn w-100 library-buy-btn text-decoration-none"
                                                     >
                                                         🛒 Koupit hru
@@ -450,7 +460,7 @@ const UserLibraryPage = () => {
                     )}
                 </div>
 
-                {/* VYLEPŠENÝ MODAL pre zobrazenie kľúča */}
+                {/* MODAL pre zobrazenie klíča */}
                 {showKeyModal && selectedGame && (
                     <>
                         <div
@@ -458,7 +468,7 @@ const UserLibraryPage = () => {
                             onClick={() => setShowKeyModal(false)}
                         >
                             <div
-                                className="library-key-modal"
+                                className="library-key-modal bg-dark border border-secondary"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <div className="text-center mb-4">

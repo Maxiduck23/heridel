@@ -38,23 +38,23 @@ const LoginPage = () => {
 
                         {/* Logo Section */}
                         <div className="text-center mb-4">
-                            <div className="login-logo-icon mb-3">
+                            <div className="login-logo-icon mb-3 text-primary">
                                 🏰
                             </div>
-                            <h1 className="login-logo-title mb-2">
+                            <h1 className="login-logo-title mb-2 text-white">
                                 HERIDEL
                             </h1>
-                            <p className="login-logo-subtitle">
+                            <p className="login-logo-subtitle text-light">
                                 GAMING STORE
                             </p>
-                            <div className="login-logo-divider mx-auto" />
+                            <div className="login-logo-divider mx-auto bg-primary" />
                         </div>
 
                         {/* Login Card */}
-                        <div className="login-card">
+                        <div className="login-card bg-dark border border-secondary">
 
                             {/* Card Header */}
-                            <div className="login-card-header text-center">
+                            <div className="login-card-header text-center bg-primary">
                                 <h2 className="login-card-title mb-0">
                                     Přihlášení do Heridelu
                                 </h2>
@@ -64,7 +64,7 @@ const LoginPage = () => {
                             </div>
 
                             {/* Card Body */}
-                            <div className="login-card-body">
+                            <div className="login-card-body bg-dark">
                                 <form onSubmit={handleSubmit}>
 
                                     {/* Zobrazení chybové hlášky */}
@@ -76,7 +76,7 @@ const LoginPage = () => {
 
                                     {/* Input pro username */}
                                     <div className="mb-4">
-                                        <label htmlFor="username" className="login-form-label">
+                                        <label htmlFor="username" className="login-form-label text-light">
                                             Uživatelské jméno
                                         </label>
                                         <input
@@ -86,14 +86,14 @@ const LoginPage = () => {
                                             value={formData.username}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Zadejte uživatelské jméno"
                                         />
                                     </div>
 
                                     {/* Input pro password */}
                                     <div className="mb-4">
-                                        <label htmlFor="password" className="login-form-label">
+                                        <label htmlFor="password" className="login-form-label text-light">
                                             Heslo
                                         </label>
                                         <input
@@ -103,7 +103,7 @@ const LoginPage = () => {
                                             value={formData.password}
                                             onChange={handleChange}
                                             required
-                                            className="form-control"
+                                            className="form-control bg-dark border-secondary text-light"
                                             placeholder="Zadejte heslo"
                                         />
                                     </div>
@@ -119,9 +119,9 @@ const LoginPage = () => {
 
                                     {/* Link na registraci */}
                                     <div className="text-center">
-                                        <p className="login-register-text mb-0">
+                                        <p className="login-register-text mb-0 text-light">
                                             Nemáte účet?{' '}
-                                            <Link to="/register" className="login-register-link">
+                                            <Link to="/register" className="login-register-link text-primary">
                                                 Zaregistrujte se zde
                                             </Link>
                                         </p>
@@ -131,19 +131,19 @@ const LoginPage = () => {
                         </div>
 
                         {/* Demo Section */}
-                        <div className="login-demo-section mt-4 text-center">
-                            <h6 className="login-demo-title mb-3">Demo účty pro testování</h6>
+                        <div className="login-demo-section mt-4 text-center bg-dark border border-secondary">
+                            <h6 className="login-demo-title mb-3 text-primary">Demo účty pro testování</h6>
                             <div className="row text-center">
                                 <div className="col-6">
-                                    <div className="login-demo-card mb-2">
-                                        <small className="login-demo-label d-block mb-1">Uživatel</small>
-                                        <code className="login-demo-code">demo / demo123</code>
+                                    <div className="login-demo-card mb-2 bg-primary bg-opacity-25 border border-primary">
+                                        <small className="login-demo-label d-block mb-1 text-light">Uživatel</small>
+                                        <code className="login-demo-code text-primary">demo / demo123</code>
                                     </div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="login-demo-card-admin mb-2">
-                                        <small className="login-demo-label d-block mb-1">Admin</small>
-                                        <code className="login-demo-code-admin">admin / admin123</code>
+                                    <div className="login-demo-card-admin mb-2 bg-success bg-opacity-25 border border-success">
+                                        <small className="login-demo-label d-block mb-1 text-light">Admin</small>
+                                        <code className="login-demo-code-admin text-success">admin / admin123</code>
                                     </div>
                                 </div>
                             </div>

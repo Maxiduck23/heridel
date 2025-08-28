@@ -134,7 +134,7 @@ const TokenPage = () => {
                         <h1 className="display-4 fw-bold mb-3 token-page-hero-title">
                             Tokenová ekonomika
                         </h1>
-                        <p className="lead text-white-50 mb-2">
+                        <p className="lead text-light mb-2">
                             Doplňte si tokeny a získejte přístup k nejlepším hrám v našem katalogu
                         </p>
                         <div className="alert alert-info d-inline-block token-page-demo-alert">
@@ -149,7 +149,7 @@ const TokenPage = () => {
                                     <div className="fw-bold token-page-balance-amount">
                                         {Math.round(user.tokens_balance)} tokenů
                                     </div>
-                                    <small className="text-white-50">Váš aktuální zůstatek</small>
+                                    <small className="text-light">Váš aktuální zůstatek</small>
                                 </div>
                             </div>
                         )}
@@ -167,7 +167,7 @@ const TokenPage = () => {
                             {tokenPacks.map((pack, index) => (
                                 <div key={pack.id} className="col-lg col-md-6 col-sm-6">
                                     <div
-                                        className={`card h-100 border-0 position-relative overflow-hidden token-pack-card ${pack.popular ? 'token-pack-popular' : ''}`}
+                                        className={`card h-100 border-0 position-relative overflow-hidden token-pack-card bg-dark border border-secondary ${pack.popular ? 'token-pack-popular' : ''}`}
                                         style={{
                                             background: pack.color,
                                             transform: pack.popular ? 'scale(1.02)' : 'scale(1)',
@@ -177,7 +177,7 @@ const TokenPage = () => {
                                         {pack.popular && (
                                             <div className="position-absolute top-0 start-50 translate-middle">
                                                 <span className="badge token-pack-popular-badge px-3 py-1">
-                                                    ⭐ Nejpopulárnější
+                                                    Nejpopulárnější
                                                 </span>
                                             </div>
                                         )}
@@ -203,7 +203,7 @@ const TokenPage = () => {
                                                             + {pack.bonus.toLocaleString()} bonusových
                                                         </div>
                                                     )}
-                                                    <div className="small text-white-50 mt-1">
+                                                    <div className="small text-light mt-1">
                                                         Celkem: {(pack.amount + pack.bonus).toLocaleString()} tokenů
                                                     </div>
                                                 </div>
@@ -219,13 +219,13 @@ const TokenPage = () => {
                                                     )}
                                                 </div>
 
-                                                <p className="small text-white-50 mb-3 d-none d-md-block">
+                                                <p className="small text-light mb-3 d-none d-md-block">
                                                     {pack.description}
                                                 </p>
                                             </div>
 
                                             <button
-                                                className="btn btn-light btn-lg w-100 fw-bold token-pack-buy-btn"
+                                                className="btn btn-dark btn-lg w-100 fw-bold token-pack-buy-btn border border-light"
                                                 onClick={() => setSelectedPack(pack)}
                                             >
                                                 Koupit nyní
@@ -251,7 +251,7 @@ const TokenPage = () => {
                         onClick={() => !isProcessing && setSelectedPack(null)}
                     >
                         <div className="modal-dialog modal-dialog-centered token-modal-dialog" onClick={(e) => e.stopPropagation()}>
-                            <div className="modal-content border-0 token-modal-content">
+                            <div className="modal-content border-0 token-modal-content bg-dark border border-secondary">
                                 <div className="modal-header border-0 pb-0">
                                     <h5 className="modal-title text-white fw-bold">
                                         {isProcessing ? 'Zpracování platby...' : 'Dokončení nákupu'}
@@ -269,7 +269,7 @@ const TokenPage = () => {
                                         <div className="text-center">
                                             <div className="mb-4 token-modal-auth-icon">🔐</div>
                                             <h5 className="text-white mb-3">Přihlášení vyžadováno</h5>
-                                            <p className="text-white-50 mb-4">
+                                            <p className="text-light mb-4">
                                                 Pro nákup tokenů se musíte přihlásit do svého účtu
                                             </p>
                                             <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
@@ -296,14 +296,14 @@ const TokenPage = () => {
                                                 <div className="spinner-border text-success mb-3 token-modal-spinner" />
                                             </div>
                                             <h5 className="text-white mb-3">Zpracovávám platbu...</h5>
-                                            <p className="text-white-50 mb-3">
+                                            <p className="text-light mb-3">
                                                 Simulujeme bezpečné zpracování vaší {paymentMethod === 'card' ? 'kartové' :
                                                     paymentMethod === 'paypal' ? 'PayPal' :
                                                         paymentMethod === 'googlepay' ? 'Google Pay' :
                                                             paymentMethod === 'applepay' ? 'Apple Pay' : 'bankovní'} platby
                                             </p>
                                             <div
-                                                className="p-3 rounded-3 token-modal-processing-card"
+                                                className="p-3 rounded-3 token-modal-processing-card bg-dark border border-secondary"
                                                 style={{
                                                     background: selectedPack.color,
                                                 }}
@@ -359,7 +359,7 @@ const TokenPage = () => {
                                                                 disabled={isProcessing}
                                                             />
                                                             <div
-                                                                className={`flex-grow-1 p-2 p-md-3 rounded-2 cursor-pointer token-payment-method ${paymentMethod === method.id ? 'token-payment-method-active' : ''
+                                                                className={`flex-grow-1 p-2 p-md-3 rounded-2 cursor-pointer token-payment-method bg-dark border border-secondary ${paymentMethod === method.id ? 'token-payment-method-active' : ''
                                                                     }`}
                                                             >
                                                                 <div className="d-flex align-items-center">
@@ -370,7 +370,7 @@ const TokenPage = () => {
                                                                         <div className="text-white fw-medium token-payment-name">
                                                                             {method.name}
                                                                         </div>
-                                                                        <small className="text-white-50 d-none d-md-block">
+                                                                        <small className="text-light d-none d-md-block">
                                                                             {method.description}
                                                                         </small>
                                                                     </div>

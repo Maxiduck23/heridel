@@ -122,7 +122,7 @@ const Header = () => {
 
                                         {/* Dropdown Menu */}
                                         {showProfileDropdown && (
-                                            <div className="position-absolute header-dropdown">
+                                            <div className="position-absolute header-dropdown bg-dark border border-secondary">
                                                 {/* User Info Header */}
                                                 <div className="header-dropdown-header">
                                                     <div className="d-flex align-items-center mb-2">
@@ -162,7 +162,7 @@ const Header = () => {
                                                         <Link
                                                             key={item.to}
                                                             to={item.to}
-                                                            className="d-flex align-items-center px-3 py-2 text-decoration-none rounded-3 mb-1 header-dropdown-item"
+                                                            className="d-flex align-items-center px-3 py-2 text-decoration-none rounded-3 mb-1 header-dropdown-item text-light"
                                                             onClick={() => setShowProfileDropdown(false)}
                                                         >
                                                             <span className="me-3 header-dropdown-icon">
@@ -243,7 +243,7 @@ const Header = () => {
                     />
 
                     {/* Mobile Menu */}
-                    <div className="header-mobile-menu">
+                    <div className="header-mobile-menu bg-dark">
                         <div className="container-custom">
                             {/* Navigation Links */}
                             <div className="mb-4">
@@ -263,7 +263,7 @@ const Header = () => {
 
                             {/* Auth Section */}
                             {user ? (
-                                <div className="header-mobile-user-section">
+                                <div className="header-mobile-user-section bg-dark border border-secondary">
                                     <div className="text-center mb-3">
                                         <div className="header-mobile-avatar mx-auto mb-3">
                                             {!user.profile?.avatar_url && (user.profile?.first_name?.[0] || user.username?.[0] || '👤')}

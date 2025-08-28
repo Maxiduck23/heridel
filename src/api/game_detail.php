@@ -17,7 +17,7 @@ try {
     if (is_numeric($game_param)) {
         // Je to číslo, hledat podle game_id
         $stmt = $pdo->prepare("
-            SELECT g.*, p.name AS publisher_name 
+            SELECT g.*, p.name AS publisher_name, p.website AS publisher_website
             FROM games g 
             LEFT JOIN publishers p ON g.publisher_id = p.publisher_id 
             WHERE g.game_id = ? AND g.is_active = TRUE
@@ -26,7 +26,7 @@ try {
     } else {
         // Není to číslo, hledat podle slug
         $stmt = $pdo->prepare("
-            SELECT g.*, p.name AS publisher_name 
+            SELECT g.*, p.name AS publisher_name, p.website AS publisher_website
             FROM games g 
             LEFT JOIN publishers p ON g.publisher_id = p.publisher_id 
             WHERE g.slug = ? AND g.is_active = TRUE

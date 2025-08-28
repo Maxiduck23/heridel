@@ -17,8 +17,9 @@ const GamesPage = () => {
     const API_BASE_URL = '/api';
     const urlCategory = searchParams.get('category');
 
-    // Přidána funkce pro vytvoření slug z názvu hry
+    // Funkce pro vytvoření slug z názvu hry
     const createSlug = (name) => {
+        if (!name) return '';
         return name
             .toLowerCase()
             .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
@@ -139,7 +140,7 @@ const GamesPage = () => {
             <div className="d-flex justify-content-center align-items-center games-page-loading">
                 <div className="text-center">
                     <div className="spinner-border text-primary mb-3 games-page-spinner" />
-                    <div className="h5 text-white">Načítání her...</div>
+                    <div className="h5 text-light">Načítání her...</div>
                 </div>
             </div>
         );
@@ -171,7 +172,7 @@ const GamesPage = () => {
                         <nav aria-label="breadcrumb" className="mb-3">
                             <ol className="breadcrumb justify-content-center bg-transparent">
                                 <li className="breadcrumb-item">
-                                    <Link to="/" className="text-white-50 text-decoration-none">
+                                    <Link to="/" className="text-light text-decoration-none">
                                         <i className="fas fa-home me-1"></i>Domů
                                     </Link>
                                 </li>
@@ -185,7 +186,7 @@ const GamesPage = () => {
                         <h1 className="display-4 fw-bold mb-3 games-page-hero-title">
                             Herní katalog
                         </h1>
-                        <p className="lead text-white-50 mb-4">
+                        <p className="lead text-light mb-4">
                             Objevte {filteredGames.length} her ze všech žánrů.
                         </p>
                     </div>
@@ -197,7 +198,7 @@ const GamesPage = () => {
                 {/* Search & Filters */}
                 <div className="row mb-5">
                     <div className="col-12">
-                        <div className="games-page-filters-card rounded-4 p-4">
+                        <div className="games-page-filters-card rounded-4 p-4 bg-dark border border-secondary">
                             {/* Search Bar */}
                             <div className="row mb-4">
                                 <div className="col-md-8">
@@ -209,7 +210,7 @@ const GamesPage = () => {
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                         />
-                                        <i className="fas fa-search position-absolute text-white-50 games-page-search-icon"></i>
+                                        <i className="fas fa-search position-absolute text-muted games-page-search-icon"></i>
                                     </div>
                                 </div>
                                 <div className="col-md-4">
@@ -248,12 +249,12 @@ const GamesPage = () => {
                     </div>
                 </div>
 
-                {/* Games Grid - KOMPLETNE KLIKATEĽNÉ KARTY */}
+                {/* Games Grid - KOMPLETNĚ KLIKATELNÉ KARTY SE SLUG ODKAZY */}
                 {currentGames.length === 0 ? (
                     <div className="text-center py-5">
                         <div className="mb-4 games-page-no-games-icon">🎮</div>
                         <h3 className="text-white mb-3">Žádné hry nenalezeny</h3>
-                        <p className="text-white-50 mb-4">
+                        <p className="text-light mb-4">
                             {searchTerm ? 'Zkuste změnit vyhledávací kritéria nebo filtry' : 'Momentálně nejsou k dispozici žádné hry'}
                         </p>
                         {searchTerm && (
@@ -269,12 +270,12 @@ const GamesPage = () => {
                     <div className="row g-4">
                         {currentGames.map(game => (
                             <div key={`game-${game.game_id}`} className="col-xl-3 col-lg-4 col-md-6">
-                                {/* CELÁ KARTA JE KLIKATELNÁ */}
+                                {/* CELÁ KARTA S SLUG ODKAZEM */}
                                 <Link
                                     to={`/game/${game.slug || createSlug(game.name)}`}
                                     className="text-decoration-none d-block h-100"
                                 >
-                                    <div className="games-page-card card h-100 border-0 position-relative overflow-hidden">
+                                    <div className="games-page-card card h-100 border-0 position-relative overflow-hidden bg-dark border border-secondary">
                                         <div className="position-relative">
                                             <img
                                                 src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
@@ -307,22 +308,22 @@ const GamesPage = () => {
                                             </div>
                                         </div>
 
-                                        <div className="card-body d-flex flex-column p-4">
+                                        <div className="card-body d-flex flex-column p-4 bg-dark">
                                             <h5 className="card-title text-white fw-bold mb-2 games-page-card-title">
                                                 {game.name}
                                             </h5>
 
-                                            <p className="card-text text-white-50 small mb-2">
+                                            <p className="card-text text-light small mb-2">
                                                 <i className="fas fa-calendar me-2"></i>
                                                 {game.release_date || 'Datum vydání neuvedeno'}
                                             </p>
 
-                                            <p className="card-text text-white-50 small mb-3">
+                                            <p className="card-text text-light small mb-3">
                                                 <i className="fas fa-building me-2"></i>
                                                 {game.publisher_name || 'Neznámý vydavatel'}
                                             </p>
 
-                                            <p className="card-text text-white-50 flex-grow-1 mb-3 games-page-card-desc">
+                                            <p className="card-text text-light flex-grow-1 mb-3 games-page-card-desc">
                                                 {game.description || 'Popis hry není k dispozici.'}
                                             </p>
 
@@ -345,10 +346,10 @@ const GamesPage = () => {
                                                 </div>
                                             )}
 
-                                            {/* HOVER INDIKÁTOR namiesto tlačidla */}
+                                            {/* HOVER INDIKÁTOR */}
                                             <div className="text-center mt-auto games-page-card-hover">
                                                 <i className="fas fa-eye me-2"></i>
-                                                Kliknite pre detail
+                                                Kliknout pro detail
                                             </div>
                                         </div>
                                     </div>

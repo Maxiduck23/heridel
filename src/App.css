@@ -20,6 +20,12 @@
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
 
+  /* Tmavé odstíny pro lepší kontrast */
+  --card-bg: #1e293b;
+  --card-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.2);
+
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -37,7 +43,7 @@
   --transition-slow: 0.5s ease-in-out;
 }
 
-/* OPRAVA - Base Styles s lepším overflow handling a odstraněním bílé mezery */
+/* Base Styles */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -68,7 +74,7 @@ body {
   position: relative;
 }
 
-/* OPRAVA - Root container bez mezer */
+/* Root container */
 #root {
   min-height: 100vh;
   display: flex;
@@ -80,7 +86,7 @@ body {
   overflow-x: hidden;
 }
 
-/* OPRAVA - Container fixes pro odstranění mezer */
+/* Container fixes */
 .container-fluid {
   padding: 0 !important;
   margin: 0 !important;
@@ -96,7 +102,7 @@ body {
   padding: 0 !important;
 }
 
-/* OPRAVA - Main content wrapper bez mezer */
+/* Main content wrapper */
 main {
   flex: 1;
   width: 100%;
@@ -109,13 +115,12 @@ main {
   flex-direction: column;
 }
 
-/* OPRAVA - Odstranění všech potenciálních mezer */
 main>div {
   margin: 0 !important;
   padding: 0 !important;
 }
 
-/* OPRAVA - Prevent horizontal overflow on all levels */
+/* Prevent horizontal overflow */
 .row {
   margin-left: 0 !important;
   margin-right: 0 !important;
@@ -141,13 +146,13 @@ main>div {
 .col-lg,
 .col-xl,
 .col-xxl,
-[class*="col-"] {
+[class*=\"col-\"] {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   max-width: 100%;
 }
 
-/* OPRAVA - Footer pripojený priamo bez mezer */
+/* Footer */
 footer {
   background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -242,8 +247,8 @@ p {
 /* Form Controls */
 .form-control,
 .form-select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
   color: var(--text-primary);
   transition: all var(--transition-normal);
   backdrop-filter: blur(10px);
@@ -263,10 +268,11 @@ p {
 
 /* Card Enhancements */
 .card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   backdrop-filter: blur(10px);
   transition: all var(--transition-normal);
+  color: var(--text-primary);
 }
 
 .card:hover {
@@ -277,6 +283,17 @@ p {
 
 .card-body {
   padding: 1.5rem;
+  background: transparent;
+}
+
+.card-header {
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.card-footer {
+  background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--card-border);
 }
 
 /* Badge Improvements */
@@ -296,6 +313,14 @@ p {
 
 .badge.bg-danger {
   background: var(--gradient-danger) !important;
+}
+
+.badge.bg-secondary {
+  background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+}
+
+.badge.bg-dark {
+  background: linear-gradient(135deg, #374151, #1f2937) !important;
 }
 
 /* Alert Enhancements */
@@ -321,6 +346,12 @@ p {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.1));
   border: 1px solid rgba(245, 158, 11, 0.3);
   color: #fcd34d;
+}
+
+.alert-info {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.1));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
 }
 
 /* Loading Spinner */
@@ -376,8 +407,8 @@ p {
 
 /* Pagination */
 .pagination .page-link {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   color: var(--text-primary);
   transition: all var(--transition-normal);
   margin: 0 2px;
@@ -407,6 +438,8 @@ p {
 .game-card {
   transition: all var(--transition-normal);
   overflow: hidden;
+  background: var(--card-bg) !important;
+  color: var(--text-primary);
 }
 
 .game-card:hover {
@@ -454,6 +487,14 @@ p {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.bg-dark {
+  background: var(--card-bg) !important;
+}
+
+.border-secondary {
+  border-color: var(--card-border) !important;
+}
+
 .shadow-soft {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
@@ -464,6 +505,19 @@ p {
 
 .shadow-strong {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Text colors for better contrast */
+.text-light {
+  color: #e2e8f0 !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-white-50 {
+  color: rgba(226, 232, 240, 0.7) !important;
 }
 
 /* Animation Classes */
@@ -560,9 +614,9 @@ p {
 }
 
 .card-loader {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: 16px;
   padding: 3rem;
   text-align: center;
@@ -587,7 +641,7 @@ p {
 }
 
 .hero-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Cpath d='m0 0 40 40L0 80V0zm40 0 40 40-40 40V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url(\"data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.05'%3E%3Cpath d='m0 0 40 40L0 80V0zm40 0 40 40-40 40V0z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");
   opacity: 0.1;
 }
 
@@ -678,6 +732,9 @@ p {
   border-radius: 25px;
   font-weight: 600;
   box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--card-border);
 }
 
 .genres-section {
@@ -709,7 +766,7 @@ p {
 }
 
 .popular-game-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -777,10 +834,10 @@ p {
   box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
 }
 
-/* LOGIN & REGISTER PAGE STYLES */
+/* LOGIN & REGISTER PAGE STYLES - Dark theme */
 .login-page-bg,
 .register-page-bg {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .login-logo-icon,
@@ -818,10 +875,10 @@ p {
 
 .login-card,
 .register-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(30, 64, 175, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-border);
   overflow: hidden;
 }
 
@@ -848,6 +905,7 @@ p {
 .login-card-body,
 .register-card-body {
   padding: 2rem;
+  background: var(--card-bg);
 }
 
 .login-form-label,
@@ -891,10 +949,10 @@ p {
 
 .login-demo-section {
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
   border-radius: 12px;
-  border: 1px solid rgba(30, 64, 175, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .login-demo-title {
@@ -1091,11 +1149,11 @@ p {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 16px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   min-width: 280px;
   z-index: 1000;
   overflow: hidden;
@@ -1261,7 +1319,7 @@ p {
   top: 80px;
   left: 0;
   right: 0;
-  background: rgba(30, 64, 175, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   z-index: 1050;
   padding: 1.5rem;
@@ -1444,9 +1502,9 @@ p {
 }
 
 .game-detail-description-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .game-detail-lang-btn {
@@ -1459,9 +1517,9 @@ p {
 }
 
 .game-detail-actions-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .game-detail-auth-btn {
@@ -1514,7 +1572,7 @@ p {
 }
 
 .games-page-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.08'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234f46e5' fill-opacity='0.08'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\");
   opacity: 0.5;
 }
 
@@ -1531,9 +1589,9 @@ p {
 }
 
 .games-page-filters-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .games-page-search-input {
@@ -1577,9 +1635,9 @@ p {
 }
 
 .games-page-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   border-radius: 20px;
   transition: all 0.4s ease;
   cursor: pointer;
@@ -1657,8 +1715,8 @@ p {
 }
 
 .games-page-pagination-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   color: white;
   border-radius: 12px;
   margin: 0 2px;
@@ -1727,6 +1785,7 @@ p {
   transition: all 0.4s ease;
   cursor: pointer;
   min-height: 400px;
+  border: 1px solid var(--card-border);
 }
 
 .token-pack-card:hover {
@@ -1762,9 +1821,9 @@ p {
 
 .token-pack-buy-btn {
   border-radius: 50px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #1e293b;
-  border: none;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
   transition: all 0.3s ease;
   font-size: 0.9rem;
   padding: 0.75rem 1rem;
@@ -1784,9 +1843,10 @@ p {
 }
 
 .token-modal-content {
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 20px;
+  border: 1px solid var(--card-border);
 }
 
 .token-modal-auth-icon {
@@ -1807,8 +1867,8 @@ p {
 }
 
 .token-payment-method {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   transition: all 0.2s ease;
 }
 
@@ -1858,9 +1918,9 @@ p {
 }
 
 .library-header-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .library-header-icon {
@@ -1895,9 +1955,9 @@ p {
 }
 
 .library-filters-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .library-search-input {
@@ -1923,9 +1983,9 @@ p {
 }
 
 .library-empty-state {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
 }
 
 .library-empty-icon {
@@ -1948,9 +2008,9 @@ p {
 }
 
 .library-game-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   transition: all 0.2s ease;
 }
 
@@ -2068,13 +2128,13 @@ p {
 }
 
 .library-key-modal {
-  background: rgba(30, 41, 59, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 2rem;
   max-width: 500px;
   width: 90%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--card-border);
   margin: 1rem;
 }
 
@@ -2222,7 +2282,7 @@ p {
   }
 }
 
-/* VYLEPŠENÉ - Mobile Responsive s lepším overflow handling */
+/* Mobile Responsive */
 @media (max-width: 768px) {
   .btn-lg {
     padding: 0.75rem 1.5rem;
@@ -2241,7 +2301,6 @@ p {
     padding: 1rem;
   }
 
-  /* Mobile specific fixes */
   .container {
     padding-left: 15px !important;
     padding-right: 15px !important;
@@ -2252,12 +2311,11 @@ p {
     margin-right: -15px !important;
   }
 
-  [class*="col-"] {
+  [class*=\"col-\"] {
     padding-left: 15px;
     padding-right: 15px;
   }
 
-  /* Mobile navigation improvements */
   .navbar {
     padding: 0.5rem 0;
   }
@@ -2266,15 +2324,12 @@ p {
     font-size: 1.25rem;
   }
 
-  /* Mobile form improvements */
   .form-control,
   .form-select {
     font-size: 16px;
-    /* Prevents zoom on iOS */
     padding: 0.75rem 1rem;
   }
 
-  /* Mobile modal improvements */
   .modal-dialog {
     margin: 0.5rem;
     max-width: calc(100% - 1rem);
@@ -2284,12 +2339,10 @@ p {
     padding: 1rem;
   }
 
-  /* Mobile card stack improvements */
   .card {
     margin-bottom: 1rem;
   }
 
-  /* Mobile button improvements */
   .btn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
@@ -2315,7 +2368,6 @@ p {
     font-size: 1rem;
   }
 
-  /* Token pack grid improvements for small screens */
   .col-lg {
     flex: 0 0 100%;
     max-width: 100%;
@@ -2323,10 +2375,8 @@ p {
 
   .col-lg:nth-child(3) {
     order: -1;
-    /* Popular pack first on mobile */
   }
 
-  /* Smaller padding on very small screens */
   .p-5 {
     padding: 2rem !important;
   }
@@ -2341,47 +2391,6 @@ p {
   }
 }
 
-/* Dark Mode Text Colors */
-.text-white-50 {
-  color: rgba(248, 250, 252, 0.5) !important;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-/* Logo Animation */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms ease-in-out;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #4f46e5aa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Performance optimizations */
 .card,
 .btn,
@@ -2390,7 +2399,7 @@ p {
   will-change: transform;
 }
 
-/* OPRAVA - Print styles */
+/* Print styles */
 @media print {
 
   .btn,
@@ -2435,35 +2444,7 @@ p {
   outline-offset: 2px;
 }
 
-/* OPRAVA - Explicitly remove any margins and gaps that could cause white space */
-section,
-div,
-article,
-main,
-header,
-footer {
-  box-sizing: border-box;
-}
-
-/* Ensure no unexpected margins on any elements */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-/* Reset any Bootstrap default margins that might cause issues */
-.container,
-.container-fluid,
-.container-sm,
-.container-md,
-.container-lg,
-.container-xl,
-.container-xxl {
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Make sure sections connect seamlessly */
+/* Ensure sections connect seamlessly */
 section+section {
   margin-top: 0 !important;
 }

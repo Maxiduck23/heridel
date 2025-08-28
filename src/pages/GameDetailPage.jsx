@@ -12,10 +12,12 @@ const GameDetailPage = () => {
     const [game, setGame] = useState(null);
     const [loading, setLoading] = useState(true);
     const [gameError, setGameError] = useState(null);
-    const [translatedDescription, setTranslatedDescription] = useState('');
+    const [translatedPages, setTranslatedPages] = useState([]);
     const [isTranslating, setIsTranslating] = useState(false);
     const [isPurchasing, setIsPurchasing] = useState(false);
     const [showTranslated, setShowTranslated] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [descriptionPages, setDescriptionPages] = useState([]);
 
     const [inWishlist, setInWishlist] = useState(false);
     const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
@@ -23,152 +25,90 @@ const GameDetailPage = () => {
 
     const API_BASE_URL = '/api';
 
-    // OPRAVENÝ PŘEKLAD - robustnější řešení
-    const translateText = async (textToTranslate) => {
-        if (!textToTranslate) return;
+    // Funkce pro rozčlenění textu na stránky (max 500 znaků, končí tečkou)
+    const paginateText = (text) => {
+        if (!text) return [''];
 
-        // Rozšířený lokální slovník
-        const simpleTranslations = {
-            'action': 'akce',
-            'adventure': 'dobrodružství',
-            'rpg': 'RPG',
-            'strategy': 'strategie',
-            'simulation': 'simulace',
-            'racing': 'závody',
-            'sports': 'sport',
-            'puzzle': 'puzzle',
-            'shooter': 'střílečka',
-            'platform': 'plošinovka',
-            'the best': 'nejlepší',
-            'amazing': 'úžasné',
-            'great': 'skvělé',
-            'fantastic': 'fantastické',
-            'epic': 'epické',
-            'awesome': 'úžasné',
-            'explore': 'prozkoumej',
-            'battle': 'bitva',
-            'world': 'svět',
-            'character': 'postava',
-            'story': 'příběh',
-            'play': 'hrát',
-            'player': 'hráč',
-            'level': 'úroveň',
-            'mission': 'mise',
-            'challenge': 'výzva',
-            'fight': 'bojuj',
-            'defeat': 'poraz',
-            'enemy': 'nepřítel',
-            'boss': 'boss',
-            'quest': 'úkol',
-            'journey': 'cesta',
-            'magical': 'magický',
-            'powerful': 'mocný',
-            'collect': 'sbírej',
-            'upgrade': 'vylepši',
-            'customize': 'přizpůsob',
-            'multiplayer': 'více hráčů',
-            'single player': 'pro jednoho hráče',
-            'online': 'online',
-            'offline': 'offline',
-            'weapon': 'zbraň',
-            'armor': 'zbroj',
-            'skill': 'dovednost',
-            'experience': 'zkušenost'
-        };
+        const pages = [];
+        let currentPage = '';
+        const sentences = text.split(/([.!?]+\s*)/);
+
+        for (let i = 0; i < sentences.length; i++) {
+            const sentence = sentences[i];
+            if (!sentence.trim()) continue;
+
+            // Zkontrolovat, jestli přidání věty nepřekročí limit
+            if ((currentPage + sentence).length > 500 && currentPage.length > 0) {
+                pages.push(currentPage.trim());
+                currentPage = sentence;
+            } else {
+                currentPage += sentence;
+            }
+        }
+
+        if (currentPage.trim()) {
+            pages.push(currentPage.trim());
+        }
+
+        return pages.length > 0 ? pages : [text];
+    };
+
+    // Vylepšený překlad pouze přes API
+    const translatePages = async (pages) => {
+        if (!pages || pages.length === 0) return;
 
         setIsTranslating(true);
         try {
-            // Pokusí se přeložit pomocí základních náhrad
-            let translation = textToTranslate.toLowerCase();
-            let hasTranslation = false;
+            const translatedPagesResult = [];
 
-            Object.entries(simpleTranslations).forEach(([en, cs]) => {
-                const regex = new RegExp(`\\b${en}\\b`, 'gi');
-                if (regex.test(translation)) {
-                    translation = translation.replace(regex, cs);
-                    hasTranslation = true;
+            for (const page of pages) {
+                try {
+                    // Zkusit více překladových API současně
+                    const translationPromises = [
+                        // MyMemory API
+                        fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(page)}&langpair=en|cs`)
+                            .then(res => res.json())
+                            .then(data => data.responseData?.translatedText)
+                            .catch(() => null),
+
+                        // LibreTranslate API
+                        fetch('https://libretranslate.de/translate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                q: page,
+                                source: 'en',
+                                target: 'cs'
+                            })
+                        })
+                            .then(res => res.json())
+                            .then(data => data.translatedText)
+                            .catch(() => null)
+                    ];
+
+                    const results = await Promise.allSettled(translationPromises);
+                    const validTranslation = results
+                        .filter(result => result.status === 'fulfilled' && result.value)
+                        .map(result => result.value)[0];
+
+                    if (validTranslation && validTranslation !== page && validTranslation.length > 10) {
+                        translatedPagesResult.push(validTranslation);
+                    } else {
+                        translatedPagesResult.push('Překlad nedostupný pro tuto sekci.');
+                    }
+
+                    // Přidat malé zpoždění mezi požadavky
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                } catch (err) {
+                    console.error('Chyba při překladu stránky:', err);
+                    translatedPagesResult.push('Překlad nedostupný pro tuto sekci.');
                 }
-            });
-
-            // Zachovat původní velikost písmen na začátku
-            if (hasTranslation && textToTranslate.length > 0) {
-                const firstChar = textToTranslate[0];
-                translation = firstChar + translation.slice(1);
             }
 
-            // Pokud máme nějaký překlad z lokálního slovníku, použijeme ho
-            if (hasTranslation) {
-                setTranslatedDescription(translation);
-                return;
-            }
-
-            // Zkusit více překladových API současně
-            const translationPromises = [
-                // MyMemory API
-                fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate.substring(0, 500))}&langpair=en|cs`)
-                    .then(res => res.json())
-                    .then(data => data.responseData?.translatedText)
-                    .catch(() => null),
-
-                // LibreTranslate (free API)
-                fetch('https://libretranslate.de/translate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        q: textToTranslate.substring(0, 500),
-                        source: 'en',
-                        target: 'cs'
-                    })
-                })
-                    .then(res => res.json())
-                    .then(data => data.translatedText)
-                    .catch(() => null)
-            ];
-
-            const results = await Promise.allSettled(translationPromises);
-            const validTranslation = results
-                .filter(result => result.status === 'fulfilled' && result.value)
-                .map(result => result.value)[0];
-
-            if (validTranslation && validTranslation !== textToTranslate) {
-                setTranslatedDescription(validTranslation);
-            } else {
-                // Fallback překlad
-                const fallbackTranslation = textToTranslate
-                    .replace(/game/gi, 'hra')
-                    .replace(/games/gi, 'hry')
-                    .replace(/play/gi, 'hrát')
-                    .replace(/player/gi, 'hráč')
-                    .replace(/players/gi, 'hráči')
-                    .replace(/world/gi, 'svět')
-                    .replace(/story/gi, 'příběh')
-                    .replace(/character/gi, 'postava')
-                    .replace(/characters/gi, 'postavy')
-                    .replace(/level/gi, 'úroveň')
-                    .replace(/levels/gi, 'úrovně')
-                    .replace(/mission/gi, 'mise')
-                    .replace(/missions/gi, 'mise')
-                    .replace(/challenge/gi, 'výzva')
-                    .replace(/challenges/gi, 'výzvy')
-                    .replace(/battle/gi, 'bitva')
-                    .replace(/battles/gi, 'bitvy')
-                    .replace(/fight/gi, 'bojuj')
-                    .replace(/fighting/gi, 'boj')
-                    .replace(/adventure/gi, 'dobrodružství')
-                    .replace(/explore/gi, 'prozkoumej')
-                    .replace(/exploring/gi, 'prozkoumávání');
-
-                setTranslatedDescription(fallbackTranslation || 'Překlad není k dispozici.');
-            }
+            setTranslatedPages(translatedPagesResult);
         } catch (apiError) {
-            console.log('Všechny překladové API selhaly, použiji základní fallback');
-            const basicTranslation = textToTranslate
-                .replace(/\bgame\b/gi, 'hra')
-                .replace(/\bplay\b/gi, 'hrát')
-                .replace(/\bworld\b/gi, 'svět')
-                .replace(/\bstory\b/gi, 'příběh');
-
-            setTranslatedDescription(basicTranslation || 'Automatický překlad není dostupný.');
+            console.error('Chyba při překladu:', apiError);
+            setTranslatedPages(pages.map(() => 'Automatický překlad není dostupný.'));
         } finally {
             setIsTranslating(false);
         }
@@ -178,7 +118,6 @@ const GameDetailPage = () => {
         const fetchGame = async () => {
             setLoading(true);
             try {
-                // Použít gameSlug místo gameId
                 const response = await fetch(`${API_BASE_URL}/game_detail.php?id=${gameSlug}`, {
                     credentials: 'include'
                 });
@@ -187,8 +126,14 @@ const GameDetailPage = () => {
                     setGame(data.data);
                     setIsOwned(data.data.is_owned);
                     setInWishlist(data.data.in_wishlist);
+
                     if (data.data.description) {
-                        translateText(data.data.description);
+                        const pages = paginateText(data.data.description);
+                        setDescriptionPages(pages);
+                        // Automaticky přeložit první stránku
+                        if (pages.length > 0) {
+                            translatePages(pages);
+                        }
                     }
                 } else {
                     throw new Error(data.message);
@@ -283,7 +228,7 @@ const GameDetailPage = () => {
             <div className="d-flex justify-content-center align-items-center game-detail-loading">
                 <div className="text-center">
                     <div className="spinner-border text-primary mb-3 game-detail-spinner" />
-                    <div className="h5 text-white">Načítání detailu hry...</div>
+                    <div className="h5 text-light">Načítání detailu hry...</div>
                 </div>
             </div>
         );
@@ -333,12 +278,12 @@ const GameDetailPage = () => {
                     <nav aria-label="breadcrumb" className="mb-4">
                         <ol className="breadcrumb bg-transparent">
                             <li className="breadcrumb-item">
-                                <Link to="/" className="text-white-50 text-decoration-none">
+                                <Link to="/" className="text-light text-decoration-none">
                                     <i className="fas fa-home me-1"></i>Domů
                                 </Link>
                             </li>
                             <li className="breadcrumb-item">
-                                <Link to="/games" className="text-white-50 text-decoration-none">
+                                <Link to="/games" className="text-light text-decoration-none">
                                     Hry
                                 </Link>
                             </li>
@@ -362,16 +307,32 @@ const GameDetailPage = () => {
                                         <i className="fas fa-heart me-2"></i>V seznamu přání
                                     </span>
                                 )}
-                                <span className="badge bg-primary px-3 py-2 game-detail-badge-publisher">
-                                    {game.publisher_name || 'Neznámý vydavatel'}
-                                </span>
+
+                                {/* Vydavatel s odkazem na web */}
+                                {game.publisher_name && (
+                                    <span className="badge bg-primary px-3 py-2 game-detail-badge-publisher me-3">
+                                        <i className="fas fa-building me-1"></i>
+                                        {game.publisher_website ? (
+                                            <a
+                                                href={game.publisher_website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-white text-decoration-none"
+                                            >
+                                                {game.publisher_name}
+                                            </a>
+                                        ) : (
+                                            game.publisher_name
+                                        )}
+                                    </span>
+                                )}
                             </div>
 
                             <h1 className="display-4 fw-bold text-white mb-3 game-detail-title">
                                 {game.name}
                             </h1>
 
-                            <p className="lead text-white-50 mb-4">
+                            <p className="lead text-light mb-4">
                                 <i className="fas fa-calendar me-2"></i>
                                 Vydáno: {game.release_date || 'Neuvedeno'}
                             </p>
@@ -382,7 +343,7 @@ const GameDetailPage = () => {
                                 <div className="h2 fw-bold mb-1 game-detail-price">
                                     {game.price_tokens || 0} 🪙
                                 </div>
-                                <small className="text-white-50">Cena ve tokenech</small>
+                                <small className="text-light">Cena ve tokenech</small>
                             </div>
                         </div>
                     </div>
@@ -430,8 +391,8 @@ const GameDetailPage = () => {
                     {/* Right Column */}
                     <div className="col-lg-7">
 
-                        {/* Game Description */}
-                        <div className="game-detail-description-card rounded-3 p-4 mb-4">
+                        {/* Game Description s paginací */}
+                        <div className="game-detail-description-card rounded-3 p-4 mb-4 bg-dark border border-secondary">
                             <div className="d-flex justify-content-between align-items-center mb-3">
                                 <h5 className="text-white fw-bold mb-0">Popis hry</h5>
                                 <div className="d-flex gap-2">
@@ -444,7 +405,7 @@ const GameDetailPage = () => {
                                     <button
                                         className={`btn btn-sm ${showTranslated ? 'btn-primary' : 'btn-outline-light'} game-detail-lang-btn`}
                                         onClick={() => setShowTranslated(true)}
-                                        disabled={!translatedDescription || isTranslating}
+                                        disabled={translatedPages.length === 0 || isTranslating}
                                     >
                                         {isTranslating ? (
                                             <>
@@ -458,19 +419,47 @@ const GameDetailPage = () => {
                                 </div>
                             </div>
 
-                            <p className="text-white-50 mb-0 game-detail-description-text">
-                                {showTranslated && translatedDescription ?
-                                    translatedDescription :
-                                    (game.description || 'Popis hry není k dispozici.')
-                                }
-                            </p>
+                            {/* Paginovaný text */}
+                            <div className="mb-3">
+                                <p className="text-light mb-0 game-detail-description-text">
+                                    {showTranslated && translatedPages.length > 0 ?
+                                        translatedPages[currentPage] || 'Překlad nedostupný' :
+                                        descriptionPages[currentPage] || 'Popis hry není k dispozici.'
+                                    }
+                                </p>
+                            </div>
+
+                            {/* Navigace stránek */}
+                            {descriptionPages.length > 1 && (
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+                                        disabled={currentPage === 0}
+                                    >
+                                        ← Předchozí
+                                    </button>
+
+                                    <span className="text-light small">
+                                        Strana {currentPage + 1} z {descriptionPages.length}
+                                    </span>
+
+                                    <button
+                                        className="btn btn-outline-light btn-sm"
+                                        onClick={() => setCurrentPage(Math.min(descriptionPages.length - 1, currentPage + 1))}
+                                        disabled={currentPage === descriptionPages.length - 1}
+                                    >
+                                        Další →
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="game-detail-actions-card rounded-3 p-4">
+                        <div className="game-detail-actions-card rounded-3 p-4 bg-dark border border-secondary">
                             {!user ? (
                                 <div className="text-center">
-                                    <p className="text-white-50 mb-3">Pro nákup nebo přidání do seznamu přání se musíte přihlásit</p>
+                                    <p className="text-light mb-3">Pro nákup nebo přidání do seznamu přání se musíte přihlásit</p>
                                     <div className="d-flex gap-3 justify-content-center">
                                         <Link
                                             to="/login"
@@ -554,7 +543,7 @@ const GameDetailPage = () => {
 
                                     {user && (
                                         <div className="text-center mt-3">
-                                            <small className="text-white-50">
+                                            <small className="text-light">
                                                 Váš zůstatek: <strong className="text-success">{user.tokens_balance} 🪙</strong>
                                             </small>
                                             {user.tokens_balance < (game.price_tokens || 0) && (

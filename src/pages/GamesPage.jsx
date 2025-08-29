@@ -20,7 +20,7 @@ const GamesPage = () => {
     // Funkce pro vytvoření slug z názvu hry s podporou českých znaků
     const createSlug = (name) => {
         if (!name) return '';
-        
+
         // Mapování českých znaků na anglické
         const charMap = {
             'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a',
@@ -37,7 +37,7 @@ const GamesPage = () => {
             'ý': 'y', 'ÿ': 'y',
             'ž': 'z', 'ź': 'z'
         };
-        
+
         return name
             .toLowerCase()
             .replace(/[^a-z0-9\s-]/g, (match) => charMap[match] || '') // Mapovat české znaky
@@ -234,7 +234,7 @@ const GamesPage = () => {
                                     <div className="position-relative">
                                         <input
                                             type="text"
-                                            className="form-control form-control-lg games-page-search-input"
+                                            className="form-control form-control-lg games-page-search-input bg-dark text-light border-secondary"
                                             placeholder="🔍 Hledat hry podle názvu..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -244,7 +244,7 @@ const GamesPage = () => {
                                 </div>
                                 <div className="col-md-4">
                                     <select
-                                        className="form-select form-select-lg games-page-sort-select"
+                                        className="form-select form-select-lg games-page-sort-select bg-dark text-light border-secondary"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
                                     >

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/logo1.png';
 
 const Footer = () => {
     const [genres, setGenres] = useState([]);
@@ -26,10 +27,16 @@ const Footer = () => {
         <footer className="footer-gradient text-white w-100 m-0 footer-padding">
             <div className="container-custom">
                 <div className="row g-4">
+
                     {/* O Heridel sekce */}
                     <div className="col-lg-4 col-md-6">
                         <div className="d-flex align-items-center mb-4">
-                            <span className="h1 me-3 mb-0">🏰</span>
+                            <img
+                                src={logo}
+                                alt="Heridel logo"
+                                style={{ height: '40px', width: 'auto' }}
+                                className="me-3"
+                            />
                             <h5 className="fw-bold mb-0">O Heridel</h5>
                         </div>
                         <p className="text-light">
@@ -66,7 +73,7 @@ const Footer = () => {
                         )}
                     </div>
 
-                    {/* Kontaktní informace - AKTUALIZOVÁNO */}
+                    {/* Kontaktní informace sekce */}
                     <div className="col-lg-4 col-md-12">
                         <div className="d-flex align-items-center mb-4">
                             <span className="h1 me-3 mb-0">📞</span>

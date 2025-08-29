@@ -455,6 +455,162 @@ p {
   transform: scale(1.05);
 }
 
+/* --- Obecné styly a pozadí --- */
+
+.bg-main-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* --- "Glassmorphism" efekt pro karty a boxy --- */
+
+.header-glass-box {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+/* --- Formulářové prvky (vyhledávání, filtry) --- */
+
+.form-control-custom {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  /* !important pro přepsání Bootstrapu */
+  color: #333;
+}
+
+.form-control-custom:focus {
+  background: white;
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.4);
+  /* Příklad focus barvy */
+  border-color: #667eea !important;
+}
+
+
+/* --- Styly pro kartu hry --- */
+
+.game-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 20px !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  /* Důležité pro zaoblené rohy obrázku */
+}
+
+.game-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.game-card-img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Utility pro oříznutí textu na X řádků */
+.text-truncate-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.game-card-title {
+  font-size: 1rem;
+  line-height: 1.3;
+  height: 2.6rem;
+  /* 2 řádky (2 * 1.3rem) */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.game-card-description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  height: 2.38rem;
+  /* 2 řádky (2 * 1.4 * 0.85rem) */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+/* --- Odznaky (Badges) --- */
+
+.badge-price {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 20px;
+}
+
+.badge-genre {
+  font-size: 0.7rem;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+}
+
+
+/* --- Tlačítka --- */
+
+.btn-view-detail {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-view-detail:hover {
+  background: linear-gradient(135deg, #764ba2, #667eea);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/* --- Stránkování (Pagination) --- */
+
+.pagination-button {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 25px !important;
+  padding: 0.75rem 1.5rem;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.pagination-button:disabled {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.pagination-number {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50% !important;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-number:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Aktivní stav stránky */
+.pagination-number.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  font-weight: bold;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

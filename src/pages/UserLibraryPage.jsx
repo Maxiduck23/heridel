@@ -23,7 +23,7 @@ const UserLibraryPage = () => {
     // Funkce pro vytvoření slug z názvu hry s podporou českých znaků
     const createSlug = (name) => {
         if (!name) return '';
-        
+
         // Mapování českých znaků na anglické
         const charMap = {
             'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a',
@@ -40,7 +40,7 @@ const UserLibraryPage = () => {
             'ý': 'y', 'ÿ': 'y',
             'ž': 'z', 'ź': 'z'
         };
-        
+
         return name
             .toLowerCase()
             .replace(/[^a-z0-9\s-]/g, (match) => charMap[match] || '') // Mapovat české znaky
@@ -125,18 +125,22 @@ const UserLibraryPage = () => {
         filtered.sort((a, b) => {
             switch (sortBy) {
                 case 'recent':
-                    if (filterBy === 'wishlist') {
-                        return 0; // Pro wishlist není relevantní
+                    // Pokud je položka z wishlistu, nemá datum a netřídíme ji.
+                    if (a.is_wishlist || b.is_wishlist) {
+                        return 0;
                     }
                     return new Date(b.last_accessed || b.purchase_date) - new Date(a.last_accessed || a.purchase_date);
+
                 case 'name':
-                    const aName = filterBy === 'owned' ? a.game.name : a.game.name;
-                    const bName = filterBy === 'owned' ? b.game.name : b.game.name;
-                    return aName.localeCompare(bName);
+                    // Struktura je vždy stejná, přistupujeme přímo k a.game.name
+                    return a.game.name.localeCompare(b.game.name);
+
                 case 'price':
-                    const aPrice = filterBy === 'owned' ? (a.game.price_tokens || 0) : (a.game.price_tokens || 0);
-                    const bPrice = filterBy === 'owned' ? (b.game.price_tokens || 0) : (b.game.price_tokens || 0);
+                    // Stejný princip platí i pro cenu
+                    const aPrice = a.game.price_tokens || 0;
+                    const bPrice = b.game.price_tokens || 0;
                     return bPrice - aPrice;
+
                 default:
                     return 0;
             }
@@ -309,15 +313,15 @@ const UserLibraryPage = () => {
                                 <div className="col-12 col-md-4">
                                     <input
                                         type="text"
-                                        className="form-control library-search-input"
-                                        placeholder="🔍 Hledat hry..."
+                                        className="form-control form-control-lg games-page-search-input bg-dark text-light border-secondary"
+                                        placeholder="🔍 Hledat hry podle názvu..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3">
                                     <select
-                                        className="form-select library-filter-select"
+                                        className="form-select library-filter-select bg-dark text-light border-secondary"
                                         value={filterBy}
                                         onChange={(e) => setFilterBy(e.target.value)}
                                     >
@@ -327,7 +331,7 @@ const UserLibraryPage = () => {
                                 </div>
                                 <div className="col-12 col-sm-6 col-md-3">
                                     <select
-                                        className="form-select library-sort-select"
+                                        className="form-select library-sort-select bg-dark text-light border-secondary"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
                                     >
@@ -455,7 +459,7 @@ const UserLibraryPage = () => {
 
                                                         <Link
                                                             to={`/game/${libraryGame.game.slug || createSlug(libraryGame.game.name)}`}
-                                                            className="btn library-detail-btn text-decoration-none"
+                                                            className="btn btn-outline-light text-decoration-none"
                                                         >
                                                             👁️ Detail hry
                                                         </Link>

@@ -17,15 +17,44 @@ const GamesPage = () => {
     const API_BASE_URL = '/api';
     const urlCategory = searchParams.get('category');
 
-    // Funkce pro vytvoření slug z názvu hry
+    // Funkce pro vytvoření slug z názvu hry s podporou českých znaků
     const createSlug = (name) => {
         if (!name) return '';
+        
+        // Mapování českých znaků na anglické
+        const charMap = {
+            'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a',
+            'č': 'c', 'ć': 'c',
+            'ď': 'd',
+            'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e', 'ě': 'e',
+            'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i',
+            'ň': 'n', 'ñ': 'n',
+            'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o',
+            'ř': 'r',
+            'š': 's', 'ś': 's',
+            'ť': 't',
+            'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u', 'ů': 'u',
+            'ý': 'y', 'ÿ': 'y',
+            'ž': 'z', 'ź': 'z'
+        };
+        
         return name
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/[^a-z0-9\s-]/g, (match) => charMap[match] || '') // Mapovat české znaky
             .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
             .replace(/-+/g, '-') // Nahradit více pomlček jednou
-            .trim('-'); // Odstranit pomlčky na začátku a konci
+            .replace(/^-+|-+$/g, ''); // Odstranit pomlčky na začátku a konci
+    };
+
+    // Funkce pro správnou českou gramatiku počtu her
+    const getGameCountText = (count) => {
+        if (count === 1) {
+            return '1 hru';
+        } else if (count >= 2 && count <= 4) {
+            return `${count} hry`;
+        } else {
+            return `${count} her`;
+        }
     };
 
     useEffect(() => {
@@ -187,7 +216,7 @@ const GamesPage = () => {
                             Herní katalog
                         </h1>
                         <p className="lead text-light mb-4">
-                            Objevte {filteredGames.length} her ze všech žánrů.
+                            Objevte {getGameCountText(filteredGames.length)} ze všech žánrů.
                         </p>
                     </div>
                 </div>
@@ -313,18 +342,26 @@ const GamesPage = () => {
                                                 {game.name}
                                             </h5>
 
-                                            <p className="card-text text-light small mb-2">
-                                                <i className="fas fa-calendar me-2"></i>
-                                                {game.release_date || 'Datum vydání neuvedeno'}
-                                            </p>
+                                            <div className="row text-center mb-3">
+                                                <div className="col-6">
+                                                    <small className="text-muted d-block">
+                                                        <i className="fas fa-calendar me-1"></i>
+                                                        {game.release_date ? new Date(game.release_date).getFullYear() : 'N/A'}
+                                                    </small>
+                                                    <small className="text-muted">Vydáno</small>
+                                                </div>
+                                                <div className="col-6">
+                                                    <small className="text-muted d-block">
+                                                        <i className="fas fa-coins me-1"></i>
+                                                        {game.price_tokens || 0}
+                                                    </small>
+                                                    <small className="text-muted">Tokenů</small>
+                                                </div>
+                                            </div>
 
-                                            <p className="card-text text-light small mb-3">
+                                            <p className="card-text text-muted small mb-3">
                                                 <i className="fas fa-building me-2"></i>
                                                 {game.publisher_name || 'Neznámý vydavatel'}
-                                            </p>
-
-                                            <p className="card-text text-light flex-grow-1 mb-3 games-page-card-desc">
-                                                {game.description || 'Popis hry není k dispozici.'}
                                             </p>
 
                                             {/* Genres */}
@@ -347,9 +384,15 @@ const GamesPage = () => {
                                             )}
 
                                             {/* HOVER INDIKÁTOR */}
-                                            <div className="text-center mt-auto games-page-card-hover">
-                                                <i className="fas fa-eye me-2"></i>
-                                                Kliknout pro detail
+                                            <div className="text-center mt-auto">
+                                                <div className="d-block games-page-card-static text-muted">
+                                                    <i className="fas fa-gamepad me-1"></i>
+                                                    <small>Klikněte pro detail</small>
+                                                </div>
+                                                <div className="d-none games-page-card-hover text-primary fw-semibold">
+                                                    <i className="fas fa-eye me-1"></i>
+                                                    <small>Zobrazit detail hry</small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

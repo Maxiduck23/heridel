@@ -1702,16 +1702,24 @@ p {
   padding: 0.3rem 0.7rem;
 }
 
-.games-page-card-hover {
-  color: #4f46e5;
-  font-size: 0.9rem;
-  font-weight: 600;
-  opacity: 0;
+/* Games page card hover effects */
+.games-page-card-static {
   transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.games-page-card-hover {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.games-page-card:hover .games-page-card-static {
+  opacity: 0;
 }
 
 .games-page-card:hover .games-page-card-hover {
   opacity: 1;
+  display: block !important;
 }
 
 .games-page-pagination-btn {

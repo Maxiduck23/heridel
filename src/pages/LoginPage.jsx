@@ -129,25 +129,6 @@ const LoginPage = () => {
                                 </form>
                             </div>
                         </div>
-
-                        {/* Demo Section */}
-                        <div className="login-demo-section mt-4 text-center bg-dark border border-secondary">
-                            <h6 className="login-demo-title mb-3 text-primary">Demo účty pro testování</h6>
-                            <div className="row text-center">
-                                <div className="col-6">
-                                    <div className="login-demo-card mb-2 bg-primary bg-opacity-25 border border-primary">
-                                        <small className="login-demo-label d-block mb-1 text-light">Uživatel</small>
-                                        <code className="login-demo-code text-primary">demo / demo123</code>
-                                    </div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="login-demo-card-admin mb-2 bg-success bg-opacity-25 border border-success">
-                                        <small className="login-demo-label d-block mb-1 text-light">Admin</small>
-                                        <code className="login-demo-code-admin text-success">admin / admin123</code>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

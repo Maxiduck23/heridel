@@ -11,15 +11,33 @@ const HomePage = () => {
     const [totalGamesCount, setTotalGamesCount] = useState(0);
     const API_BASE_URL = '/api';
 
-    // Funkce pro vytvoření slug
+    // Funkce pro vytvoření slug z názvu hry s podporou českých znaků
     const createSlug = (name) => {
         if (!name) return '';
+        
+        // Mapování českých znaků na anglické
+        const charMap = {
+            'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a',
+            'č': 'c', 'ć': 'c',
+            'ď': 'd',
+            'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e', 'ě': 'e',
+            'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i',
+            'ň': 'n', 'ñ': 'n',
+            'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o',
+            'ř': 'r',
+            'š': 's', 'ś': 's',
+            'ť': 't',
+            'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u', 'ů': 'u',
+            'ý': 'y', 'ÿ': 'y',
+            'ž': 'z', 'ź': 'z'
+        };
+        
         return name
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/[^a-z0-9\s-]/g, (match) => charMap[match] || '') // Mapovat české znaky
             .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
             .replace(/-+/g, '-') // Nahradit více pomlček jednou
-            .trim('-'); // Odstranit pomlčky na začátku a konci
+            .replace(/^-+|-+$/g, ''); // Odstranit pomlčky na začátku a konci
     };
 
     useEffect(() => {
@@ -29,17 +47,22 @@ const HomePage = () => {
                 const gamesResponse = await fetch(`${API_BASE_URL}/games.php`);
                 const gamesData = await gamesResponse.json();
 
-                if (gamesData.success) {
+                if (gamesData.success && gamesData.data && Array.isArray(gamesData.data)) {
                     const games = gamesData.data;
                     setTotalGamesCount(games.length);
 
-                    // Najít nejdražší hru jako featured
-                    const featuredGame = games.reduce((max, game) =>
-                        (game.price_tokens || 0) > (max.price_tokens || 0) ? game : max
-                    );
+                    // OPRAVA: Najít nejdražší hru jako featured (s kontrolou prázdného pole)
+                    let featuredGame = null;
+                    if (games.length > 0) {
+                        featuredGame = games.reduce((max, game) => {
+                            const maxPrice = max?.price_tokens || 0;
+                            const gamePrice = game?.price_tokens || 0;
+                            return gamePrice > maxPrice ? game : max;
+                        }, games[0]); // Začneme s první hrou jako fallback
+                    }
 
                     // Top 8 her podle ceny (nejdražší první)
-                    const popularGames = games
+                    const popularGames = [...games] // Kopie aby se nemutatoval původní array
                         .sort((a, b) => (b.price_tokens || 0) - (a.price_tokens || 0))
                         .slice(0, 8);
 
@@ -52,10 +75,11 @@ const HomePage = () => {
                 // Načíst žánry
                 const genresResponse = await fetch(`${API_BASE_URL}/genres.php`);
                 const genresData = await genresResponse.json();
-                if (genresData.success) {
+                if (genresData.success && genresData.data) {
                     setGenres(genresData.data.slice(0, 8));
                 }
             } catch (error) {
+                console.error('HomePage fetch error:', error);
                 setError(error.message);
             } finally {
                 setLoading(false);
@@ -109,12 +133,17 @@ const HomePage = () => {
                                     dobrodružství
                                 </h1>
 
-                                <p className="lead mb-5 text-light hero-lead">
-                                    {totalGamesCount > 0 ? totalGamesCount : 'Stovky'} kvalitních her, exkluzivní nabídky a okamžité stahování.
+                                <p className="lead mb-4 text-light hero-lead">
+                                    Přes {totalGamesCount > 0 ? 
+                                        (totalGamesCount === 1 ? '1 kvalitní hru' : 
+                                         totalGamesCount <= 4 ? `${totalGamesCount} kvalitních her` : 
+                                         `${totalGamesCount} kvalitních her`) : 
+                                        '500 kvalitních her'
+                                    }, exkluzivní nabídky a okamžité stahování.
                                     Vaše herní říše začíná zde.
                                 </p>
 
-                                <div className="d-flex flex-wrap gap-3">
+                                <div className="d-flex flex-wrap gap-3 mb-4">
                                     <Link
                                         to="/games"
                                         className="btn btn-lg px-5 py-3 hero-btn-primary text-decoration-none"
@@ -132,29 +161,47 @@ const HomePage = () => {
                                     )}
                                 </div>
 
-                                {/* Stats - pouze počet her */}
-                                <div className="row mt-5">
-                                    <div className="col-12">
-                                        <div className="text-center">
-                                            <div className="h2 fw-bold mb-1 hero-stats-number">
-                                                {totalGamesCount > 0 ? totalGamesCount : '597'}+
+                                {/* Uživatelské statistiky pokud je přihlášen */}
+                                {user && (
+                                    <div className="row mt-4">
+                                        <div className="col-6">
+                                            <div className="text-center">
+                                                <div className="h4 fw-bold mb-1 hero-stats-number">
+                                                    {Math.round(user.tokens_balance)}
+                                                </div>
+                                                <small className="text-light">Tokenů k dispozici</small>
                                             </div>
-                                            <small className="text-light">Kvalitních her k dispozici</small>
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="text-center">
+                                                <div className="h4 fw-bold mb-1 hero-stats-number">
+                                                    {totalGamesCount}+
+                                                </div>
+                                                <small className="text-light">Her k dispozici</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Right Side - Featured Game s SLUG LINKEM */}
+                        {/* Right Side - Featured Game s OPRAVOU */}
                         <div className="col-lg-6">
-                            {homeData?.featuredGame && (
+                            {homeData?.featuredGame ? (
                                 <div className="position-relative">
                                     <Link
                                         to={`/game/${homeData.featuredGame.slug || createSlug(homeData.featuredGame.name)}`}
                                         className="text-decoration-none"
                                     >
-                                        <div className="featured-game-card rounded-4 overflow-hidden position-relative">
+                                        <div
+                                            className="featured-game-card rounded-4 overflow-hidden position-relative"
+                                            style={{
+                                                backgroundImage: `linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(30, 41, 59, 0.8)), url(${homeData.featuredGame.image_url || 'https://placehold.co/600x500/1e293b/64748b?text=Featured+Game'})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                minHeight: '500px'
+                                            }}
+                                        >
                                             <div className="position-absolute top-0 start-0 m-3">
                                                 <span className="badge featured-game-badge px-3 py-2">
                                                     💎 Premium
@@ -166,7 +213,10 @@ const HomePage = () => {
                                                     {homeData.featuredGame.name}
                                                 </h3>
                                                 <p className="text-light mb-4 featured-game-desc">
-                                                    {homeData.featuredGame.description?.substring(0, 120)}...
+                                                    {homeData.featuredGame.description ?
+                                                        `${homeData.featuredGame.description.substring(0, 120)}...` :
+                                                        'Objevte tento úžasný herní titul s prémiovou kvalitou a nezapomenutelným zážitkem.'
+                                                    }
                                                 </p>
                                                 <div className="d-flex align-items-center justify-content-between">
                                                     <div>
@@ -175,13 +225,35 @@ const HomePage = () => {
                                                         </span>
                                                         <small className="text-light">tokenů</small>
                                                     </div>
-                                                    <div className="btn btn-dark btn-lg px-4 featured-game-btn">
+                                                    <div className="btn btn-light btn-lg px-4 featured-game-btn shadow">
+                                                        <i className="fas fa-eye me-2"></i>
                                                         Zobrazit detail
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </Link>
+                                </div>
+                            ) : (
+                                // Fallback pokud není featured game
+                                <div className="position-relative">
+                                    <div
+                                        className="featured-game-card rounded-4 overflow-hidden position-relative d-flex align-items-center justify-content-center"
+                                        style={{
+                                            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(124, 58, 237, 0.3))',
+                                            minHeight: '500px',
+                                            border: '2px dashed rgba(255, 255, 255, 0.3)'
+                                        }}
+                                    >
+                                        <div className="text-center text-white">
+                                            <div className="mb-3" style={{ fontSize: '4rem' }}>🎮</div>
+                                            <h3 className="mb-3">Brzy zde najdete</h3>
+                                            <p className="lead">Nejlepší herní tituly</p>
+                                            <Link to="/games" className="btn btn-outline-light btn-lg mt-3">
+                                                Prozkoumat katalog
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -225,13 +297,13 @@ const HomePage = () => {
             )}
 
             {/* Popular Games Section s SLUG LINKY */}
-            {homeData?.popularGames && (
+            {homeData?.popularGames && homeData.popularGames.length > 0 && (
                 <section className="popular-games-section">
                     <div className="container-custom">
                         <div className="d-flex justify-content-between align-items-center mb-5">
                             <div>
-                                <h2 className="text-white fw-bold mb-2">Populární hry</h2>
-                                <p className="text-light mb-0">Nejžádanější hry podle ceny</p>
+                                <h2 className="text-white fw-bold mb-2">Nejžádanější hry</h2>
+                                <p className="text-light mb-0">Nejdražší a nejkvalitnější herní tituly</p>
                             </div>
                             <Link to="/games" className="btn btn-outline-light text-decoration-none">
                                 Zobrazit všechny
@@ -251,6 +323,9 @@ const HomePage = () => {
                                                     src={game.image_url || 'https://placehold.co/300x200/1e293b/64748b?text=No+Image'}
                                                     className="card-img-top popular-game-img"
                                                     alt={game.name}
+                                                    onError={(e) => {
+                                                        e.target.src = 'https://placehold.co/300x200/1e293b/64748b?text=No+Image';
+                                                    }}
                                                 />
                                                 <div className="position-absolute top-0 start-0 m-2">
                                                     <span className="badge bg-primary px-2 py-1">
@@ -270,7 +345,8 @@ const HomePage = () => {
                                                 </h6>
 
                                                 <div className="text-center mt-auto popular-game-hover">
-                                                    👁️ Zobrazit detail
+                                                    <i className="fas fa-eye me-1"></i>
+                                                    Zobrazit detail
                                                 </div>
                                             </div>
                                         </div>
@@ -282,7 +358,7 @@ const HomePage = () => {
                 </section>
             )}
 
-            {/* CTA Section - OPRAVA padding */}
+            {/* CTA Section - pouze pro nepřihlášené uživatele */}
             {!user && (
                 <section className="cta-section">
                     <div className="container-custom cta-container">
@@ -295,6 +371,7 @@ const HomePage = () => {
                                 to="/register"
                                 className="btn btn-lg px-5 py-3 cta-btn text-decoration-none"
                             >
+                                <i className="fas fa-crown me-2"></i>
                                 Registrovat se zdarma
                             </Link>
                         </div>
@@ -315,7 +392,11 @@ const getGenreIcon = (genreName) => {
         'Simulation': '🎮',
         'Sports': '⚽',
         'Racing': '🏁',
-        'Puzzle': '🧩'
+        'Puzzle': '🧩',
+        'Shooter': '🔫',
+        'Platform': '🕹️',
+        'Fighting': '🥊',
+        'Horror': '👻'
     };
     return icons[genreName] || '🎮';
 };

@@ -20,15 +20,33 @@ const UserLibraryPage = () => {
     const { success, error: showError } = useToast();
     const API_BASE_URL = '/api';
 
-    // Funkce pro vytvoření slug z názvu hry
+    // Funkce pro vytvoření slug z názvu hry s podporou českých znaků
     const createSlug = (name) => {
         if (!name) return '';
+        
+        // Mapování českých znaků na anglické
+        const charMap = {
+            'á': 'a', 'à': 'a', 'ä': 'a', 'â': 'a',
+            'č': 'c', 'ć': 'c',
+            'ď': 'd',
+            'é': 'e', 'è': 'e', 'ë': 'e', 'ê': 'e', 'ě': 'e',
+            'í': 'i', 'ì': 'i', 'ï': 'i', 'î': 'i',
+            'ň': 'n', 'ñ': 'n',
+            'ó': 'o', 'ò': 'o', 'ö': 'o', 'ô': 'o',
+            'ř': 'r',
+            'š': 's', 'ś': 's',
+            'ť': 't',
+            'ú': 'u', 'ù': 'u', 'ü': 'u', 'û': 'u', 'ů': 'u',
+            'ý': 'y', 'ÿ': 'y',
+            'ž': 'z', 'ź': 'z'
+        };
+        
         return name
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Odstranit speciální znaky
+            .replace(/[^a-z0-9\s-]/g, (match) => charMap[match] || '') // Mapovat české znaky
             .replace(/\s+/g, '-') // Nahradit mezery pomlčkami
             .replace(/-+/g, '-') // Nahradit více pomlček jednou
-            .trim('-'); // Odstranit pomlčky na začátku a konci
+            .replace(/^-+|-+$/g, ''); // Odstranit pomlčky na začátku a konci
     };
 
     useEffect(() => {
